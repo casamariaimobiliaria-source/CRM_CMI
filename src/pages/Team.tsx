@@ -247,7 +247,7 @@ const Team: React.FC = () => {
                                     <Controller
                                         name="phone"
                                         control={control}
-                                        render={({ field }) => (
+                                        render={({ field }: { field: any }) => (
                                             <MaskedInput
                                                 placeholder="(11) 99999-9999"
                                                 error={errors.phone?.message}

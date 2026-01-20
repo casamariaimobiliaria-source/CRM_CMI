@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLead } from '../contexts/LeadContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -7,6 +8,7 @@ import { CreditCard, Rocket, CheckCircle2, ShieldCheck, Zap } from 'lucide-react
 import { toast } from 'sonner';
 
 const Settings: React.FC = () => {
+    const navigate = useNavigate();
     const { userProfile, leads } = useLead();
     const org = userProfile?.organization;
 
