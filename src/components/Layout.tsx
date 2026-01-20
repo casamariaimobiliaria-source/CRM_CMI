@@ -1,13 +1,13 @@
 import React from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, PlusCircle, LogOut, Cloud, RefreshCw, Columns3, BarChart3, Users2 } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, LogOut, Cloud, RefreshCw, Columns3, BarChart3, Users2, Settings as SettingsIcon } from 'lucide-react';
 import { useLead } from '../contexts/LeadContext';
 import { cn } from '../lib/utils';
 import { Button } from './ui/Button';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Layout: React.FC = () => {
-    const { isSyncing, signOut, session, userProfile } = useLead();
+    const { isSyncing, signOut, session, userProfile, leads } = useLead();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -20,6 +20,7 @@ const Layout: React.FC = () => {
         { icon: Users, label: 'Leads', path: '/' },
         { icon: Columns3, label: 'Funil', path: '/kanban' },
         { icon: BarChart3, label: 'Painel', path: '/dashboard' },
+        { icon: SettingsIcon, label: 'Config', path: '/settings' },
     ];
 
     if (userProfile?.role === 'admin' || userProfile?.role === 'owner') {
@@ -71,12 +72,23 @@ const Layout: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2 md:gap-4 font-jakarta">
+                    {/* Plan Usage Indicator */}
+                    {userProfile?.organization && (
+                        <div className="hidden md:flex flex-col items-end mr-2">
+                            <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                                {userProfile.organization.plan_tier}
+                            </div>
+                            <div className="text-xs font-medium text-foreground">
+                                {leads?.length || 0} / {userProfile.organization.max_leads} Leads
+                            </div>
+                        </div>
+                    )}
                     <div className="flex flex-col items-end mr-1 md:mr-2 max-w-[120px] md:max-w-none">
                         <span className="text-[10px] md:text-sm font-bold text-foreground uppercase tracking-tight truncate w-full text-right">
                             {session?.user?.user_metadata?.name || 'Corretor'}
                         </span>
                         <span className="text-[8px] md:text-xs text-muted-foreground truncate w-full text-right">
-                            {userProfile?.organization_name || session?.user?.email}
+                            {userProfile?.organization?.name || session?.user?.email}
                         </span>
                     </div>
                     <Button

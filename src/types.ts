@@ -13,13 +13,23 @@ export enum LeadStatus {
   PERDIDO = 'Perdido'
 }
 
+export interface Organization {
+  id: string;
+  name: string;
+  plan_tier: 'free' | 'pro' | 'enterprise';
+  subscription_status: 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete';
+  max_leads: number;
+  max_users: number;
+  stripe_customer_id?: string;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   role: 'admin' | 'owner' | 'member';
   organization_id: string;
-  organization_name?: string;
+  organization?: Organization;
 }
 
 export interface Lead {

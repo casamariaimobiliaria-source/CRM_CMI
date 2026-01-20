@@ -10,6 +10,7 @@ import Kanban from './pages/Kanban';
 import SetupOrganization from './pages/SetupOrganization';
 import Team from './pages/Team';
 import JoinOrganization from './pages/JoinOrganization';
+import Settings from './pages/Settings';
 import { Toaster } from 'sonner';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -81,6 +82,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="edit/:id" element={<LeadForm />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="team" element={<Team />} />
+                <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

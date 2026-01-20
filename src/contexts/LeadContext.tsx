@@ -55,13 +55,17 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (userData.organization_id) {
         const { data: orgData } = await supabase
           .from('organizations')
-          .select('name')
+          .select('*')
           .eq('id', userData.organization_id)
           .single();
-        if (orgData) orgName = orgData.name;
+
+        if (orgData) {
+          // Ensure we match the Organization interface
+          (userData as any).organization = orgData;
+        }
       }
 
-      setUserProfile({ ...userData, organization_name: orgName } as UserProfile);
+      setUserProfile(userData as UserProfile);
     } catch (error) {
       console.error('Error fetching user profile:', error);
       setUserProfile(null);
@@ -108,6 +112,20 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const addLead = async (leadData: LeadFormData) => {
+    // Check Limits
+    if (userProfile?.organization) {
+      const { max_leads, plan_tier } = userProfile.organization;
+      if (leads.length >= max_leads) {
+        // Emulate error or throw specific error
+        const errorMsg = `Seu plano ${plan_tier.toUpperCase()} atingiu o limite de ${max_leads} leads. Atualize sua assinatura.`;
+        // We can let the backend trigger catch it, but early return is better UX
+        // However, for consistency with the backend trigger message:
+        // Let's rely on backend or throw here. 
+        // Throwing here saves an API call.
+        throw new Error(errorMsg);
+      }
+    }
+
     setIsSyncing(true);
     try {
       const { data, error } = await supabase
