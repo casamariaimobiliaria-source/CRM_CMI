@@ -19,7 +19,8 @@ const Layout: React.FC = () => {
     const menuItems = [
         { icon: Users, label: 'Leads', path: '/' },
         { icon: Columns3, label: 'Funil', path: '/kanban' },
-        { icon: BarChart3, label: 'Painel', path: '/dashboard' },
+        { icon: BarChart3, label: 'Relatórios', path: '/reports' },
+        { icon: LayoutDashboard, label: 'Painel', path: '/dashboard' },
         { icon: SettingsIcon, label: 'Config', path: '/settings' },
     ];
 

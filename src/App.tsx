@@ -12,6 +12,7 @@ import Team from './pages/Team';
 import JoinOrganization from './pages/JoinOrganization';
 import Settings from './pages/Settings';
 import AdminPanel from './pages/AdminPanel';
+import PerformanceReports from './pages/PerformanceReports';
 import { Toaster } from 'sonner';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -84,6 +85,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="team" element={<Team />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="reports" element={<PerformanceReports />} />
                 <Route
                     path="admin"
                     element={

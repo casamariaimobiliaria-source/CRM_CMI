@@ -4,12 +4,16 @@ import { useBrokers } from '../hooks/useBrokers';
 import { LeadStatus } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { useNavigate } from 'react-router-dom';
+import { BarChart3 } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import { motion } from 'framer-motion';
 
 const Dashboard: React.FC = () => {
     const { leads } = useLead();
     const { brokers } = useBrokers();
+    const navigate = useNavigate();
 
     const safeLeads = useMemo(() => Array.isArray(leads) ? leads.filter(l => l && typeof l === 'object') : [], [leads]);
 
@@ -94,9 +98,20 @@ const Dashboard: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
             >
-                <div>
-                    <h1 className="text-3xl font-black text-foreground tracking-tight">Dashboard</h1>
-                    <p className="text-muted-foreground text-sm font-medium">Visão geral do seu desempenho comercial.</p>
+                <div className="flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
+                    <div>
+                        <h1 className="text-3xl font-black text-foreground tracking-tight">Dashboard</h1>
+                        <p className="text-muted-foreground text-sm font-medium">Visão geral do seu desempenho comercial.</p>
+                    </div>
+                    <Button
+                        variant="primary"
+                        size="sm"
+                        className="gap-2 h-10 px-6 font-black rounded-xl shadow-lg shadow-primary/20"
+                        onClick={() => navigate('/reports')}
+                    >
+                        <BarChart3 className="w-4 h-4" />
+                        Ver Relatórios Avançados
+                    </Button>
                 </div>
             </motion.div>
 
@@ -268,8 +283,8 @@ const Dashboard: React.FC = () => {
                                                 <td className="py-3 px-2 text-right text-emerald-600 font-bold">{stat.comprou}</td>
                                                 <td className="py-3 px-2 text-right">
                                                     <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${stat.conversion > 5 ? 'bg-emerald-500/10 text-emerald-600' :
-                                                            stat.conversion > 2 ? 'bg-amber-500/10 text-amber-600' :
-                                                                'bg-red-500/10 text-red-600'
+                                                        stat.conversion > 2 ? 'bg-amber-500/10 text-amber-600' :
+                                                            'bg-red-500/10 text-red-600'
                                                         }`}>
                                                         {stat.conversion}%
                                                     </span>
