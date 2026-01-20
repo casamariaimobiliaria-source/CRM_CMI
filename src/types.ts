@@ -30,6 +30,7 @@ export interface UserProfile {
   role: 'admin' | 'owner' | 'member';
   organization_id: string;
   organization?: Organization;
+  is_super_admin?: boolean;
 }
 
 export interface Lead {

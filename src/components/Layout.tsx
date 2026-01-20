@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, PlusCircle, LogOut, Cloud, RefreshCw, Columns3, BarChart3, Users2, Settings as SettingsIcon } from 'lucide-react';
+import { LayoutDashboard, Users, PlusCircle, LogOut, Cloud, RefreshCw, Columns3, BarChart3, Users2, Settings as SettingsIcon, ShieldAlert } from 'lucide-react';
 import { useLead } from '../contexts/LeadContext';
 import { cn } from '../lib/utils';
 import { Button } from './ui/Button';
@@ -25,6 +25,10 @@ const Layout: React.FC = () => {
 
     if (userProfile?.role === 'admin' || userProfile?.role === 'owner') {
         menuItems.push({ icon: Users2, label: 'Equipe', path: '/team' });
+    }
+
+    if (userProfile?.is_super_admin) {
+        menuItems.push({ icon: ShieldAlert, label: 'Admin', path: '/admin' });
     }
 
     return (

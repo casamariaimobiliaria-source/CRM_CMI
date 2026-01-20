@@ -11,6 +11,7 @@ import SetupOrganization from './pages/SetupOrganization';
 import Team from './pages/Team';
 import JoinOrganization from './pages/JoinOrganization';
 import Settings from './pages/Settings';
+import AdminPanel from './pages/AdminPanel';
 import { Toaster } from 'sonner';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -83,6 +84,14 @@ const AppRoutes: React.FC = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="team" element={<Team />} />
                 <Route path="settings" element={<Settings />} />
+                <Route
+                    path="admin"
+                    element={
+                        userProfile?.is_super_admin
+                            ? <AdminPanel />
+                            : <Navigate to="/" replace />
+                    }
+                />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
