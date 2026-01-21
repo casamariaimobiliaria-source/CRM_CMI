@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useLead } from '../contexts/LeadContext';
 import { LeadStatus } from '../types';
+import { useBrokers } from '../hooks/useBrokers';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
     PieChart, Pie, LineChart, Line, Legend, AreaChart, Area
@@ -14,9 +15,17 @@ import { format, subDays, isSameDay, startOfDay } from 'date-fns';
 
 const PerformanceReports: React.FC = () => {
     const { leads, userProfile } = useLead();
+    const { brokers } = useBrokers();
+    const [filterBroker, setFilterBroker] = React.useState('Todos');
     const isPro = userProfile?.organization?.plan_tier !== 'free';
 
-    const safeLeads = useMemo(() => Array.isArray(leads) ? leads : [], [leads]);
+    const safeLeads = useMemo(() => {
+        let result = Array.isArray(leads) ? leads : [];
+        if (filterBroker !== 'Todos') {
+            result = result.filter(l => l.user_id === filterBroker);
+        }
+        return result;
+    }, [leads, filterBroker]);
 
     // 1. Media ROI (Leads by Source)
     const mediaData = useMemo(() => {
@@ -69,19 +78,28 @@ const PerformanceReports: React.FC = () => {
                 <div>
                     <div className="flex items-center gap-2 mb-1">
                         <h2 className="text-3xl font-black text-slate-900 tracking-tight">Relatórios de Performance</h2>
-                        <Badge variant="secondary" className="bg-primary/10 text-primary border-0 font-black">PRO</Badge>
+                        <Badge variant="secondary" className="bg-primary/10 text-primary border-0 font-black">PLATINUM</Badge>
                     </div>
                     <p className="text-muted-foreground font-medium">Análise detalhada de conversão e origens de leads.</p>
                 </div>
 
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="gap-2">
+                <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center gap-2 bg-white/50 border rounded-xl px-3 py-1.5 shadow-sm">
+                        <Users className="w-4 h-4 text-muted-foreground" />
+                        <select
+                            className="bg-transparent border-none focus:ring-0 text-xs font-bold text-foreground cursor-pointer"
+                            value={filterBroker}
+                            onChange={(e) => setFilterBroker(e.target.value)}
+                        >
+                            <option value="Todos">Todos os Corretores</option>
+                            {brokers.map(b => (
+                                <option key={b.id} value={b.id}>{b.name}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <Button variant="outline" size="sm" className="gap-2 rounded-xl">
                         <Calendar className="w-4 h-4" />
                         Últimos 30 dias
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                        <Filter className="w-4 h-4" />
-                        Filtrar
                     </Button>
                 </div>
             </div>
@@ -201,22 +219,6 @@ const PerformanceReports: React.FC = () => {
                     </CardContent>
                 </Card>
             </div>
-
-            {!isPro && (
-                <div className="p-8 bg-slate-900 rounded-3xl text-white flex flex-col items-center text-center space-y-4 shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl -ml-32 -mb-32" />
-
-                    <Rocket className="w-12 h-12 text-primary" />
-                    <div className="max-w-lg">
-                        <h3 className="text-2xl font-black mb-2">Desbloqueie Todo o Potencial</h3>
-                        <p className="text-slate-400 font-medium">Você está visualizando uma prévia dos relatórios avançados. Faça upgrade para o plano PRO e tenha acesso a filtros personalizados, exportação completa e inteligência de dados.</p>
-                    </div>
-                    <Button variant="primary" className="bg-white text-slate-900 hover:bg-slate-100 font-black px-8 h-12 rounded-xl">
-                        Conhecer Planos
-                    </Button>
-                </div>
-            )}
         </div>
     );
 };
