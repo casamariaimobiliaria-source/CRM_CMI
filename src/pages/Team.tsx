@@ -218,74 +218,76 @@ const Team: React.FC = () => {
                 <p className="text-muted-foreground mt-1">Cadastre novos corretores e gerencie o acesso à sua equipe.</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className={`grid grid-cols-1 ${userProfile?.role === 'admin' || userProfile?.role === 'owner' ? 'lg:grid-cols-3' : ''} gap-8`}>
                 {/* Registration Form */}
-                <div className="lg:col-span-1">
-                    <Card className="border-0 shadow-lg sticky top-24">
-                        <CardHeader>
-                            <CardTitle className="text-lg">Cadastrar Membro</CardTitle>
-                            <CardDescription>Adicione um novo usuário.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit(onRegister)} className="space-y-4">
-                                <Input
-                                    label="Nome Completo"
-                                    placeholder="Nome do Corretor"
-                                    error={errors.name?.message}
-                                    {...register('name')}
-                                />
-                                <Input
-                                    label="E-mail"
-                                    placeholder="email@exemplo.com"
-                                    error={errors.email?.message}
-                                    {...register('email')}
-                                />
-                                <div>
-                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1 mb-1.5 block">
-                                        Telefone (WhatsApp)
-                                    </label>
-                                    <Controller
-                                        name="phone"
-                                        control={control}
-                                        render={({ field }: { field: any }) => (
-                                            <MaskedInput
-                                                placeholder="(11) 99999-9999"
-                                                error={errors.phone?.message}
-                                                {...field}
-                                            />
-                                        )}
+                {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && (
+                    <div className="lg:col-span-1">
+                        <Card className="border-0 shadow-lg sticky top-24">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Cadastrar Membro</CardTitle>
+                                <CardDescription>Adicione um novo usuário.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <form onSubmit={handleSubmit(onRegister)} className="space-y-4">
+                                    <Input
+                                        label="Nome Completo"
+                                        placeholder="Nome do Corretor"
+                                        error={errors.name?.message}
+                                        {...register('name')}
                                     />
-                                </div>
-                                <Input
-                                    label="Senha Inicial"
-                                    type="password"
-                                    placeholder="Mínimo 6 caracteres"
-                                    error={errors.password?.message}
-                                    {...register('password')}
-                                />
-                                <div>
-                                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1 mb-1.5 block">
-                                        Função
-                                    </label>
-                                    <select
-                                        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                                        {...register('role')}
-                                    >
-                                        <option value="member">Corretor (Membro)</option>
-                                        <option value="admin">Administrador</option>
-                                    </select>
-                                </div>
-                                <Button type="submit" className="w-full" isLoading={registering}>
-                                    <UserPlus className="w-4 h-4 mr-2" />
-                                    Cadastrar
-                                </Button>
-                            </form>
-                        </CardContent>
-                    </Card>
-                </div>
+                                    <Input
+                                        label="E-mail"
+                                        placeholder="email@exemplo.com"
+                                        error={errors.email?.message}
+                                        {...register('email')}
+                                    />
+                                    <div>
+                                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1 mb-1.5 block">
+                                            Telefone (WhatsApp)
+                                        </label>
+                                        <Controller
+                                            name="phone"
+                                            control={control}
+                                            render={({ field }: { field: any }) => (
+                                                <MaskedInput
+                                                    placeholder="(11) 99999-9999"
+                                                    error={errors.phone?.message}
+                                                    {...field}
+                                                />
+                                            )}
+                                        />
+                                    </div>
+                                    <Input
+                                        label="Senha Inicial"
+                                        type="password"
+                                        placeholder="Mínimo 6 caracteres"
+                                        error={errors.password?.message}
+                                        {...register('password')}
+                                    />
+                                    <div>
+                                        <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1 mb-1.5 block">
+                                            Função
+                                        </label>
+                                        <select
+                                            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                            {...register('role')}
+                                        >
+                                            <option value="member">Corretor (Membro)</option>
+                                            <option value="admin">Administrador</option>
+                                        </select>
+                                    </div>
+                                    <Button type="submit" className="w-full" isLoading={registering}>
+                                        <UserPlus className="w-4 h-4 mr-2" />
+                                        Cadastrar
+                                    </Button>
+                                </form>
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
 
                 {/* Members List */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className={`${userProfile?.role === 'admin' || userProfile?.role === 'owner' ? 'lg:col-span-2' : 'max-w-3xl mx-auto w-full'} space-y-6`}>
                     <Card className="border-0 shadow-md">
                         <CardHeader>
                             <CardTitle className="text-lg">Membros da Equipe</CardTitle>
@@ -307,7 +309,7 @@ const Team: React.FC = () => {
                                         <Badge variant={member.role === 'owner' ? 'default' : member.role === 'admin' ? 'secondary' : 'outline'}>
                                             {member.role === 'owner' ? 'Proprietário' : member.role === 'admin' ? 'Admin' : 'Corretor'}
                                         </Badge>
-                                        {member.role !== 'owner' && (
+                                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && member.role !== 'owner' && (
                                             <Button
                                                 size="sm"
                                                 variant="ghost"

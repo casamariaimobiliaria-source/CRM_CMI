@@ -24,7 +24,7 @@ const Layout: React.FC = () => {
         { icon: SettingsIcon, label: 'Config', path: '/settings' },
     ];
 
-    if (userProfile?.role === 'admin' || userProfile?.role === 'owner') {
+    if (userProfile?.organization_id) {
         menuItems.push({ icon: Users2, label: 'Equipe', path: '/team' });
     }
 

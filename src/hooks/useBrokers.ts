@@ -15,7 +15,7 @@ export function useBrokers() {
 
     useEffect(() => {
         const fetchBrokers = async () => {
-            if (!userProfile?.organization_id || (userProfile.role !== 'admin' && userProfile.role !== 'owner')) {
+            if (!userProfile?.organization_id) {
                 setBrokers([]);
                 return;
             }
