@@ -116,24 +116,24 @@ const PerformanceReports: React.FC = () => {
     return (
         <div className="max-w-7xl mx-auto p-4 md:p-6 pb-32 space-y-6 md:space-y-8 animate-in fade-in duration-700">
             {/* Header section with refined design */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Performance Pro</h2>
                         <Badge variant="secondary" className="bg-slate-900 text-white border-0 font-black px-3 py-1 rounded-full text-[10px] tracking-widest uppercase">Platinum</Badge>
                     </div>
-                    <p className="text-muted-foreground font-medium text-sm">Inteligência de dados e análise de conversão.</p>
+                    <p className="text-muted-foreground font-medium text-sm">Inteligência de dados e análise de performance da equipe.</p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center gap-3 w-full xl:w-auto">
                     {/* Period Selector */}
-                    <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-2xl border border-border/50">
+                    <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-2xl border border-border/50 overflow-x-auto no-scrollbar">
                         {dateOptions.map(opt => (
                             <button
                                 key={opt.id}
                                 onClick={() => setDateRange(opt.id as any)}
                                 className={cn(
-                                    "px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all",
+                                    "px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap",
                                     dateRange === opt.id
                                         ? "bg-white text-primary shadow-sm"
                                         : "text-muted-foreground hover:text-foreground"
@@ -144,14 +144,30 @@ const PerformanceReports: React.FC = () => {
                         ))}
                     </div>
 
+                    {/* Broker Selection */}
+                    <div className="relative group min-w-[180px]">
+                        <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                        <select
+                            className="w-full h-11 pl-11 pr-10 bg-white border border-border/50 rounded-2xl text-[11px] font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none shadow-sm cursor-pointer"
+                            value={filterBroker}
+                            onChange={(e) => setFilterBroker(e.target.value)}
+                        >
+                            <option value="Todos">Todos os Corretores</option>
+                            {brokers.map(b => (
+                                <option key={b.id} value={b.id}>{b.name}</option>
+                            ))}
+                        </select>
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
+                    </div>
+
                     <Button
                         variant={isFilterOpen ? "primary" : "outline"}
-                        size="sm"
+                        size="default"
                         onClick={() => setIsFilterOpen(!isFilterOpen)}
-                        className="gap-2 rounded-2xl h-11 px-5 border-border/50 shadow-sm"
+                        className="gap-2 rounded-2xl h-11 px-6 border-border/50 shadow-sm"
                     >
                         <Filter className="w-4 h-4" />
-                        <span className="font-black text-[10px] uppercase tracking-widest">Filtrar</span>
+                        <span className="font-black text-[10px] uppercase tracking-widest">Mais Filtros</span>
                         <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", isFilterOpen && "rotate-180")} />
                     </Button>
                 </div>
