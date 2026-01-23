@@ -116,14 +116,14 @@ const Layout: React.FC = () => {
             </main>
 
             {/* Premium Float Bottom Navigation */}
-            <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-sm">
+            <div className="fixed bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-1.25rem)] max-w-md">
                 <motion.nav
                     initial={{ y: 100, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-                    className="bg-slate-950/95 backdrop-blur-xl border border-white/10 rounded-2xl p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between w-full"
+                    className="bg-slate-950/95 backdrop-blur-xl border border-white/10 rounded-2xl p-1 md:p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center justify-between w-full"
                 >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 md:gap-1">
                         {menuItems.map((item) => {
                             const isActive = location.pathname === item.path;
                             return (
@@ -131,7 +131,7 @@ const Layout: React.FC = () => {
                                     key={item.path}
                                     to={item.path}
                                     className={({ isActive }) => cn(
-                                        "flex flex-col items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 relative overflow-hidden",
+                                        "flex flex-col items-center justify-center w-10 md:w-12 h-10 md:h-12 rounded-xl transition-all duration-300 relative overflow-hidden",
                                         isActive
                                             ? "text-white"
                                             : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
@@ -156,12 +156,12 @@ const Layout: React.FC = () => {
                         })}
                     </div>
 
-                    <div className="relative pr-1">
+                    <div className="relative pr-0.5 md:pr-1">
                         <Button
                             onClick={() => navigate('/add')}
                             variant="primary"
                             size="icon"
-                            className="w-11 h-11 rounded-xl shadow-xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 bg-white text-slate-950 hover:bg-slate-200 border-0"
+                            className="w-10 md:w-11 h-10 md:h-11 rounded-xl shadow-xl shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 bg-white text-slate-950 hover:bg-slate-200 border-0"
                         >
                             <PlusCircle className="w-6 h-6" />
                         </Button>
