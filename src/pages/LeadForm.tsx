@@ -102,100 +102,101 @@ const LeadForm: React.FC = () => {
         }
     };
 
-    const labelClasses = "text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1 mb-1.5 block";
-    const selectClasses = "flex h-12 w-full items-center justify-between rounded-xl border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:border-primary disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium";
+    const labelClasses = "text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] mb-2 block ml-1";
+    const inputClasses = "bg-white/5 border-white/5 focus:bg-white/10 focus:border-primary/30 rounded-2xl h-14 px-5 text-base transition-all duration-500";
+    const selectClasses = "flex h-14 w-full items-center justify-between rounded-2xl border border-white/5 bg-white/5 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500";
 
     return (
-        <div className="max-w-4xl mx-auto p-6 pb-32 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <Card className="border-0 shadow-xl bg-white/50 backdrop-blur-sm">
-                <CardHeader className="border-b bg-white/50 pb-8">
-                    <CardTitle className="text-2xl">{id ? 'Editar Lead' : 'Novo Lead'}</CardTitle>
-                    <CardDescription>Preencha os dados abaixo para {id ? 'atualizar' : 'cadastrar'} um potencial cliente.</CardDescription>
-                </CardHeader>
+        <div className="max-w-4xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <header className="mb-12 text-center">
+                <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground italic tracking-tight">
+                    {id ? 'Detalhes do Registro Elite' : 'Identificar Nova Oportunidade'}
+                </h1>
+                <p className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase mt-4">
+                    Inteligência Exclusiva de Leads
+                </p>
+            </header>
 
+            <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <CardContent className="p-8 space-y-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CardContent className="p-8 md:p-12 space-y-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="md:col-span-2">
+                                <label className={labelClasses}>Identidade Completa</label>
                                 <Input
-                                    label="Nome Completo"
-                                    placeholder="Ex: João Silva"
-                                    className="bg-white/80"
+                                    placeholder="Digite o nome completo..."
+                                    className={inputClasses}
                                     error={errors.nome?.message}
                                     {...register('nome')}
                                 />
                             </div>
 
                             <div>
+                                <label className={labelClasses}>Endereço de E-mail</label>
                                 <Input
-                                    label="E-mail"
                                     type="email"
-                                    placeholder="exemplo@email.com"
-                                    className="bg-white/80"
+                                    placeholder="email@luxo.com"
+                                    className={inputClasses}
                                     error={errors.email?.message}
                                     {...register('email')}
                                 />
                             </div>
 
                             <div>
+                                <label className={labelClasses}>Contato Direto (WhatsApp)</label>
                                 <MaskedInput
-                                    label="WhatsApp"
-                                    placeholder="(99) 99999-9999"
-                                    className="bg-white/80"
+                                    placeholder="+55 (00) 00000-0000"
+                                    className={inputClasses}
                                     error={errors.telefone?.message}
                                     {...register('telefone', {
                                         onChange: (e) => {
                                             const isDup = checkDuplicate(e.target.value);
                                             if (isDup) {
-                                                toast.warning('Este telefone já está cadastrado em nossa base!', {
-                                                    description: 'Verifique se não é um lead duplicado.',
+                                                toast.warning('Contato duplicado detectado na base exclusiva', {
+                                                    description: 'Este lead de alta prioridade já pode estar atribuído.',
                                                     duration: 5000
                                                 });
                                             }
                                         }
                                     })}
                                 />
-                                {checkDuplicate(register('telefone').name) && (
-                                    <p className="text-[10px] text-amber-600 font-bold mt-1 px-1">⚠️ Este número já existe na sua base!</p>
-                                )}
                             </div>
 
                             <div>
+                                <label className={labelClasses}>Acompanhamento Estratégico</label>
                                 <Input
-                                    label="Próximo Contato (Lembrete)"
                                     type="datetime-local"
-                                    className="bg-white/80"
+                                    className={cn(inputClasses, "block")}
                                     error={errors.nextContact?.message}
                                     {...register('nextContact')}
                                 />
                             </div>
 
                             <div>
+                                <label className={labelClasses}>Empreendimento Elite</label>
                                 <Input
-                                    label="Empreendimento"
-                                    placeholder="Nome do Edifício / Loteamento"
-                                    className="bg-white/80"
+                                    placeholder="Nome do Edifício / Ativo"
+                                    className={inputClasses}
                                     {...register('empreendimento')}
                                 />
                             </div>
 
                             <div>
+                                <label className={labelClasses}>Canal de Aquisição</label>
                                 <Input
-                                    label="Mídia / Origem"
-                                    placeholder="Instagram, Site, Indicação..."
-                                    className="bg-white/80"
+                                    placeholder="Origem da exclusividade"
+                                    className={inputClasses}
                                     {...register('midia')}
                                 />
                             </div>
 
                             <div>
-                                <label className={labelClasses}>Potencial</label>
+                                <label className={labelClasses}>Nível de Interesse (Calor)</label>
                                 <div className="relative">
                                     <select
                                         className={cn(
                                             selectClasses,
-                                            errors.temperatura && "border-destructive focus:ring-destructive",
-                                            "bg-white/80"
+                                            errors.temperatura && "border-destructive focus:ring-destructive"
                                         )}
                                         {...register('temperatura')}
                                     >
@@ -203,23 +204,19 @@ const LeadForm: React.FC = () => {
                                             <option key={temp} value={temp}>{temp}</option>
                                         ))}
                                     </select>
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                 </div>
-                                {errors.temperatura && (
-                                    <p className="text-[10px] text-destructive font-medium ml-1 mt-1">{errors.temperatura.message}</p>
-                                )}
                             </div>
 
                             <div>
-                                <label className={labelClasses}>Status</label>
+                                <label className={labelClasses}>Status do Funil</label>
                                 <div className="relative">
                                     <select
                                         className={cn(
                                             selectClasses,
-                                            errors.status && "border-destructive focus:ring-destructive",
-                                            "bg-white/80"
+                                            errors.status && "border-destructive focus:ring-destructive"
                                         )}
                                         {...register('status')}
                                     >
@@ -227,52 +224,44 @@ const LeadForm: React.FC = () => {
                                             <option key={status} value={status}>{status}</option>
                                         ))}
                                     </select>
-                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </div>
                                 </div>
-                                {errors.status && (
-                                    <p className="text-[10px] text-destructive font-medium ml-1 mt-1">{errors.status.message}</p>
-                                )}
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className={labelClasses}>Histórico e Notas</label>
+                        <div className="space-y-4">
+                            <label className={labelClasses}>Briefing Confidencial & Inteligência</label>
                             <textarea
-                                rows={4}
+                                rows={6}
                                 className={cn(
-                                    "flex w-full rounded-xl border border-input bg-white/80 px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 resize-none font-medium",
+                                    "flex w-full rounded-[1.5rem] border border-white/5 bg-white/5 px-6 py-5 text-base shadow-sm placeholder:text-muted-foreground/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 focus-visible:border-primary/30 disabled:cursor-not-allowed disabled:opacity-50 resize-none font-medium transition-all duration-500",
                                     errors.historico && "border-destructive focus-visible:ring-destructive"
                                 )}
-                                placeholder="Descreva o andamento do atendimento..."
+                                placeholder="Descreva o movimento estratégico..."
                                 {...register('historico')}
                             />
-                            {errors.historico && (
-                                <p className="text-[10px] text-destructive font-medium ml-1">{errors.historico.message}</p>
-                            )}
                         </div>
                     </CardContent>
 
-                    <CardFooter className="flex flex-col md:flex-row justify-between gap-3 p-8 border-t bg-white/50">
-                        <div className="flex gap-3">
-                            <Button
-                                type="button"
-                                variant="ghost"
-                                onClick={() => navigate('/')}
-                                className="w-32"
-                                disabled={isSubmitting}
-                            >
-                                Cancelar
-                            </Button>
-                        </div>
+                    <CardFooter className="bg-black/40 p-8 md:p-12 border-t border-white/5 flex flex-col md:flex-row justify-between gap-6">
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => navigate('/')}
+                            className="h-14 px-10 text-[10px] font-bold tracking-widest text-muted-foreground/40 hover:text-foreground rounded-2xl"
+                            disabled={isSubmitting}
+                        >
+                            ABANDONAR ALTERAÇÕES
+                        </Button>
 
-                        <div className="flex flex-col md:flex-row gap-3">
+                        <div className="flex gap-4">
                             {id && (
                                 <Button
                                     type="button"
-                                    variant="secondary"
-                                    className="w-full md:w-48 bg-emerald-500 hover:bg-emerald-600 text-white border-0 shadow-lg shadow-emerald-200"
+                                    variant="outline"
+                                    className="h-14 px-8 rounded-2xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/5 transition-all"
                                     onClick={() => {
                                         const phone = getValues('telefone').replace(/\D/g, '');
                                         const finalPhone = phone.length === 11 || phone.length === 10
@@ -281,16 +270,16 @@ const LeadForm: React.FC = () => {
                                         window.open(`https://wa.me/${finalPhone}`, '_blank');
                                     }}
                                 >
-                                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
-                                    WhatsApp
+                                    WHATSAPP DIRETO
                                 </Button>
                             )}
                             <Button
                                 type="submit"
-                                className="w-full md:w-48"
+                                variant="luxury"
+                                className="h-14 px-12 rounded-2xl"
                                 isLoading={isSubmitting}
                             >
-                                {id ? 'Salvar' : 'Cadastrar'}
+                                {id ? 'SINCRONIZAR DADOS' : 'PUBLICAR REGISTRO'}
                             </Button>
                         </div>
                     </CardFooter>

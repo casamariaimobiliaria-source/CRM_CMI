@@ -1,85 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* 🏛️ PREMIUM LUXURY CRM - Design System */
+
 @layer base {
   :root {
-    /* Base Colors - Slate 950/50 split */
-    --background: 210 40% 98%;
-    /* #f8fafc */
-    --foreground: 222 47% 11%;
-    /* #0f172a */
+    /* ═══════════════════════════════════════════════════════════
+       PREMIUM LUXURY PALETTE - Light Mode
+       Base: Ultra Light Platinum + Graphite
+       Primary: Burnished Gold (Status & Luxury)
+       Secondary: Deep Graphite (Corporate Professionalism)
+       Accent: Platinum Silver (Refinement)
+       ═══════════════════════════════════════════════════════════ */
 
-    /* Card / Surface */
+    /* Base - Pearl Platinum */
+    --background: 210 20% 98%;
+    /* #F8F9FA */
+    --foreground: 0 0% 5%;
+    /* #0D0D0D - Deep Graphite Black */
+
+    /* Card / Surface - Stark White with Hairline Borders */
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 8%;
 
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 8%;
 
-    /* Primary - Deep Navy */
-    --primary: 222 47% 11%;
-    /* #0f172a */
-    --primary-foreground: 210 40% 98%;
+    /* Primary - BURNISHED GOLD */
+    --primary: 43 70% 45%;
+    /* #B8860B - Darker, more professional gold */
+    --primary-foreground: 210 20% 98%;
 
-    /* Secondary - Gold/Bronze accent */
-    --secondary: 43 74% 49%;
-    /* #dfa816 (Golden) */
-    --secondary-foreground: 222 47% 11%;
+    /* Secondary - GRAPHITE (Deep Gray) */
+    --secondary: 0 0% 15%;
+    /* #262626 */
+    --secondary-foreground: 210 20% 98%;
 
-    /* Muted */
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - PLATINUM SILVER */
+    --accent: 210 5% 90%;
+    /* #E5E5E5 */
+    --accent-foreground: 0 0% 10%;
 
-    /* Accent */
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11%;
+    /* Muted - Soft Platinum */
+    --muted: 210 10% 95%;
+    --muted-foreground: 0 0% 25%;
 
-    /* Destructive */
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive - Deep Crimson */
+    --destructive: 0 84% 45%;
+    --destructive-foreground: 0 0% 98%;
 
-    /* Border */
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222 47% 11%;
+    /* Borders - Refined Platinum */
+    --border: 210 10% 90%;
+    --input: 210 10% 90%;
+    --ring: 43 70% 45%;
 
-    --radius: 1.25rem;
+    /* Radius - SHARP ELEGANCE */
+    --radius: 0.5rem;
+    /* 8px - More professional than 12px */
   }
 
   .dark {
-    /* Dark Mode - Deep Luxury */
-    --background: 224 71% 4%;
-    /* #020617 (Slate 950) */
-    --foreground: 210 40% 98%;
+    /* ═══════════════════════════════════════════════════════════
+       PREMIUM LUXURY PALETTE - Dark Mode
+       Inverted Luxury: obsidian Black + Metallic Accents
+       ═══════════════════════════════════════════════════════════ */
 
-    --card: 222 47% 6%;
-    /* Quase preto */
-    --card-foreground: 210 40% 98%;
+    /* Base - OBSIDIAN BLACK */
+    --background: 0 0% 2%;
+    /* #050505 - Deep Obsidian */
+    --foreground: 210 10% 95%;
+    /* Pearl */
 
-    --popover: 222 47% 4%;
-    --popover-foreground: 210 40% 98%;
+    /* Card - ONYX (Slightly Lighter for Depth) */
+    --card: 0 0% 6%;
+    /* #101010 */
+    --card-foreground: 210 10% 95%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222 47% 11%;
+    /* Popover */
+    --popover: 0 0% 4%;
+    --popover-foreground: 210 10% 95%;
 
-    --secondary: 45 93% 47%;
-    /* Gold mais vibrante */
-    --secondary-foreground: 222 47% 11%;
+    /* Primary - RADIANT GOLD */
+    --primary: 43 75% 65%;
+    /* #E5BE4A - Brighter Gold */
+    --primary-foreground: 0 0% 2%;
 
-    --muted: 217.2 32.6% 12.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Secondary - SILVER PLATINUM */
+    --secondary: 210 10% 85%;
+    /* #D9E1E8 - Bright Silver */
+    --secondary-foreground: 0 0% 5%;
 
-    --accent: 217.2 32.6% 12.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent - GRAPHITE */
+    --accent: 0 0% 25%;
+    --accent-foreground: 210 10% 95%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Muted - Charcoal */
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
 
-    --border: 217.2 32.6% 12.5%;
-    --input: 217.2 32.6% 12.5%;
-    --ring: 212.7 26.8% 83.9%;
+    /* Destructive - VIVID CRIMSON */
+    --destructive: 0 85% 65%;
+    /* Brighter Red */
+    --destructive-foreground: 210 10% 98%;
+
+    /* Borders - Hairline Graphite */
+    --border: 0 0% 15%;
+    /* #262626 */
+    --input: 0 0% 15%;
+    --ring: 43 70% 55%;
   }
 
   * {
@@ -88,67 +120,141 @@
 
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Typography Hierarchy */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Playfair Display', serif;
+    @apply tracking-tight;
   }
 }
 
 @layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
-    height: 3px;
-    background: transparent;
+  /* ═══════════════════════════════════════════════════════════
+     PREMIUM UTILITIES - Elegant, Refined, Sophisticated
+     ═══════════════════════════════════════════════════════════ */
+
+  /* Premium Borders - Soft & Refined */
+  .border-premium {
+    @apply border border-border;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: hsl(var(--muted)/0.3);
-    border-radius: 10px;
-    margin: 0 24px;
+  .border-premium-thick {
+    @apply border-2 border-border;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary)/0.4);
-    border-radius: 10px;
+  .border-accent-premium {
+    @apply border-l-4 border-primary;
   }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary)/0.6);
+  /* Premium Shadows - Soft Atmospheric Depth */
+  .shadow-premium {
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.4);
   }
 
-  .glass {
-    @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+  .shadow-premium-md {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
   }
 
-  .glass-dark {
-    @apply bg-slate-950/70 backdrop-blur-lg border border-white/5 shadow-xl;
+  .shadow-premium-lg {
+    box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.8);
   }
 
+  .shadow-gold-glow {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+  }
+
+  .shadow-platinum-glow {
+    box-shadow: 0 0 20px rgba(206, 212, 218, 0.1);
+  }
+
+  /* Premium Gradients - Pure Luxury */
   .premium-gradient {
-    @apply bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900;
+    @apply bg-gradient-to-br from-secondary via-secondary to-background;
   }
 
   .gold-gradient {
-    @apply bg-gradient-to-br from-amber-200 via-amber-400 to-amber-500;
+    @apply bg-gradient-to-br from-[#D4AF37] via-[#F1C40F] to-[#B8860B];
   }
 
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400;
+  .platinum-gradient {
+    @apply bg-gradient-to-br from-[#E5E5E5] via-[#FFFFFF] to-[#B8B8B8];
+  }
+
+  .luxury-gradient {
+    background: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+  }
+
+  /* Subtle Pattern Background */
+  .subtle-pattern {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Grain Texture - Luxury Paper Feel */
+  .grain-texture {
+    position: relative;
+  }
+
+  .grain-texture::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  /* Premium Animations - Smooth & Elegant */
+  .smooth-scale {
+    @apply transition-all duration-300 ease-out hover:scale-[1.02];
+  }
+
+  .smooth-lift {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-premium-lg;
+  }
+
+  .gold-glow-hover {
+    @apply transition-all duration-300 ease-out hover:shadow-gold-glow;
+  }
+
+  /* Glassmorphism - Subtle Refinement (Used sparingly) */
+  .glass-subtle {
+    @apply bg-card/80 backdrop-blur-sm border border-border/50;
+  }
+
+  .glass-premium {
+    @apply bg-card/90 backdrop-blur-md border border-primary/20;
   }
 }
 
-/* Custom Scrollbar */
+/* Global Scrollbar - Elegant Style */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: hsl(var(--muted));
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full dark:bg-slate-700;
+  background: hsl(var(--primary));
+  border-radius: 3px;
+  transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  @apply bg-slate-300 dark:bg-slate-600;
+  background: hsl(var(--primary) / 0.8);
 }

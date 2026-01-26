@@ -44,8 +44,8 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
                     ref={ref}
                     onChange={handleChange}
                     className={cn(
-                        "flex h-12 w-full rounded-xl border border-input bg-transparent px-4 py-2 text-sm font-medium shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50",
-                        error && "border-destructive focus-visible:ring-destructive",
+                        "flex h-11 w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm font-medium transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary/30",
+                        error && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive",
                         className
                     )}
                 />

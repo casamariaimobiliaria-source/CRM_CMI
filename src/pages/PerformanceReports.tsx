@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, Users, Target, PieChart as PieIcon, Calendar, Filter, ChevronDown } from 'lucide-react';
 import { format, subDays, isSameDay, startOfDay, isAfter } from 'date-fns';
 import { cn } from '../lib/utils';
+import { Helmet } from 'react-helmet-async';
 
 const PerformanceReports: React.FC = () => {
     const { leads } = useLead();
@@ -104,25 +105,28 @@ const PerformanceReports: React.FC = () => {
     const funnelData = useMemo(() => {
         const stages = [
             { name: 'Total Leads', value: safeLeads.length, color: 'hsl(var(--primary))' },
-            { name: 'Em Atendimento', value: safeLeads.filter(l => l.status !== LeadStatus.PERDIDO).length, color: '#6366f1' },
-            { name: 'Interessados', value: safeLeads.filter(l => [LeadStatus.ATIVO, LeadStatus.AGENDOU, LeadStatus.COMPROU].includes(l.status)).length, color: '#8b5cf6' },
-            { name: 'Vendas', value: safeLeads.filter(l => l.status === LeadStatus.COMPROU).length, color: '#10b981' }
+            { name: 'Em Atendimento', value: safeLeads.filter(l => l.status !== LeadStatus.PERDIDO).length, color: 'hsl(var(--secondary))' },
+            { name: 'Interessados', value: safeLeads.filter(l => [LeadStatus.ATIVO, LeadStatus.AGENDOU, LeadStatus.COMPROU].includes(l.status)).length, color: '#B8860B' },
+            { name: 'Vendas', value: safeLeads.filter(l => l.status === LeadStatus.COMPROU).length, color: '#D4AF37' }
         ];
         return stages;
     }, [safeLeads]);
 
-    const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#f59e0b', '#10b981', '#06b6d4'];
+    const COLORS = ['#D4AF37', '#B8860B', '#C0C0C0', '#A9A9A9', '#F1C40F', '#808080', '#DCDCDC'];
 
     return (
         <div className="max-w-7xl mx-auto p-4 md:p-6 pb-32 space-y-6 md:space-y-8 animate-in fade-in duration-700">
+            <Helmet>
+                <title>Análise de Performance | ImobLeads</title>
+            </Helmet>
             {/* Header section with refined design */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Performance Pro</h2>
-                        <Badge variant="secondary" className="bg-slate-900 text-white border-0 font-black px-3 py-1 rounded-full text-[10px] tracking-widest uppercase">Platinum</Badge>
+                        <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground italic tracking-tight">Análise de Performance</h2>
+                        <Badge variant="secondary" className="bg-primary/20 text-primary border border-primary/20 font-black px-3 py-1 rounded-full text-[10px] tracking-[0.2em] uppercase">Platinum Exclusive</Badge>
                     </div>
-                    <p className="text-muted-foreground font-medium text-sm">Inteligência de dados e análise de performance da equipe.</p>
+                    <p className="text-muted-foreground/60 font-medium text-sm">Inteligência de dados e métricas de elite para sua operação.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center gap-3 w-full xl:w-auto">
@@ -148,7 +152,7 @@ const PerformanceReports: React.FC = () => {
                     <div className="relative group min-w-[180px]">
                         <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                         <select
-                            className="w-full h-11 pl-11 pr-10 bg-white border border-border/50 rounded-2xl text-[11px] font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none shadow-sm cursor-pointer"
+                            className="w-full h-11 pl-11 pr-10 bg-white/5 border border-white/5 rounded-2xl text-[11px] font-bold text-foreground focus:ring-2 focus:ring-primary/10 transition-all outline-none appearance-none shadow-sm cursor-pointer"
                             value={filterBroker}
                             onChange={(e) => setFilterBroker(e.target.value)}
                         >
@@ -189,7 +193,7 @@ const PerformanceReports: React.FC = () => {
                                 <div className="relative group">
                                     <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                     <select
-                                        className="w-full h-12 pl-11 pr-4 bg-white border border-border/50 rounded-2xl text-[11px] font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none"
+                                        className="w-full h-12 pl-11 pr-4 bg-white/5 border border-white/5 rounded-2xl text-[11px] font-bold text-foreground focus:ring-2 focus:ring-primary/10 transition-all outline-none appearance-none"
                                         value={filterBroker}
                                         onChange={(e) => setFilterBroker(e.target.value)}
                                     >
@@ -214,7 +218,7 @@ const PerformanceReports: React.FC = () => {
                                                 "flex-1 h-12 rounded-2xl text-[10px] font-black uppercase transition-all border",
                                                 tempFilter === temp
                                                     ? "bg-primary text-primary-foreground border-primary shadow-md shadow-primary/20 scale-[1.02]"
-                                                    : "bg-white border-border/50 text-muted-foreground hover:border-primary/30"
+                                                    : "bg-white/5 border-white/5 text-muted-foreground hover:border-primary/30"
                                             )}
                                         >
                                             {temp}
@@ -229,7 +233,7 @@ const PerformanceReports: React.FC = () => {
                                 <div className="relative group">
                                     <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                                     <select
-                                        className="w-full h-12 pl-11 pr-4 bg-white border border-border/50 rounded-2xl text-[11px] font-bold focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none"
+                                        className="w-full h-12 pl-11 pr-4 bg-white/5 border border-white/5 rounded-2xl text-[11px] font-bold text-foreground focus:ring-2 focus:ring-primary/10 transition-all outline-none appearance-none"
                                         value={sourceFilter}
                                         onChange={(e) => setSourceFilter(e.target.value)}
                                     >
@@ -246,8 +250,8 @@ const PerformanceReports: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-                <Card className="lg:col-span-2 border-0 shadow-xl bg-white rounded-3xl overflow-hidden group">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
+                <Card className="lg:col-span-2 bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden group shadow-2xl">
                     <CardHeader className="md:pb-2">
                         <div className="flex items-center justify-between">
                             <CardTitle className="flex items-center gap-3 text-lg md:text-xl">
@@ -278,12 +282,20 @@ const PerformanceReports: React.FC = () => {
                                     dx={-110}
                                 />
                                 <Tooltip
-                                    cursor={{ fill: 'hsl(var(--primary)/0.03)' }}
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                                    cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                                    contentStyle={{
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        backgroundColor: '#0A0A0A',
+                                        boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                                        padding: '12px'
+                                    }}
+                                    itemStyle={{ color: '#F8F9FA', fontSize: '12px', fontWeight: 'bold' }}
+                                    labelStyle={{ color: '#D4AF37', marginBottom: '4px', fontWeight: '800' }}
                                 />
                                 <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={44}>
                                     {funnelData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} fillOpacity={0.9} />
+                                        <Cell key={`cell-${index}`} fill={entry.color} fillOpacity={0.8} />
                                     ))}
                                 </Bar>
                             </BarChart>
@@ -291,7 +303,7 @@ const PerformanceReports: React.FC = () => {
                     </CardContent>
                 </Card>
 
-                <Card className="border-0 shadow-xl bg-white rounded-3xl overflow-hidden group">
+                <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden group shadow-2xl">
                     <CardHeader className="md:pb-2">
                         <CardTitle className="flex items-center gap-3 text-lg md:text-xl">
                             <div className="p-2.5 bg-amber-500/10 rounded-xl text-amber-500">
@@ -319,29 +331,37 @@ const PerformanceReports: React.FC = () => {
                                     ))}
                                 </Pie>
                                 <Tooltip
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                                    contentStyle={{
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        backgroundColor: '#0A0A0A',
+                                        boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                                        padding: '12px'
+                                    }}
+                                    itemStyle={{ color: '#F8F9FA', fontSize: '12px', fontWeight: 'bold' }}
+                                    labelStyle={{ color: '#D4AF37', marginBottom: '4px', fontWeight: '800' }}
                                 />
                                 <Legend
                                     verticalAlign="bottom"
                                     height={80}
                                     iconType="circle"
-                                    formatter={(value: string) => <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider ml-1">{value}</span>}
+                                    formatter={(value: string) => <span className="text-[10px] font-black uppercase text-foreground/40 tracking-wider ml-1">{value}</span>}
                                 />
                             </PieChart>
                         </ResponsiveContainer>
                     </CardContent>
                 </Card>
 
-                <Card className="lg:col-span-3 border-0 shadow-xl bg-white rounded-3xl overflow-hidden">
+                <Card className="lg:col-span-3 bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden shadow-2xl">
                     <CardHeader className="flex flex-row items-center justify-between pb-6">
                         <div>
-                            <CardTitle className="flex items-center gap-3 text-lg md:text-xl">
+                            <CardTitle className="flex items-center gap-3 text-lg md:text-xl text-foreground font-display italic">
                                 <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-500">
                                     <TrendingUp className="w-5 h-5" />
                                 </div>
                                 Crescimento da Base
                             </CardTitle>
-                            <CardDescription>Taxa de entrada de novos leads no período selecionado.</CardDescription>
+                            <CardDescription className="text-[10px] tracking-widest uppercase text-muted-foreground/40">Taxa de entrada de novos leads no período selecionado.</CardDescription>
                         </div>
                     </CardHeader>
                     <CardContent className="h-[300px] p-0">
@@ -353,17 +373,25 @@ const PerformanceReports: React.FC = () => {
                                         <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" opacity={0.4} />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" opacity={0.4} />
                                 <XAxis
                                     dataKey="date"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 800 }}
+                                    tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 800 }}
                                     dy={10}
                                 />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 800 }} dx={-10} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 800 }} dx={-10} />
                                 <Tooltip
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                                    contentStyle={{
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        backgroundColor: '#0A0A0A',
+                                        boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                                        padding: '12px'
+                                    }}
+                                    itemStyle={{ color: '#F8F9FA', fontSize: '12px', fontWeight: 'bold' }}
+                                    labelStyle={{ color: '#D4AF37', marginBottom: '4px', fontWeight: '800' }}
                                 />
                                 <Area
                                     type="monotone"

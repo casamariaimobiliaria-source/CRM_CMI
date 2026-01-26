@@ -1,6 +1,7 @@
 import React from 'react';
 import { LeadTemperature, LeadStatus, Lead } from '../types';
 import { Input } from './ui/Input';
+import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 import { Download, LayoutGrid, List, SortDesc, Calendar, Users } from 'lucide-react';
 import { exportLeadsToExcel } from '../lib/excelUtils';
@@ -49,76 +50,32 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
     setFilterBroker
 }) => {
     return (
-        <div className="bg-background/80 backdrop-blur-xl border-b sticky top-16 z-40 py-3 md:py-4 shrink-0 transition-all">
-            <div className="max-w-7xl mx-auto space-y-3 md:space-y-4 px-4 md:px-6">
+        <div className="bg-background/80 backdrop-blur-3xl border-b border-white/5 sticky top-20 z-40 py-6 md:py-8 shrink-0 transition-all">
+            <div className="max-w-7xl mx-auto space-y-6 px-4 md:px-8">
 
-                <div className="relative group">
+                <div className="relative group max-w-2xl mx-auto">
                     <Input
-                        placeholder="Nome, telefone ou empreendimento..."
-                        className="h-11 md:h-12 pl-10 md:pl-11 bg-muted/50 border-transparent focus:bg-background transition-all"
+                        placeholder="Procure por nome, telefone ou empreendimento..."
+                        className="h-14 pl-12 bg-white/5 border-white/5 focus:bg-white/10 focus:border-primary/30 transition-all rounded-2xl text-base"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <svg className="w-4 h-4 md:w-5 md:h-5 absolute left-3 md:left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    {searchTerm && (
-                        <button onClick={() => setSearchTerm('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
-                    )}
+                    <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="flex items-center gap-2 bg-muted/30 p-2 px-3 rounded-xl border border-transparent focus-within:border-primary/20 transition-all">
-                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-[9px] font-black uppercase text-muted-foreground/60 tracking-widest pl-1">Início:</span>
-                        <input
-                            type="date"
-                            className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-foreground w-full p-0"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex items-center gap-2 bg-muted/30 p-2 px-3 rounded-xl border border-transparent focus-within:border-primary/20 transition-all">
-                        <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span className="text-[9px] font-black uppercase text-muted-foreground/60 tracking-widest pl-1">Fim:</span>
-                        <input
-                            type="date"
-                            className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-foreground w-full p-0"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                        />
-                    </div>
-                    {brokers && brokers.length > 0 && setFilterBroker && (
-                        <div className="flex items-center gap-2 bg-muted/30 p-2 px-3 rounded-xl border border-transparent focus-within:border-primary/20 transition-all md:col-span-2">
-                            <Users className="w-3.5 h-3.5 text-muted-foreground" />
-                            <span className="text-[9px] font-black uppercase text-muted-foreground/60 tracking-widest pl-1">Corretor:</span>
-                            <select
-                                className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-foreground w-full p-0 cursor-pointer"
-                                value={filterBroker}
-                                onChange={(e) => setFilterBroker(e.target.value)}
-                            >
-                                <option value="Todos">Todos</option>
-                                {brokers.map(b => (
-                                    <option key={b.id} value={b.id}>{b.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                </div>
-
-                <div className="flex flex-col gap-2.5 md:gap-3">
-                    <div className="overflow-x-auto pb-1 custom-scrollbar -mx-4 px-4 md:-mx-6 md:px-6">
-                        <div className="flex items-center gap-2 md:gap-3 whitespace-nowrap min-w-max pr-4">
-                            <span className="text-[9px] md:text-[10px] font-black uppercase text-muted-foreground/50 tracking-widest mr-1">Status:</span>
+                <div className="flex flex-wrap items-center justify-center gap-6">
+                    <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase">Filtrar por:</span>
+                        <div className="flex gap-2 p-1 bg-white/5 rounded-full border border-white/5">
                             {(['Todos', ...Object.values(LeadStatus)] as string[]).map((s) => (
                                 <button
                                     key={s}
                                     onClick={() => setFilterStatus(s as any)}
                                     className={cn(
-                                        "px-2.5 md:px-3 py-1 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all border",
+                                        "px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
                                         filterStatus === s
-                                            ? "bg-blue-600 text-white border-blue-600 shadow-sm"
-                                            : "bg-card text-muted-foreground border-border hover:border-blue-400/50"
+                                            ? "bg-primary text-black shadow-lg shadow-primary/20"
+                                            : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
                                     {s}
@@ -127,67 +84,56 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                         </div>
                     </div>
 
-                    <div className="overflow-x-auto pb-2 custom-scrollbar -mx-4 px-4 md:-mx-6 md:px-6 scroll-smooth">
-                        <div className="flex items-center gap-2 md:gap-3 whitespace-nowrap min-w-max pr-4 pb-1">
-                            <span className="text-[9px] md:text-[10px] font-black uppercase text-muted-foreground/50 tracking-widest mr-1">Ordenar:</span>
-                            {[
-                                { id: 'recent', label: 'Mais Recentes' },
-                                { id: 'name', label: 'Nome (A-Z)' },
-                                { id: 'overdue', label: 'Atrasados Primeiro' }
-                            ].map((s) => (
-                                <button
-                                    key={s.id}
-                                    onClick={() => setSortBy(s.id as any)}
-                                    className={cn(
-                                        "px-2.5 md:px-3 py-1 md:py-1.5 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all border",
-                                        sortBy === s.id
-                                            ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                                            : "bg-card text-muted-foreground border-border hover:border-primary/50"
-                                    )}
-                                >
-                                    {s.label}
-                                </button>
-                            ))}
-                        </div>
+                    <div className="flex items-center gap-3 border-l border-white/10 pl-6">
+                        <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase">Ordenar:</span>
+                        <select
+                            className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-primary uppercase tracking-widest cursor-pointer"
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as any)}
+                        >
+                            <option value="recent">MAIS RECENTES</option>
+                            <option value="name">NOME (A-Z)</option>
+                            <option value="overdue">ATRASADOS</option>
+                        </select>
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-1 border-t border-border/10">
-                    <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl">
-                        <button
-                            onClick={() => setViewMode('cards')}
-                            className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
-                                viewMode === 'cards' ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
-                            )}
-                        >
-                            <LayoutGrid className="w-3 h-3" />
-                            Cards
-                        </button>
-                        <button
-                            onClick={() => setViewMode('table')}
-                            className={cn(
-                                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
-                                viewMode === 'table' ? "bg-white text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
-                            )}
-                        >
-                            <List className="w-3 h-3" />
-                            Tabela
-                        </button>
+                <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-4">
+                        <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+                            <button
+                                onClick={() => setViewMode('cards')}
+                                className={cn(
+                                    "p-2 rounded-lg transition-all",
+                                    viewMode === 'cards' ? "bg-white/10 text-primary" : "text-muted-foreground/40 hover:text-foreground"
+                                )}
+                            >
+                                <LayoutGrid className="w-4 h-4" />
+                            </button>
+                            <button
+                                onClick={() => setViewMode('table')}
+                                className={cn(
+                                    "p-2 rounded-lg transition-all",
+                                    viewMode === 'table' ? "bg-white/10 text-primary" : "text-muted-foreground/40 hover:text-foreground"
+                                )}
+                            >
+                                <List className="w-4 h-4" />
+                            </button>
+                        </div>
+                        <p className="text-[10px] font-luxury italic text-muted-foreground/40 tracking-widest">
+                            Mostrando {filteredCount} registros de exclusividade
+                        </p>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <p className="hidden xs:block text-[8px] md:text-[10px] font-bold text-muted-foreground/50 uppercase tracking-[0.2em]">{filteredCount} ENCONTRADOS</p>
-                        {filteredCount > 0 && (
-                            <button
-                                onClick={() => exportLeadsToExcel(filteredLeads)}
-                                className="flex items-center gap-1.5 text-[9px] md:text-[10px] font-black text-primary hover:text-primary/80 transition-colors uppercase tracking-widest px-2 py-1 rounded-lg hover:bg-primary/5"
-                            >
-                                <Download className="w-3 h-3 md:w-3.5 md:h-3.5" />
-                                Exportar Excel
-                            </button>
-                        )}
-                    </div>
+                    <Button
+                        onClick={() => exportLeadsToExcel(filteredLeads)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-[10px] font-bold tracking-[0.15em] text-muted-foreground hover:text-primary transition-all uppercase px-4 border border-white/5 rounded-full"
+                    >
+                        <Download className="w-3.5 h-3.5 mr-2" />
+                        Relatório Excel
+                    </Button>
                 </div>
             </div>
         </div>

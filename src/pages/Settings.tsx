@@ -6,6 +6,8 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { CreditCard, Rocket, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { cn } from '../lib/utils';
 
 const Settings: React.FC = () => {
     const navigate = useNavigate();
@@ -14,8 +16,9 @@ const Settings: React.FC = () => {
 
     if (!org) return null;
 
-    const usagePercent = Math.min((leads.length / org.max_leads) * 100, 100);
-    const isOverLimit = leads.length >= org.max_leads;
+    const safeLeads = Array.isArray(leads) ? leads : [];
+    const usagePercent = Math.min((safeLeads.length / org.max_leads) * 100, 100);
+    const isOverLimit = safeLeads.length >= org.max_leads;
 
     const plans = [
         {
@@ -50,135 +53,144 @@ const Settings: React.FC = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-6 pb-24 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col gap-2">
-                <h2 className="text-3xl font-black text-foreground tracking-tight">Configurações</h2>
-                <p className="text-muted-foreground font-medium">Gerencie sua imobiliária e plano de assinatura.</p>
-            </div>
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <header className="mb-12">
+                <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground italic tracking-tight">Configurações do Sistema</h1>
+                <p className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase mt-2">Gestão de Recursos Empresariais</p>
+            </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Org Details & Usage */}
-                <div className="lg:col-span-1 space-y-6">
-                    <Card className="border-0 shadow-lg bg-white/50 backdrop-blur-sm overflow-hidden">
-                        <CardHeader className="bg-primary/5 border-b border-primary/10">
-                            <CardTitle className="text-xl flex items-center gap-2">
-                                <ShieldCheck className="w-5 h-5 text-primary" />
-                                Minha Imobiliária
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <div className="lg:col-span-1 space-y-8">
+                    <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden group">
+                        <CardHeader className="border-b border-white/5 pb-6">
+                            <CardTitle className="text-xl font-display italic flex items-center gap-3">
+                                <ShieldCheck className="w-5 h-5 text-primary opacity-60" />
+                                Identidade Corporativa
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-6 space-y-4">
+                        <CardContent className="pt-8 space-y-6">
                             <div>
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-1">Nome</label>
-                                <p className="font-bold text-lg">{org.name}</p>
+                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome da Instituição</label>
+                                <p className="font-display font-bold text-xl text-foreground italic">{org.name}</p>
                             </div>
                             <div>
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block mb-1">Status da Conta</label>
-                                <Badge variant={org.subscription_status === 'active' ? 'success' : 'warning'} className="capitalize">
-                                    {org.subscription_status}
+                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Credencial da Conta</label>
+                                <Badge variant="outline" className="capitalize bg-white/5 border-white/10 text-primary font-bold tracking-widest px-3 py-1">
+                                    {org.subscription_status === 'active' ? 'ATIVO VERIFICADO' : org.subscription_status}
                                 </Badge>
                             </div>
                         </CardContent>
                     </Card>
 
-                    <Card className="border-0 shadow-lg bg-white/50 backdrop-blur-sm">
-                        <CardHeader className="border-b">
-                            <CardTitle className="text-xl flex items-center gap-2">
-                                <Zap className="w-5 h-5 text-amber-500" />
-                                Uso do Plano
+                    <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden">
+                        <CardHeader className="border-b border-white/5 pb-6">
+                            <CardTitle className="text-xl font-display italic flex items-center gap-3">
+                                <Zap className="w-5 h-5 text-primary opacity-60" />
+                                Alocação de Quota
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-6 space-y-6">
-                            <div className="space-y-3">
+                        <CardContent className="pt-8 space-y-8">
+                            <div className="space-y-4">
                                 <div className="flex justify-between items-end">
-                                    <span className="text-sm font-bold text-muted-foreground uppercase tracking-tight">Leads Cadastrados</span>
-                                    <span className="text-sm font-black">{leads.length} / {org.max_leads}</span>
+                                    <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">Uso de Recursos</span>
+                                    <span className="text-[11px] font-mono text-foreground font-bold">{safeLeads.length} / {org.max_leads} UN</span>
                                 </div>
-                                <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                                    <div
-                                        className={`h-full transition-all duration-1000 ${isOverLimit ? 'bg-destructive' : 'bg-primary'}`}
-                                        style={{ width: `${usagePercent}%` }}
+                                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${usagePercent}%` }}
+                                        transition={{ duration: 1.5, ease: 'easeOut' }}
+                                        className={cn(
+                                            "h-full rounded-full transition-all duration-1000",
+                                            isOverLimit ? "bg-destructive shadow-[0_0_10px_rgba(239,68,68,0.4)]" : "bg-primary shadow-gold-glow"
+                                        )}
                                     />
                                 </div>
                                 {isOverLimit && (
-                                    <p className="text-[10px] text-destructive font-black uppercase text-center animate-pulse">
-                                        ⚠ Limite atingido! Faça upgrade para adicionar mais.
+                                    <p className="text-[9px] text-destructive font-bold uppercase text-center tracking-widest animate-pulse">
+                                        ⚠ QUOTA EXCEDIDA - UPGRADE NECESSÁRIO
                                     </p>
                                 )}
                             </div>
 
                             <Button
                                 variant="outline"
-                                className="w-full border-primary/20 text-primary hover:bg-primary/5"
+                                className="w-full border-white/5 h-12 rounded-xl text-[10px] font-bold tracking-widest hover:bg-white/5"
                                 onClick={() => navigate('/')}
                             >
-                                <Rocket className="w-4 h-4 mr-2" />
-                                Ver Meus Leads
+                                <Rocket className="w-4 h-4 mr-3" />
+                                ACESSAR REPOSITÓRIO
                             </Button>
                         </CardContent>
                     </Card>
                 </div>
 
-                {/* Plans Grid */}
                 <div className="lg:col-span-2">
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         {plans.map((plan) => (
                             <Card
                                 key={plan.tier}
-                                className={`flex flex-col border-2 relative transition-all duration-300 ${plan.isCurrent ? 'border-primary bg-white shadow-xl' : 'border-transparent bg-white/40 hover:bg-white hover:border-slate-200 shadow-lg'}`}
-                            >
-                                {plan.popular && (
-                                    <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 bg-amber-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
-                                        Popular
-                                    </div>
+                                className={cn(
+                                    "flex flex-col border transition-all duration-700 rounded-[2rem] overflow-hidden relative group",
+                                    plan.isCurrent
+                                        ? "bg-white/[0.03] border-primary/30 shadow-gold-glow/10"
+                                        : "bg-card/20 border-white/5 hover:border-primary/20 hover:bg-white/[0.02]"
                                 )}
+                            >
                                 {plan.isCurrent && (
-                                    <div className="absolute top-[-12px] left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">
-                                        Plano Atual
-                                    </div>
+                                    <div className="absolute top-0 inset-x-0 h-1 bg-primary shadow-gold-glow" />
                                 )}
 
-                                <CardHeader className="text-center pb-2">
-                                    <CardTitle className="text-2xl font-black">{plan.name}</CardTitle>
-                                    <CardDescription className="text-xl font-bold text-foreground/80">{plan.price}</CardDescription>
+                                <CardHeader className="text-center pt-10 pb-6 relative">
+                                    {plan.isCurrent && (
+                                        <span className="absolute top-4 left-1/2 -translate-x-1/2 text-[8px] font-bold text-primary uppercase tracking-[0.3em]">Plano Institucional</span>
+                                    )}
+                                    <CardTitle className="text-2xl font-display font-bold italic mb-2">{plan.name}</CardTitle>
+                                    <CardDescription className="text-lg font-bold text-foreground/60">{plan.price}</CardDescription>
                                 </CardHeader>
 
-                                <CardContent className="flex-1 pt-4 space-y-4">
-                                    <ul className="space-y-3">
+                                <CardContent className="flex-1 px-8 py-6">
+                                    <ul className="space-y-4">
                                         {plan.features.map((feature, i) => (
-                                            <li key={i} className="flex items-center gap-2 text-sm font-medium text-slate-600">
-                                                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                                            <li key={i} className="flex items-start gap-3 text-[11px] font-medium text-muted-foreground/60 leading-relaxed group-hover:text-muted-foreground transition-colors">
+                                                <CheckCircle2 className="w-3.5 h-3.5 text-primary/40 shrink-0 mt-0.5" />
                                                 {feature}
                                             </li>
                                         ))}
                                     </ul>
                                 </CardContent>
 
-                                <CardFooter className="pt-6">
+                                <CardFooter className="p-8 pt-4">
                                     <Button
-                                        className="w-full h-11 font-bold"
-                                        variant={plan.isCurrent ? 'secondary' : 'primary'}
+                                        className={cn(
+                                            "w-full h-12 rounded-xl text-[10px] font-bold tracking-widest transition-all duration-500",
+                                            plan.isCurrent
+                                                ? "bg-white/5 text-muted-foreground cursor-default border border-white/10"
+                                                : ""
+                                        )}
+                                        variant={plan.isCurrent ? 'ghost' : 'luxury'}
                                         disabled={plan.isCurrent}
                                         onClick={() => onUpgrade(plan.tier)}
                                     >
-                                        {plan.isCurrent ? 'Plano Ativo' : 'Fazer Upgrade'}
+                                        {plan.isCurrent ? 'ATIVO' : 'FAZER UPGRADE'}
                                     </Button>
                                 </CardFooter>
                             </Card>
                         ))}
                     </div>
 
-                    <div className="mt-8 p-6 bg-slate-950 rounded-2xl text-white flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-blue-600/10 mix-blend-overlay group-hover:scale-110 transition-transform duration-1000" />
-                        <div className="relative z-10 flex items-center gap-4">
-                            <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-md">
-                                <CreditCard className="w-6 h-6 text-white" />
+                    <div className="mt-10 p-8 bg-black/40 backdrop-blur-3xl rounded-[2rem] border border-white/5 flex items-center justify-between gap-6 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-primary/5 blur-[100px] pointer-events-none group-hover:bg-primary/10 transition-all duration-1000" />
+                        <div className="relative z-10 flex items-center gap-6">
+                            <div className="w-14 h-14 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-center transition-all duration-700 group-hover:border-primary/20">
+                                <CreditCard className="w-6 h-6 text-primary opacity-60" />
                             </div>
                             <div>
-                                <h4 className="font-bold">Integração de Pagamento</h4>
-                                <p className="text-xs text-white/60">Estamos finalizando a conexão com o Stripe para pagamentos automáticos.</p>
+                                <h4 className="font-display font-bold italic text-lg leading-tight">Integração de Pagamento</h4>
+                                <p className="text-[11px] text-muted-foreground/60 uppercase tracking-widest mt-1">Sincronização com Gateway Stripe em andamento</p>
                             </div>
                         </div>
-                        <Badge variant="secondary" className="bg-white/10 text-white border-0 py-1">Em Breve</Badge>
+                        <Badge variant="outline" className="bg-white/5 border-white/10 text-muted-foreground/40 text-[9px] font-bold tracking-[0.2em] py-1 px-3">EM BREVE</Badge>
                     </div>
                 </div>
             </div>

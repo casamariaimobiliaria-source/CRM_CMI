@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { LeadProvider, useLead } from './contexts/LeadContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 import Onboarding from './pages/Onboarding';
 import LeadList from './pages/LeadList';
@@ -14,6 +15,7 @@ import Settings from './pages/Settings';
 import AdminPanel from './pages/AdminPanel';
 import PerformanceReports from './pages/PerformanceReports';
 import { Toaster } from 'sonner';
+import { HelmetProvider } from 'react-helmet-async';
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { session, isLoading } = useLead();
@@ -102,12 +104,16 @@ const AppRoutes: React.FC = () => {
 
 const App: React.FC = () => {
     return (
-        <LeadProvider>
-            <BrowserRouter>
-                <AppRoutes />
-                <Toaster position="top-center" richColors />
-            </BrowserRouter>
-        </LeadProvider>
+        <HelmetProvider>
+            <ThemeProvider>
+                <LeadProvider>
+                    <BrowserRouter>
+                        <AppRoutes />
+                        <Toaster position="top-center" richColors />
+                    </BrowserRouter>
+                </LeadProvider>
+            </ThemeProvider>
+        </HelmetProvider>
     );
 };
 

@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import { useLead } from '../contexts/LeadContext';
 import { useBrokers } from '../hooks/useBrokers';
 import { LeadStatus } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, Users, RefreshCw, ShieldAlert, TrendingUp } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 const Dashboard: React.FC = () => {
     const { leads } = useLead();
@@ -45,7 +46,7 @@ const Dashboard: React.FC = () => {
         return Object.keys(projectCounts)
             .map(key => ({ name: key, value: projectCounts[key] }))
             .sort((a, b) => b.value - a.value)
-            .slice(0, 10); // Show top 10 projects
+            .slice(0, 10);
     }, [safeLeads]);
 
     const brokerStats = useMemo(() => {
@@ -66,110 +67,108 @@ const Dashboard: React.FC = () => {
         }).sort((a, b) => b.total - a.total);
     }, [safeLeads, brokers]);
 
-    // Use CSS variables for chart colors to support dark mode naturally
-    const CHART_COLORS = [
-        'hsl(var(--primary))',
-        'hsl(var(--secondary))',
-        '#10b981', // emerald
-        '#f59e0b', // amber
-        '#ef4444', // rose
-    ];
-
     if (safeLeads.length === 0) {
         return (
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex-1 flex flex-col items-center justify-center py-20 text-center p-4"
+                className="flex-1 flex flex-col items-center justify-center py-20 text-center p-4 h-full"
             >
-                <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center text-muted-foreground mb-6">
-                    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <Helmet>
+                    <title>Painel | ImobLeads</title>
+                </Helmet>
+                <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-muted-foreground/40 mb-6 border border-white/5">
+                    <TrendingUp className="w-10 h-10" />
                 </div>
-                <h3 className="text-lg font-black text-foreground">Sem dados para análise</h3>
-                <p className="text-muted-foreground text-sm max-w-xs mt-2 font-medium">Cadastre seus primeiros leads para visualizar as estatísticas de desempenho.</p>
+                <h3 className="text-xl font-display font-bold text-foreground">Waiting for Intelligence</h3>
+                <p className="text-muted-foreground text-sm max-w-xs mt-2 font-medium">Add your first exclusive leads to start the performance analytics engine.</p>
+                <Button variant="luxury" className="mt-8 px-10 rounded-full" onClick={() => navigate('/add')}>START NOW</Button>
             </motion.div>
         );
     }
 
     return (
-        <div className="p-6 pb-32 space-y-8 max-w-7xl mx-auto w-full">
+        <div className="px-6 md:px-10 py-8 md:py-12 pb-32 space-y-12 max-w-7xl mx-auto w-full">
+            <Helmet>
+                <title>Painel de Inteligência | ImobLeads</title>
+            </Helmet>
             <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-white/5 pb-10"
             >
-                <div className="flex flex-col md:flex-row md:items-center justify-between w-full gap-4">
-                    <div>
-                        <h1 className="text-3xl font-black text-foreground tracking-tight">Dashboard</h1>
-                        <p className="text-muted-foreground text-sm font-medium">Visão geral do seu desempenho comercial.</p>
-                    </div>
-                    <Button
-                        variant="primary"
-                        size="sm"
-                        className="gap-2 h-10 px-6 font-black rounded-xl shadow-lg shadow-primary/20"
-                        onClick={() => navigate('/reports')}
-                    >
-                        <BarChart3 className="w-4 h-4" />
-                        Ver Relatórios Avançados
-                    </Button>
+                <div>
+                    <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground tracking-tight italic">
+                        O Painel
+                    </h1>
+                    <p className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase mt-2">
+                        Performance & Inteligência
+                    </p>
                 </div>
+                <Button
+                    variant="luxury"
+                    className="h-12 px-8 rounded-full"
+                    onClick={() => navigate('/reports')}
+                >
+                    <BarChart3 className="w-4 h-4 mr-3" />
+                    RELATÓRIOS COMPLETOS
+                </Button>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <StatCard
-                    index={0}
-                    label="Leads na Base"
-                    value={stats.total}
-                    colorClass="text-primary"
-                    icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857"></path></svg>}
-                />
-                <StatCard
-                    index={1}
-                    label="Em Negociação"
-                    value={stats.active}
-                    colorClass="text-emerald-600"
-                    icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>}
-                />
-                <StatCard
-                    index={2}
-                    label="Altas Chances"
-                    value={stats.hot}
-                    colorClass="text-rose-600"
-                    icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>}
-                />
-                <StatCard
-                    index={3}
-                    label="Conversão"
-                    value={`${stats.conversion}%`}
-                    colorClass="text-secondary"
-                    icon={<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path></svg>}
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                    { label: 'TOTAL DE LEADS', value: stats.total, icon: Users, color: 'text-primary' },
+                    { label: 'NEGÓCIOS ATIVOS', value: stats.active, icon: RefreshCw, color: 'text-secondary' },
+                    { label: 'POTENCIAIS ELITE', value: stats.hot, icon: ShieldAlert, color: 'text-destructive' },
+                    { label: 'CONVERSÃO', value: `${stats.conversion}%`, icon: BarChart3, color: 'text-primary' }
+                ].map((stat, i) => (
+                    <StatCard
+                        key={stat.label}
+                        index={i}
+                        label={stat.label}
+                        value={stat.value}
+                        colorClass={stat.color}
+                        icon={<stat.icon className="w-5 h-5 opacity-40" />}
+                    />
+                ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
                 >
-                    <Card className="col-span-1 shadow-sm border-border overflow-hidden">
+                    <Card className="bg-card/40 backdrop-blur-sm border border-white/5 hover:border-primary/20 transition-all duration-700">
                         <CardHeader>
-                            <CardTitle className="text-xl">Status do Pipeline</CardTitle>
-                            <CardDescription>Distribuição por etapa do funil.</CardDescription>
+                            <CardTitle className="text-xl font-display italic">Lead Pipeline</CardTitle>
+                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Distribution by status</CardDescription>
                         </CardHeader>
-                        <CardContent className="h-72">
+                        <CardContent className="h-80">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={chartData}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 700 }} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 700 }} />
-                                    <Tooltip
-                                        cursor={{ fill: 'hsl(var(--muted))', opacity: 0.2 }}
-                                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', backgroundColor: 'hsl(var(--card))', color: 'hsl(var(--foreground))' }}
+                                    <XAxis
+                                        dataKey="name"
+                                        axisLine={false}
+                                        tickLine={false}
+                                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9, fontWeight: 600, letterSpacing: 1 }}
                                     />
-                                    <Bar dataKey="value" radius={[6, 6, 6, 6]} barSize={40}>
+                                    <YAxis hide />
+                                    <Tooltip
+                                        cursor={{ fill: 'white', opacity: 0.03 }}
+                                        contentStyle={{
+                                            borderRadius: '16px',
+                                            border: '1px solid rgba(255,255,255,0.05)',
+                                            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
+                                            backgroundColor: '#0A0A0A',
+                                            padding: '12px'
+                                        }}
+                                        itemStyle={{ color: '#F1F1F1', fontSize: '12px', fontWeight: 'bold' }}
+                                        labelStyle={{ color: '#D4AF37', marginBottom: '4px', fontWeight: '800' }}
+                                    />
+                                    <Bar dataKey="value" radius={[4, 4, 4, 4]} barSize={30}>
                                         {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                            <Cell key={`cell-${index}`} fill={'hsl(var(--primary))'} opacity={0.5 + (index / chartData.length) * 0.5} />
                                         ))}
                                     </Bar>
                                 </BarChart>
@@ -179,32 +178,32 @@ const Dashboard: React.FC = () => {
                 </motion.div>
 
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 }}
                 >
-                    <Card className="col-span-1 shadow-sm border-border">
+                    <Card className="bg-card/40 backdrop-blur-sm border border-white/5 hover:border-primary/20 transition-all duration-700">
                         <CardHeader>
-                            <CardTitle className="text-xl">Análise Térmica</CardTitle>
-                            <CardDescription>Qualidade dos leads.</CardDescription>
+                            <CardTitle className="text-xl font-display italic">Temperature</CardTitle>
+                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Prospect Quality</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-8">
+                        <CardContent className="space-y-10 py-6">
                             {['Frio', 'Morno', 'Quente'].map(temp => {
                                 const count = safeLeads.filter(l => l.temperatura === temp).length;
                                 const percentage = safeLeads.length > 0 ? (count / safeLeads.length) * 100 : 0;
-                                const color = temp === 'Frio' ? 'bg-blue-500' : temp === 'Morno' ? 'bg-orange-500' : 'bg-rose-500';
+                                const color = temp === 'Frio' ? 'bg-platinum-400' : temp === 'Morno' ? 'bg-secondary' : 'bg-primary';
                                 return (
                                     <div key={temp}>
-                                        <div className="flex justify-between mb-3 items-end">
-                                            <span className="text-xs font-black text-foreground uppercase tracking-widest">{temp}</span>
-                                            <span className="text-xs font-bold text-muted-foreground uppercase">{count} leads ({percentage.toFixed(0)}%)</span>
+                                        <div className="flex justify-between mb-4 items-end">
+                                            <span className="text-[10px] font-bold text-foreground uppercase tracking-widest opacity-60">{temp}</span>
+                                            <span className="text-[9px] font-luxury italic text-muted-foreground uppercase">{count} LEADS / {percentage.toFixed(0)}%</span>
                                         </div>
-                                        <div className="w-full bg-secondary/10 rounded-full h-3 overflow-hidden">
+                                        <div className="w-full bg-white/5 rounded-full h-1 overflow-hidden">
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${percentage}%` }}
-                                                transition={{ duration: 1, ease: 'easeOut' }}
-                                                className={`h-3 rounded-full shadow-sm ${color}`}
+                                                transition={{ duration: 1.5, ease: 'circOut' }}
+                                                className={`h-full rounded-full ${color} shadow-lg`}
                                             ></motion.div>
                                         </div>
                                     </div>
@@ -216,19 +215,20 @@ const Dashboard: React.FC = () => {
             </div>
 
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
             >
-                <Card className="shadow-sm border-border overflow-hidden">
-                    <CardHeader>
-                        <CardTitle className="text-xl">Leads por Empreendimento</CardTitle>
-                        <CardDescription>Top 10 projetos por volume de leads.</CardDescription>
+                <Card className="bg-card/40 backdrop-blur-sm border border-white/5 overflow-hidden">
+                    <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
+                        <div>
+                            <CardTitle className="text-xl font-display italic">Elite Projects</CardTitle>
+                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Top 10 performing properties</CardDescription>
+                        </div>
                     </CardHeader>
-                    <CardContent className="h-80">
+                    <CardContent className="h-96 pt-6">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={projectData} layout="vertical" margin={{ left: 10, right: 30, top: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="hsl(var(--muted))" opacity={0.5} />
+                            <BarChart data={projectData} layout="vertical" margin={{ left: 20, right: 40 }}>
                                 <XAxis type="number" hide />
                                 <YAxis
                                     dataKey="name"
@@ -236,15 +236,15 @@ const Dashboard: React.FC = () => {
                                     axisLine={false}
                                     tickLine={false}
                                     width={120}
-                                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 700 }}
+                                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9, fontWeight: 700 }}
                                 />
                                 <Tooltip
-                                    cursor={{ fill: 'hsl(var(--muted))', opacity: 0.2 }}
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', backgroundColor: 'hsl(var(--card))', color: 'hsl(var(--foreground))' }}
+                                    cursor={{ fill: 'white', opacity: 0.03 }}
+                                    contentStyle={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: '#0A0A0A' }}
                                 />
-                                <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={20}>
+                                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={16}>
                                     {projectData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                                        <Cell key={`cell-${index}`} fill={'hsl(var(--primary))'} opacity={0.8 - (index * 0.05)} />
                                     ))}
                                 </Bar>
                             </BarChart>
@@ -255,39 +255,34 @@ const Dashboard: React.FC = () => {
 
             {brokerStats.length > 0 && (
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
                 >
-                    <Card className="shadow-sm border-border overflow-hidden">
-                        <CardHeader>
-                            <CardTitle className="text-xl">Desempenho da Equipe</CardTitle>
-                            <CardDescription>Performance por corretor.</CardDescription>
+                    <Card className="bg-card/40 backdrop-blur-sm border border-white/5 overflow-hidden">
+                        <CardHeader className="border-b border-white/5 pb-6">
+                            <CardTitle className="text-xl font-display italic">Executive Team</CardTitle>
+                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Broker performance benchmarks</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
+                        <CardContent className="pt-6 px-0">
+                            <div className="overflow-x-auto px-6">
                                 <table className="w-full text-sm font-medium">
                                     <thead>
-                                        <tr className="border-b border-border/50">
-                                            <th className="text-left font-black text-xs text-muted-foreground uppercase tracking-widest py-3 px-2">Corretor</th>
-                                            <th className="text-right font-black text-xs text-muted-foreground uppercase tracking-widest py-3 px-2">Leads</th>
-                                            <th className="text-right font-black text-xs text-muted-foreground uppercase tracking-widest py-3 px-2">Vendas</th>
-                                            <th className="text-right font-black text-xs text-muted-foreground uppercase tracking-widest py-3 px-2">Conversão</th>
+                                        <tr className="border-b border-white/5">
+                                            <th className="text-left font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Executive</th>
+                                            <th className="text-right font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Portfolio</th>
+                                            <th className="text-right font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Closes</th>
+                                            <th className="text-right font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Rate</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        {brokerStats.map((stat, i) => (
-                                            <tr key={stat.id} className="border-b border-border/30 last:border-0 hover:bg-muted/30 transition-colors">
-                                                <td className="py-3 px-2 font-bold text-foreground">{stat.name}</td>
-                                                <td className="py-3 px-2 text-right">{stat.total}</td>
-                                                <td className="py-3 px-2 text-right text-emerald-600 font-bold">{stat.comprou}</td>
-                                                <td className="py-3 px-2 text-right">
-                                                    <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${stat.conversion > 5 ? 'bg-emerald-500/10 text-emerald-600' :
-                                                        stat.conversion > 2 ? 'bg-amber-500/10 text-amber-600' :
-                                                            'bg-red-500/10 text-red-600'
-                                                        }`}>
-                                                        {stat.conversion}%
-                                                    </span>
+                                    <tbody className="divide-y divide-white/5">
+                                        {brokerStats.map((stat) => (
+                                            <tr key={stat.id} className="group hover:bg-white/[0.02] transition-colors">
+                                                <td className="py-5 font-display font-bold text-foreground italic">{stat.name}</td>
+                                                <td className="py-5 text-right font-mono text-[11px]">{stat.total} units</td>
+                                                <td className="py-5 text-right text-primary font-bold">{stat.comprou}</td>
+                                                <td className="py-5 text-right font-mono text-[11px]">
+                                                    {stat.conversion}%
                                                 </td>
                                             </tr>
                                         ))}

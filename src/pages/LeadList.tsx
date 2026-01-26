@@ -13,7 +13,7 @@ import { cn } from '../lib/utils';
 import { useBrokers } from '../hooks/useBrokers';
 
 const LeadList: React.FC = () => {
-    const { leads, isSyncing, userProfile } = useLead();
+    const { leads, isSyncing } = useLead();
     const [viewMode, setViewMode] = React.useState<'cards' | 'table'>('cards');
     const { brokers } = useBrokers();
 
@@ -37,16 +37,17 @@ const LeadList: React.FC = () => {
 
     if (isSyncing && leads.length === 0) {
         return (
-            <div className="flex-1 px-4 py-8 space-y-4 max-w-7xl mx-auto w-full">
+            <div className="flex-1 px-8 py-12 space-y-8 max-w-7xl mx-auto w-full">
+                <div className="h-10 w-64 bg-white/5 rounded-full animate-pulse" />
                 {[1, 2, 3, 4, 5].map((i) => (
-                    <Skeleton key={i} className="h-24 w-full rounded-2xl" />
+                    <Skeleton key={i} className="h-28 w-full rounded-2xl bg-white/5" />
                 ))}
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col min-h-full">
+        <div className="flex flex-col min-h-screen bg-background">
             <LeadFilters
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
@@ -69,34 +70,40 @@ const LeadList: React.FC = () => {
                 setFilterBroker={setFilterBroker}
             />
 
-            <main className="flex-1 overflow-y-auto px-4 py-6 space-y-3 pb-32 max-w-7xl mx-auto w-full">
+            <main className="flex-1 px-4 md:px-10 py-10 space-y-6 pb-40 max-w-7xl mx-auto w-full">
                 <AnimatePresence mode="popLayout">
                     {filteredLeads.length === 0 ? (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="py-20 text-center flex flex-col items-center"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="py-32 text-center flex flex-col items-center"
                         >
-                            <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mb-4">
-                                <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
+                                <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
-                            <p className="text-muted-foreground font-bold uppercase text-xs tracking-widest">
-                                {searchTerm ? `Nenhum resultado para "${searchTerm}"` : "Nenhum lead encontrado"}
+                            <h3 className="text-xl font-display font-bold text-foreground italic mb-2">No Records Found</h3>
+                            <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                {searchTerm ? `The search for "${searchTerm}" returned no data` : "The exclusivity database is currently empty"}
                             </p>
                             {searchTerm && (
-                                <Button variant="link" onClick={() => setSearchTerm('')} className="mt-2 text-primary">Limpar Pesquisa</Button>
+                                <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold">CLEAR SEARCH</Button>
                             )}
                         </motion.div>
                     ) : (
-                        <div className={cn(
-                            viewMode === 'table' ? "bg-card rounded-2xl border border-border/50 divide-y divide-border/30 overflow-hidden" : "space-y-3"
-                        )}>
+                        <motion.div
+                            layout
+                            className={cn(
+                                viewMode === 'table'
+                                    ? "bg-black/20 backdrop-blur-md rounded-3xl border border-white/5 divide-y divide-white/5 overflow-hidden"
+                                    : "grid grid-cols-1 gap-6"
+                            )}
+                        >
                             {filteredLeads.map(lead => (
                                 viewMode === 'cards'
                                     ? <LeadCard key={lead.id} lead={lead} />
                                     : <LeadTableRow key={lead.id} lead={lead} />
                             ))}
-                        </div>
+                        </motion.div>
                     )}
                 </AnimatePresence>
             </main>
