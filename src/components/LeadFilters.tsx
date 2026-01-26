@@ -63,16 +63,16 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                     <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/40 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-6">
-                    <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase">Filtrar por:</span>
-                        <div className="flex gap-2 p-1 bg-white/5 rounded-full border border-white/5">
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+                    <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+                        <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase hidden md:inline">Filtrar por:</span>
+                        <div className="flex gap-2 p-1 bg-white/5 rounded-full border border-white/5 overflow-x-auto w-full md:w-auto no-scrollbar justify-start md:justify-center">
                             {(['Todos', ...Object.values(LeadStatus)] as string[]).map((s) => (
                                 <button
                                     key={s}
                                     onClick={() => setFilterStatus(s as any)}
                                     className={cn(
-                                        "px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
+                                        "px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap shrink-0",
                                         filterStatus === s
                                             ? "bg-primary text-black shadow-lg shadow-primary/20"
                                             : "text-muted-foreground hover:text-foreground"
@@ -84,10 +84,10 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 border-l border-white/10 pl-6">
+                    <div className="flex items-center gap-3 md:border-l border-white/10 md:pl-6 w-full md:w-auto justify-center">
                         <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase">Ordenar:</span>
                         <select
-                            className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-primary uppercase tracking-widest cursor-pointer"
+                            className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-primary uppercase tracking-widest cursor-pointer outline-none"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as any)}
                         >

@@ -36,14 +36,14 @@ const Layout: React.FC = () => {
     return (
         <div className="min-h-screen bg-background flex flex-col selection:bg-primary/30 selection:text-foreground">
             {/* Elegant Header */}
-            <header className="sticky top-0 z-50 h-20 bg-background/80 backdrop-blur-xl border-b border-white/5 px-6 flex items-center justify-between">
-                <div className="flex items-center gap-6">
+            <header className="sticky top-0 z-50 h-20 bg-background/80 backdrop-blur-xl border-b border-white/5 px-4 md:px-6 flex items-center justify-between">
+                <div className="flex items-center gap-4 md:gap-6">
                     <div className="flex flex-col">
-                        <h1 className="font-display text-2xl font-bold text-foreground tracking-tighter leading-tight bg-gradient-to-r from-primary via-primary/80 to-primary-foreground bg-clip-text text-transparent">
+                        <h1 className="font-display text-xl md:text-2xl font-bold text-foreground tracking-tighter leading-tight bg-gradient-to-r from-primary via-primary/80 to-primary-foreground bg-clip-text text-transparent">
                             IMOBLEADS
                         </h1>
                         <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] font-medium tracking-[0.2em] text-muted-foreground uppercase">Exclusivity CRM</span>
+                            <span className="text-[8px] md:text-[10px] font-medium tracking-[0.2em] text-muted-foreground uppercase hidden sm:inline">Exclusivity CRM</span>
                             <div className={cn(
                                 "w-1 h-1 rounded-full",
                                 isSyncing ? "bg-amber-500 animate-pulse" : "bg-primary"
@@ -52,7 +52,7 @@ const Layout: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-3 md:gap-6">
                     {userProfile?.organization && (
                         <div className="hidden lg:flex flex-col items-end border-r border-white/10 pr-6">
                             <span className="text-[10px] font-bold tracking-[0.15em] text-primary uppercase mb-1">
@@ -72,13 +72,13 @@ const Layout: React.FC = () => {
                         </div>
                     )}
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-4">
                         <ThemeToggle />
                         <div className="flex flex-col items-end">
-                            <span className="text-xs font-bold font-display text-foreground tracking-widest uppercase">
-                                {session?.user?.user_metadata?.name || 'Membro'}
+                            <span className="text-[10px] md:text-xs font-bold font-display text-foreground tracking-widest uppercase truncate max-w-[80px] md:max-w-none">
+                                {session?.user?.user_metadata?.name?.split(' ')[0] || 'Membro'}
                             </span>
-                            <span className="text-[10px] font-medium text-muted-foreground/60 tracking-wider">
+                            <span className="text-[9px] md:text-[10px] font-medium text-muted-foreground/60 tracking-wider hidden sm:inline">
                                 {userProfile?.organization?.name}
                             </span>
                         </div>
@@ -86,9 +86,9 @@ const Layout: React.FC = () => {
                             variant="ghost"
                             size="icon"
                             onClick={handleSignOut}
-                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 w-10 h-10 rounded-full border border-white/5 transition-all duration-500"
+                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/5 w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/5 transition-all duration-500"
                         >
-                            <LogOut className="w-4 h-4" />
+                            <LogOut className="w-3 h-3 md:w-4 md:h-4" />
                         </Button>
                     </div>
                 </div>
