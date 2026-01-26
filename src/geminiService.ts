@@ -2,12 +2,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 export const analyzeLeadHistory = async (history: string) => {
-  if (!process.env.API_KEY || !history) return null;
+  if (!import.meta.env.VITE_API_KEY || !history) return null;
 
   try {
     // Inicialização segura dentro da função para garantir que pega a API_KEY atualizada
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-    
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: `Analise o seguinte histórico de atendimento de um lead imobiliário e retorne um JSON com um resumo curto (máximo 15 palavras) e uma sugestão de temperatura (Frio, Morno, Quente):
@@ -18,13 +18,13 @@ export const analyzeLeadHistory = async (history: string) => {
         responseSchema: {
           type: Type.OBJECT,
           properties: {
-            resumo: { 
+            resumo: {
               type: Type.STRING,
               description: "Um resumo muito curto da situação do lead."
             },
-            temperaturaSugestao: { 
-              type: Type.STRING, 
-              description: "Deve ser exatamente um destes: Frio, Morno ou Quente" 
+            temperaturaSugestao: {
+              type: Type.STRING,
+              description: "Deve ser exatamente um destes: Frio, Morno ou Quente"
             }
           },
           required: ["resumo", "temperaturaSugestao"]
