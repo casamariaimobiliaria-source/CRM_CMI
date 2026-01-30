@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 import { useLead } from '../contexts/LeadContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -11,8 +12,22 @@ import { cn } from '../lib/utils';
 
 const Settings: React.FC = () => {
     const navigate = useNavigate();
-    const { userProfile, leads } = useLead();
+    const { userProfile, leads, fetchUserProfile } = useLead();
     const org = userProfile?.organization;
+
+    const [isEditingBrand, setIsEditingBrand] = React.useState(false);
+    const [brandName, setBrandName] = React.useState(org?.name || '');
+    const [brandLogo, setBrandLogo] = React.useState(org?.logo_url || '');
+    const [isSaving, setIsSaving] = React.useState(false);
+
+    React.useEffect(() => {
+        if (org) {
+            setBrandName(org.brand_display_name || org.name);
+            setBrandLogo(org.logo_url || '');
+        }
+    }, [org]);
+
+    const canEditBranding = userProfile?.role === 'owner' || userProfile?.role === 'admin' || userProfile?.is_super_admin;
 
     if (!org) return null;
 
@@ -52,33 +67,128 @@ const Settings: React.FC = () => {
         });
     };
 
+    const handleSaveBranding = async () => {
+        if (!org) return;
+        setIsSaving(true);
+        try {
+            const { error } = await supabase
+                .from('organizations')
+                .update({
+                    name: brandName,
+                    brand_display_name: brandName,
+                    logo_url: brandLogo || null
+                })
+                .eq('id', org.id);
+
+            if (error) throw error;
+            toast.success('Identidade visual atualizada!');
+            setIsEditingBrand(false);
+            if (userProfile?.id) fetchUserProfile(userProfile.id);
+        } catch (error: any) {
+            console.error('Error saving branding:', error);
+            toast.error('Erro ao salvar marca.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     return (
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            <header className="mb-12">
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground italic tracking-tight">Configurações do Sistema</h1>
-                <p className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase mt-2">Gestão de Recursos Empresariais</p>
+            <header className="mb-12 space-y-4">
+                <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Configurações</h1>
+                <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
+                    <span className="h-[1px] w-8 bg-primary/30" />
+                    Centro de Controle Enterprise
+                </p>
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 <div className="lg:col-span-1 space-y-8">
-                    <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden group">
-                        <CardHeader className="border-b border-white/5 pb-6">
+                    <Card className="glass-high-fidelity rounded-[2.5rem] overflow-hidden group">
+                        <CardHeader className="border-b border-white/5 pb-6 flex flex-row items-center justify-between">
                             <CardTitle className="text-xl font-display italic flex items-center gap-3">
                                 <ShieldCheck className="w-5 h-5 text-primary opacity-60" />
                                 Identidade Corporativa
                             </CardTitle>
+                            {canEditBranding && !isEditingBrand && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-[10px] font-bold tracking-widest text-primary/60 hover:text-primary uppercase"
+                                    onClick={() => setIsEditingBrand(true)}
+                                >
+                                    Alterar Marca
+                                </Button>
+                            )}
                         </CardHeader>
                         <CardContent className="pt-8 space-y-6">
-                            <div>
-                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome da Instituição</label>
-                                <p className="font-display font-bold text-xl text-foreground italic">{org.name}</p>
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Credencial da Conta</label>
-                                <Badge variant="outline" className="capitalize bg-white/5 border-white/10 text-primary font-bold tracking-widest px-3 py-1">
-                                    {org.subscription_status === 'active' ? 'ATIVO VERIFICADO' : org.subscription_status}
-                                </Badge>
-                            </div>
+                            {isEditingBrand ? (
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">Nome da Imobiliária</label>
+                                        <input
+                                            type="text"
+                                            value={brandName}
+                                            onChange={(e) => setBrandName(e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground"
+                                            placeholder="Ex: Silva Imóveis"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">URL do Logo (SVG/PNG)</label>
+                                        <input
+                                            type="text"
+                                            value={brandLogo}
+                                            onChange={(e) => setBrandLogo(e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground"
+                                            placeholder="https://sua-logo.com/logo.png"
+                                        />
+                                    </div>
+                                    <div className="flex gap-2 pt-2">
+                                        <Button
+                                            size="sm"
+                                            className="grow bg-primary text-black font-bold h-10 rounded-xl"
+                                            onClick={handleSaveBranding}
+                                            isLoading={isSaving}
+                                        >
+                                            Salvar
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-[10px] font-bold tracking-widest h-10 px-4 rounded-xl"
+                                            onClick={() => {
+                                                setIsEditingBrand(false);
+                                                setBrandName(org.name);
+                                                setBrandLogo(org.logo_url || '');
+                                            }}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome da Instituição</label>
+                                        <p className="font-display font-bold text-xl text-foreground italic">{org.brand_display_name || org.name}</p>
+                                    </div>
+                                    {org.logo_url && (
+                                        <div>
+                                            <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Logo Atual</label>
+                                            <div className="w-12 h-12 rounded-lg bg-white/5 p-2 border border-white/5">
+                                                <img src={org.logo_url} alt="Logo" className="w-full h-full object-contain" />
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Credencial da Conta</label>
+                                        <Badge variant="outline" className="capitalize bg-white/5 border-white/10 text-primary font-bold tracking-widest px-3 py-1">
+                                            {org.subscription_status === 'active' ? 'ATIVO VERIFICADO' : org.subscription_status}
+                                        </Badge>
+                                    </div>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -168,7 +278,7 @@ const Settings: React.FC = () => {
                                                 ? "bg-white/5 text-muted-foreground cursor-default border border-white/10"
                                                 : ""
                                         )}
-                                        variant={plan.isCurrent ? 'ghost' : 'luxury'}
+                                        variant={plan.isCurrent ? 'ghost' : 'primary'}
                                         disabled={plan.isCurrent}
                                         onClick={() => onUpgrade(plan.tier)}
                                     >

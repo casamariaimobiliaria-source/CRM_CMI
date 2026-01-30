@@ -2,42 +2,41 @@ import * as React from "react"
 import { cn } from "../../lib/utils"
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: 'primary' | 'secondary' | 'ghost' | 'destructive' | 'outline' | 'link' | 'luxury' | 'platinum';
+    variant?: 'primary' | 'secondary' | 'ghost' | 'destructive' | 'outline' | 'link' | 'luxury';
     size?: 'default' | 'sm' | 'lg' | 'icon';
     isLoading?: boolean;
-    premium?: boolean; // Premium glow option
+    premium?: boolean; // Kept for API compatibility, but will just add a glow
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant = 'primary', size = 'default', isLoading, premium = false, children, ...props }, ref) => {
 
-        // Premium Variants - Elegant, Refined, Sophisticated
+        // Modern Variants - Cyber/Tech Look
         const variants = {
-            primary: "gold-gradient text-primary-foreground hover:opacity-90 shadow-gold-glow border border-white/10 transition-all duration-300",
-            secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border shadow-premium transition-all duration-300",
-            luxury: "luxury-gradient text-white border border-primary/30 hover:border-primary/60 shadow-premium hover:shadow-gold-glow-lg transition-all duration-300",
-            platinum: "platinum-gradient text-black hover:opacity-90 shadow-platinum-glow border border-black/5 transition-all duration-300",
-            ghost: "hover:bg-accent/10 hover:text-accent-foreground border border-transparent hover:border-border/50 transition-all duration-300",
-            destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 border border-destructive/20 shadow-premium transition-all duration-300",
-            outline: "border border-border bg-transparent hover:bg-secondary/50 hover:border-primary/30 hover:text-foreground shadow-premium transition-all duration-300",
-            link: "text-primary underline-offset-4 hover:underline border-0 hover:text-primary/80 transition-colors duration-200",
+            primary: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 border-0 transition-all duration-200",
+            secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-white/5 transition-all duration-200",
+            ghost: "hover:bg-primary/10 hover:text-primary transition-all duration-200",
+            destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-md shadow-destructive/20 transition-all duration-200",
+            outline: "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground transition-all duration-200",
+            link: "text-primary underline-offset-4 hover:underline",
+            luxury: "bg-primary text-black font-bold shadow-neon-cyan hover:scale-105 transition-all duration-300",
         };
 
         const sizes = {
-            default: "h-11 px-6 py-2.5",
-            sm: "h-9 px-4 text-sm",
-            lg: "h-14 px-8 text-base",
-            icon: "h-11 w-11 p-0 flex items-center justify-center",
+            default: "h-10 px-4 py-2",
+            sm: "h-9 rounded-md px-3",
+            lg: "h-11 rounded-md px-8",
+            icon: "h-10 w-10",
         };
 
-        const baseStyles = "inline-flex items-center justify-center rounded-lg text-sm font-semibold tracking-tight transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:scale-[1.02] active:scale-[0.98]";
+        const baseStyles = "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
-        const premiumGlow = premium ? "shadow-gold-glow" : "";
+        const premiumGlow = premium ? "shadow-neon" : "";
 
         return (
             <button
                 ref={ref}
-                className={cn(baseStyles, variants[variant], sizes[size], premiumGlow, className)}
+                className={cn(baseStyles, variants[variant as keyof typeof variants] || variants.primary, sizes[size], premiumGlow, className)}
                 disabled={isLoading || props.disabled}
                 {...props}
             >

@@ -17,10 +17,19 @@ export interface Organization {
   id: string;
   name: string;
   plan_tier: 'free' | 'pro' | 'enterprise';
-  subscription_status: 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete';
+  subscription_status: 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete' | 'paused';
   max_leads: number;
   max_users: number;
   stripe_customer_id?: string;
+  logo_url?: string;
+  brand_display_name?: string;
+}
+
+export interface SystemSettings {
+  id: string;
+  app_name: string;
+  app_logo_url?: string;
+  updated_at: string;
 }
 
 export interface UserProfile {

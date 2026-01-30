@@ -29,9 +29,9 @@ const Kanban: React.FC = () => {
         const newStatus = destination.droppableId as LeadStatus;
         try {
             await updateLead(draggableId, { status: newStatus });
-            toast.success(`Status updated to ${newStatus}`);
+            toast.success(`Status atualizado para ${newStatus}`);
         } catch (error) {
-            toast.error('Error updating status');
+            toast.error('Erro ao atualizar status');
         }
     };
 
@@ -45,8 +45,8 @@ const Kanban: React.FC = () => {
                 <title>Funil Estratégico | ImobLeads</title>
             </Helmet>
             <header className="px-8 py-10 shrink-0 border-b border-white/5 bg-background/50 backdrop-blur-3xl">
-                <h1 className="text-4xl font-display font-bold text-foreground italic tracking-tight">The Pipeline</h1>
-                <p className="text-primary text-[10px] font-bold uppercase tracking-[0.3em] mt-3">Fluid Motion Strategy</p>
+                <h1 className="text-4xl font-display font-bold text-foreground italic tracking-tight">O Pipeline</h1>
+                <p className="text-primary text-[10px] font-bold uppercase tracking-[0.3em] mt-3">Estratégia de Movimento Fluido</p>
             </header>
 
             <DragDropContext onDragEnd={onDragEnd}>
@@ -67,7 +67,7 @@ const Kanban: React.FC = () => {
                                         <h2 className="font-display font-medium text-[13px] uppercase tracking-[0.15em] text-foreground/80 italic">{column.title}</h2>
                                     </div>
                                     <span className="text-[10px] font-luxury italic text-muted-foreground bg-white/5 px-3 py-1 rounded-full">
-                                        {getLeadsByStatus(column.id).length} units
+                                        {getLeadsByStatus(column.id).length} unidades
                                     </span>
                                 </div>
 

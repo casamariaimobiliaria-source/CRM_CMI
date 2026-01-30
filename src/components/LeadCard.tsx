@@ -26,12 +26,13 @@ const getStatusVariant = (status: string) => {
 const getCardColor = (lead: Lead) => {
     const isOverdue = lead.nextContact && new Date(lead.nextContact) < new Date();
 
-    if (isOverdue) return "bg-destructive/5 border-destructive/20 hover:border-destructive/40";
-    if (lead.status === 'Agendou') return "bg-secondary/5 border-secondary/20 hover:border-secondary/40";
-    if (lead.status === 'Comprou') return "bg-primary/5 border-primary/20 hover:border-primary/40";
-    if (lead.status === 'Não Responde' || lead.status === 'Perdido') return "bg-muted/30 border-muted-foreground/10 hover:border-muted-foreground/20";
+    if (isOverdue) return "bg-red-500/10 border-red-500/50 hover:border-red-500/80";
+    if (lead.status === 'Comprou') return "bg-blue-500/10 border-blue-500/50 hover:border-blue-500/80";
+    if (lead.status === 'Agendou') return "bg-yellow-500/10 border-yellow-500/50 hover:border-yellow-500/80";
+    if (lead.status === 'Não Responde') return "bg-gray-500/10 border-gray-500/30 hover:border-gray-500/50";
+    if (lead.status === 'Perdido') return "bg-destructive/5 border-destructive/20 opacity-75 grayscale-[0.5]";
 
-    return "bg-card border-border hover:border-border/60";
+    return "hover:border-primary/20 hover:bg-white/[0.02]";
 }
 
 const getTempColor = (temp: string) => {
@@ -55,29 +56,27 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
             whileHover={{ y: -4, scale: 1.005 }}
             onClick={() => navigate(`/edit/${lead.id}`)}
             className={cn(
-                "relative flex flex-col md:flex-row items-center p-4 md:p-5 bg-card/40 backdrop-blur-sm border border-white/5 rounded-2xl transition-all duration-700 cursor-pointer group shadow-premium hover:shadow-2xl hover:border-primary/20 overflow-hidden",
-                lead.status === 'Agendou' && "bg-secondary/5",
-                lead.status === 'Comprou' && "bg-primary/5 shadow-gold-glow/5"
+                "relative flex flex-col md:flex-row items-center p-6 rounded-[2.5rem] transition-all duration-700 cursor-pointer group hover:shadow-2xl overflow-hidden glass-high-fidelity",
+                getCardColor(lead)
             )}
         >
             {/* Ambient Background Light */}
-            <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 blur-[100px] pointer-events-none group-hover:bg-primary/10 transition-all duration-1000" />
+            <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 blur-[80px] pointer-events-none group-hover:bg-primary/10 transition-all duration-500" />
 
             <div className="flex w-full md:w-auto items-center md:block">
-                {/* Avatar - High End */}
-                <div className="relative w-12 h-12 md:w-14 md:h-14 bg-black border border-white/10 rounded-full flex items-center justify-center overflow-hidden shrink-0 transition-all duration-700 group-hover:border-primary/40 group-hover:shadow-gold-glow">
-                    <span className="font-luxury italic text-lg md:text-xl text-primary drop-shadow-sm">
+                {/* Avatar */}
+                <div className="relative w-12 h-12 md:w-14 md:h-14 bg-secondary rounded-full flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 border border-white/5 group-hover:border-primary">
+                    <span className="font-display font-bold text-lg md:text-xl text-primary">
                         {String(lead?.nome || '?').charAt(0).toUpperCase()}
                     </span>
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
 
                 {/* Mobile Name & Status */}
                 <div className="md:hidden ml-4 flex-1">
-                    <h3 className="font-display font-bold text-base text-foreground tracking-tight">
+                    <h3 className="font-medium text-base text-foreground">
                         {lead?.nome || 'Anônimo'}
                     </h3>
-                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[9px] px-2 py-0 border-white/5 font-bold tracking-widest uppercase h-4 bg-white/5 mt-1">
+                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5 mt-1">
                         {lead?.status}
                     </Badge>
                 </div>
@@ -85,10 +84,10 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
 
             <div className="flex-1 min-w-0 w-full mt-4 md:mt-0 md:ml-6">
                 <div className="hidden md:flex items-center gap-3 mb-1">
-                    <h3 className="font-display font-bold text-lg text-foreground tracking-tight group-hover:text-primary transition-colors duration-500">
+                    <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors duration-200">
                         {lead?.nome || 'Anônimo'}
                     </h3>
-                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[9px] px-2 py-0 border-white/5 font-bold tracking-widest uppercase h-4 bg-white/5">
+                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5">
                         {lead?.status}
                     </Badge>
                 </div>
@@ -98,14 +97,14 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
                         <span className="text-foreground/80">{lead.telefone}</span>
                     </div>
                     <div className="flex items-center gap-1.5 md:border-r border-white/10 pr-0 md:pr-4">
-                        <span className="text-primary tracking-[0.1em] font-bold italic truncate">{lead.empreendimento || 'PREMIUM PROPERTY'}</span>
+                        <span className="text-primary tracking-[0.1em] font-bold italic truncate">{lead.empreendimento || 'IMÓVEL PREMIUM'}</span>
                     </div>
                     {lead.nextContact && (
                         <div className={cn(
                             "flex items-center gap-1.5",
                             new Date(lead.nextContact) < new Date() ? "text-destructive" : "text-muted-foreground"
                         )}>
-                            <span className="opacity-50 italic">NEXT:</span>
+                            <span className="opacity-50 italic">PRÓXIMO:</span>
                             <span>{format(new Date(lead.nextContact), "dd MMM HH:mm", { locale: ptBR })}</span>
                         </div>
                     )}
@@ -115,7 +114,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
             <div className="flex items-center gap-6 ml-0 md:ml-4 w-full md:w-auto justify-end mt-4 md:mt-0 absolute top-4 right-4 md:static">
                 {/* Temp Indicator */}
                 <div className="hidden sm:flex flex-col items-end">
-                    <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">Temperature</span>
+                    <span className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-widest block mb-2">Temperatura</span>
                     <div className="flex gap-1">
                         {[1, 2, 3].map((i) => (
                             <div

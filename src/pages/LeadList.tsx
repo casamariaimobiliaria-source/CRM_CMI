@@ -47,66 +47,77 @@ const LeadList: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-background">
-            <LeadFilters
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                filterTemp={filterTemp}
-                setFilterTemp={setFilterTemp}
-                filterStatus={filterStatus}
-                setFilterStatus={setFilterStatus}
-                filteredCount={filteredLeads.length}
-                filteredLeads={filteredLeads}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-                sortBy={sortBy}
-                setSortBy={setSortBy}
-                startDate={startDate}
-                setStartDate={setStartDate}
-                endDate={endDate}
-                setEndDate={setEndDate}
-                brokers={brokers}
-                filterBroker={filterBroker}
-                setFilterBroker={setFilterBroker}
-            />
+        <div className="flex flex-col min-h-screen bg-background p-6 md:p-10 space-y-12">
+            <div className="max-w-7xl mx-auto w-full space-y-4">
+                <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Fluxo de Leads</h1>
+                <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
+                    <span className="h-[1px] w-8 bg-primary/30" />
+                    Gestão de Pipeline em Tempo Real
+                </p>
+            </div>
 
-            <main className="flex-1 px-4 md:px-10 py-10 space-y-6 pb-40 max-w-7xl mx-auto w-full">
-                <AnimatePresence mode="popLayout">
-                    {filteredLeads.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="py-32 text-center flex flex-col items-center"
-                        >
-                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
-                                <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                            <h3 className="text-xl font-display font-bold text-foreground italic mb-2">No Records Found</h3>
-                            <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-[0.2em]">
-                                {searchTerm ? `The search for "${searchTerm}" returned no data` : "The exclusivity database is currently empty"}
-                            </p>
-                            {searchTerm && (
-                                <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold">CLEAR SEARCH</Button>
-                            )}
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            layout
-                            className={cn(
-                                viewMode === 'table'
-                                    ? "bg-black/20 backdrop-blur-md rounded-3xl border border-white/5 divide-y divide-white/5 overflow-hidden"
-                                    : "grid grid-cols-1 gap-6"
-                            )}
-                        >
-                            {filteredLeads.map(lead => (
-                                viewMode === 'cards'
-                                    ? <LeadCard key={lead.id} lead={lead} />
-                                    : <LeadTableRow key={lead.id} lead={lead} />
-                            ))}
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </main>
+            <div className="bg-black/20 backdrop-blur-3xl rounded-[2.5rem] border border-white/5 p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full relative overflow-hidden">
+                <div className="absolute inset-0 subtle-dot-grid opacity-10 pointer-events-none" />
+                <LeadFilters
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    filterTemp={filterTemp}
+                    setFilterTemp={setFilterTemp}
+                    filterStatus={filterStatus}
+                    setFilterStatus={setFilterStatus}
+                    filteredCount={filteredLeads.length}
+                    filteredLeads={filteredLeads}
+                    viewMode={viewMode}
+                    setViewMode={setViewMode}
+                    sortBy={sortBy}
+                    setSortBy={setSortBy}
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    endDate={endDate}
+                    setEndDate={setEndDate}
+                    brokers={brokers}
+                    filterBroker={filterBroker}
+                    setFilterBroker={setFilterBroker}
+                />
+
+                <main className="space-y-6 pb-40 relative z-10">
+                    <AnimatePresence mode="popLayout">
+                        {filteredLeads.length === 0 ? (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="py-32 text-center flex flex-col items-center"
+                            >
+                                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
+                                    <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                </div>
+                                <h3 className="text-xl font-display font-bold text-foreground italic mb-2">Nenhum Registro Encontrado</h3>
+                                <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                    {searchTerm ? `A busca por "${searchTerm}" não retornou dados` : "A base exclusiva de Leads está vazia"}
+                                </p>
+                                {searchTerm && (
+                                    <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold">LIMPAR BUSCA</Button>
+                                )}
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                layout
+                                className={cn(
+                                    viewMode === 'table'
+                                        ? "bg-black/20 backdrop-blur-md rounded-3xl border border-white/5 divide-y divide-white/5 overflow-hidden"
+                                        : "grid grid-cols-1 gap-6"
+                                )}
+                            >
+                                {filteredLeads.map(lead => (
+                                    viewMode === 'cards'
+                                        ? <LeadCard key={lead.id} lead={lead} />
+                                        : <LeadTableRow key={lead.id} lead={lead} />
+                                ))}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </main>
+            </div>
         </div>
     );
 };

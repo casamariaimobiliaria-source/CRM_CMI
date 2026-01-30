@@ -11,10 +11,9 @@ import { MaskedInput } from '../components/ui/MaskedInput';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { toast } from 'sonner';
-import { UserPlus, Trash2 } from 'lucide-react';
+import { UserPlus, Trash2, Pencil, X } from 'lucide-react';
 
 interface Member {
-    id: string;
     organization_id: string;
     user_id: string;
     role: 'owner' | 'admin' | 'member';
@@ -30,7 +29,7 @@ const registerSchema = z.object({
     name: z.string().min(3, 'Nome deve ter pelo menos 3 caracteres'),
     email: z.string().email('E-mail inválido'),
     phone: z.string().min(10, 'Telefone inválido'),
-    password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres'),
+    password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres').optional().or(z.literal('')),
     role: z.enum(['admin', 'member']),
 });
 
@@ -41,8 +40,9 @@ const Team: React.FC = () => {
     const [members, setMembers] = useState<Member[]>([]);
     const [loading, setLoading] = useState(true);
     const [registering, setRegistering] = useState(false);
+    const [editingMember, setEditingMember] = useState<Member | null>(null);
 
-    const { register, handleSubmit, reset, control, formState: { errors } } = useForm<RegisterFormValues>({
+    const { register, handleSubmit, reset, control, setValue, formState: { errors } } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
         defaultValues: { role: 'member' }
     });
@@ -99,78 +99,117 @@ const Team: React.FC = () => {
         setRegistering(true);
 
         try {
-            // 1. Create User using a temporary client to avoid signing out the admin
-            const tempSupabase = createClient(supabaseUrl, supabaseAnonKey, {
-                auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
-            });
+            if (editingMember) {
+                // UPDATE Logic
+                const userId = editingMember.user_id;
 
-            const { data: authData, error: authError } = await tempSupabase.auth.signUp({
-                email: data.email,
-                password: data.password,
-                options: {
-                    data: {
+                // 1. Update Profile (public.users)
+                const { error: profileError } = await supabase
+                    .from('users')
+                    .update({
                         name: data.name,
-                        phone: data.phone // Metadata for triggers potentially
-                    }
-                }
-            });
+                        role: data.role,
+                        // We don't usually let them change email here to avoid auth sync issues
+                        // unless specifically implemented.
+                    })
+                    .eq('id', userId);
 
-            let userId = authData.user?.id;
+                if (profileError) throw profileError;
 
-            if (authError) {
-                if (authError.message === 'User already registered') {
-                    // Try to sign in with provided credentials to recover ID
-                    // This handles cases where user was created but flow failed mid-way
-                    const { data: signInData, error: signInError } = await tempSupabase.auth.signInWithPassword({
-                        email: data.email,
-                        password: data.password
+                // 2. Update Org Member Role
+                const { error: memberError } = await supabase
+                    .from('organization_members')
+                    .update({ role: data.role as 'admin' | 'member' })
+                    .match({
+                        organization_id: userProfile.organization_id,
+                        user_id: userId
                     });
 
-                    if (signInError) {
-                        throw new Error('Este e-mail já está cadastrado. Se o usuário já existe, use a senha correta para adicioná-lo.');
-                    }
+                if (memberError) throw memberError;
 
-                    if (signInData.user) {
-                        userId = signInData.user.id;
-                    } else {
-                        throw new Error('Falha ao recuperar usuário existente.');
-                    }
-                } else {
-                    throw authError;
+                // 3. Optional: Update Password if provided
+                if (data.password && data.password.length >= 6) {
+                    // This requires special handling or a dedicated function if using Auth API
+                    // In a multi-tenant SaaS, admins usually don't change passwords directly 
+                    // for security, but we can call a function or use service role if needed.
+                    // For now, we focus on profile/role.
+                    toast.info('Alteração de senha deve ser feita pelo próprio usuário via "Esqueci minha senha".');
                 }
-            }
 
-            if (!userId) throw new Error('Usuário não identificado.');
+                toast.success('Membro atualizado com sucesso!');
+                setEditingMember(null);
+            } else {
+                // CREATE Logic
+                if (!data.password) throw new Error('Senha é obrigatória para novos cadastros.');
 
-            // 2. Insert into public.users (Profile)
-            // Even if trigger exists, we force update to ensure Organization ID
-            const { error: profileError } = await supabase // Using admin client (current session needs permissions)
-                .from('users')
-                .upsert({
-                    id: userId,
-                    name: data.name,
+                // 1. Create User using a temporary client to avoid signing out the admin
+                const tempSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+                    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+                });
+
+                const { data: authData, error: authError } = await tempSupabase.auth.signUp({
                     email: data.email,
-                    role: data.role,
-                    organization_id: userProfile.organization_id
+                    password: data.password,
+                    options: {
+                        data: {
+                            name: data.name,
+                            phone: data.phone
+                        }
+                    }
                 });
 
-            if (profileError) {
-                console.error('Profile creation warning:', profileError);
-                // We proceed to add to org members anyway
+                let userId = authData.user?.id;
+
+                if (authError) {
+                    if (authError.message === 'User already registered') {
+                        const { data: signInData, error: signInError } = await tempSupabase.auth.signInWithPassword({
+                            email: data.email,
+                            password: data.password
+                        });
+
+                        if (signInError) {
+                            throw new Error('Este e-mail já está cadastrado. Se o usuário já existe, use a senha correta para adicioná-lo.');
+                        }
+
+                        if (signInData.user) {
+                            userId = signInData.user.id;
+                        } else {
+                            throw new Error('Falha ao recuperar usuário existente.');
+                        }
+                    } else {
+                        throw authError;
+                    }
+                }
+
+                if (!userId) throw new Error('Usuário não identificado.');
+
+                // 2. Insert into public.users (Profile)
+                const { error: profileError } = await supabase
+                    .from('users')
+                    .upsert({
+                        id: userId,
+                        name: data.name,
+                        email: data.email,
+                        role: data.role,
+                        organization_id: userProfile.organization_id
+                    });
+
+                if (profileError) console.error('Profile creation warning:', profileError);
+
+                // 3. Add to Organization Members
+                const { error: memberError } = await supabase
+                    .from('organization_members')
+                    .insert({
+                        organization_id: userProfile.organization_id,
+                        user_id: userId,
+                        role: data.role as 'admin' | 'member'
+                    });
+
+                if (memberError) throw memberError;
+
+                toast.success('Membro cadastrado com sucesso!');
             }
 
-            // 3. Add to Organization Members
-            const { error: memberError } = await supabase
-                .from('organization_members')
-                .insert({
-                    organization_id: userProfile.organization_id,
-                    user_id: userId,
-                    role: data.role as 'admin' | 'member'
-                });
-
-            if (memberError) throw memberError;
-
-            toast.success('Membro cadastrado com sucesso!');
             reset();
             fetchData();
         } catch (error: any) {
@@ -181,7 +220,7 @@ const Team: React.FC = () => {
         }
     };
 
-    const removeMember = async (memberId: string, userId: string) => {
+    const removeMember = async (userId: string) => {
         if (!confirm('Tem certeza que deseja remover este membro da equipe?')) return;
 
         if (userId === userProfile?.id) {
@@ -194,38 +233,66 @@ const Team: React.FC = () => {
             const { error } = await supabase
                 .from('organization_members')
                 .delete()
-                .eq('id', memberId);
+                .match({
+                    organization_id: userProfile!.organization_id,
+                    user_id: userId
+                });
 
             if (error) throw error;
 
-            // Update user to remove org_id (optional, depends on logic, maybe just leave as orphan or delete user?)
-            // For now just removing from org access is safest.
-
             toast.success('Membro removido.');
-            setMembers(prev => prev.filter(m => m.id !== memberId));
+            setMembers(prev => prev.filter(m => m.user_id !== userId));
         } catch (error) {
             console.error('Error removing member:', error);
             toast.error('Erro ao remover membro.');
         }
     };
 
+    const handleEditMember = (member: Member) => {
+        setEditingMember(member);
+        setValue('name', member.user?.name || '');
+        setValue('email', member.user?.email || '');
+        setValue('role', member.role as 'admin' | 'member');
+        // Phone would need to be passed in from profile if available
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const cancelEdit = () => {
+        setEditingMember(null);
+        reset();
+    };
+
     if (loading) return <div className="p-8 text-center text-muted-foreground">Carregando equipe...</div>;
 
     return (
         <div className="max-w-5xl mx-auto p-6 pb-32 space-y-8 animate-in fade-in duration-500">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">Gerenciar Equipe</h1>
-                <p className="text-muted-foreground mt-1">Cadastre novos corretores e gerencie o acesso à sua equipe.</p>
+            <div className="space-y-4">
+                <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Gerenciar Equipe</h1>
+                <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
+                    <span className="h-[1px] w-8 bg-primary/30" />
+                    Squad & Governance
+                </p>
             </div>
 
-            <div className={`grid grid-cols-1 ${userProfile?.role === 'admin' || userProfile?.role === 'owner' ? 'lg:grid-cols-3' : ''} gap-8`}>
+            <div className={`grid grid-cols-1 ${userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin ? 'lg:grid-cols-3' : ''} gap-8`}>
                 {/* Registration Form */}
-                {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && (
+                {(userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin) && (
                     <div className="lg:col-span-1">
-                        <Card className="border-0 shadow-lg sticky top-24">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Cadastrar Membro</CardTitle>
-                                <CardDescription>Adicione um novo usuário.</CardDescription>
+                        <Card className="glass-high-fidelity rounded-[2.5rem] sticky top-24">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                                <div>
+                                    <CardTitle className="text-lg">
+                                        {editingMember ? 'Editar Membro' : 'Cadastrar Membro'}
+                                    </CardTitle>
+                                    <CardDescription>
+                                        {editingMember ? 'Atualize os dados do colaborador.' : 'Adicione um novo usuário.'}
+                                    </CardDescription>
+                                </div>
+                                {editingMember && (
+                                    <Button size="icon" variant="ghost" onClick={cancelEdit} className="h-8 w-8">
+                                        <X className="w-4 h-4" />
+                                    </Button>
+                                )}
                             </CardHeader>
                             <CardContent>
                                 <form onSubmit={handleSubmit(onRegister)} className="space-y-4">
@@ -240,6 +307,7 @@ const Team: React.FC = () => {
                                         placeholder="email@exemplo.com"
                                         error={errors.email?.message}
                                         {...register('email')}
+                                        disabled={!!editingMember}
                                     />
                                     <div>
                                         <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1 mb-1.5 block">
@@ -277,9 +345,19 @@ const Team: React.FC = () => {
                                         </select>
                                     </div>
                                     <Button type="submit" className="w-full" isLoading={registering}>
-                                        <UserPlus className="w-4 h-4 mr-2" />
-                                        Cadastrar
+                                        {editingMember ? <Pencil className="w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
+                                        {editingMember ? 'Salvar Alterações' : 'Cadastrar'}
                                     </Button>
+                                    {editingMember && (
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            className="w-full mt-2"
+                                            onClick={cancelEdit}
+                                        >
+                                            Cancelar
+                                        </Button>
+                                    )}
                                 </form>
                             </CardContent>
                         </Card>
@@ -287,15 +365,15 @@ const Team: React.FC = () => {
                 )}
 
                 {/* Members List */}
-                <div className={`${userProfile?.role === 'admin' || userProfile?.role === 'owner' ? 'lg:col-span-2' : 'max-w-3xl mx-auto w-full'} space-y-6`}>
-                    <Card className="border-0 shadow-md">
+                <div className={`${userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin ? 'lg:col-span-2' : 'max-w-3xl mx-auto w-full'} space-y-6`}>
+                    <Card className="glass-high-fidelity rounded-[2.5rem]">
                         <CardHeader>
                             <CardTitle className="text-lg">Membros da Equipe</CardTitle>
                             <CardDescription>{members.length} colaboradores ativos</CardDescription>
                         </CardHeader>
                         <CardContent className="divide-y">
                             {members.map(member => (
-                                <div key={member.id} className="py-4 flex items-center justify-between first:pt-0 last:pb-0">
+                                <div key={member.user_id} className="py-4 flex items-center justify-between first:pt-0 last:pb-0">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold uppercase">
                                             {member.user?.name?.charAt(0) || '?'}
@@ -309,15 +387,25 @@ const Team: React.FC = () => {
                                         <Badge variant={member.role === 'owner' ? 'default' : member.role === 'admin' ? 'secondary' : 'outline'}>
                                             {member.role === 'owner' ? 'Proprietário' : member.role === 'admin' ? 'Admin' : 'Corretor'}
                                         </Badge>
-                                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && member.role !== 'owner' && (
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={() => removeMember(member.id, member.user_id)}
-                                                className="h-8 w-8 text-destructive hover:bg-destructive/10"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
+                                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin) && member.role !== 'owner' && (
+                                            <div className="flex items-center gap-1">
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    onClick={() => handleEditMember(member)}
+                                                    className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                                                >
+                                                    <Pencil className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    onClick={() => removeMember(member.user_id)}
+                                                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>

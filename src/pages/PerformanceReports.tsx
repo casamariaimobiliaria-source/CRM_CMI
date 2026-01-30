@@ -121,12 +121,15 @@ const PerformanceReports: React.FC = () => {
             </Helmet>
             {/* Header section with refined design */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-end gap-6">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                        <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground italic tracking-tight">Análise de Performance</h2>
-                        <Badge variant="secondary" className="bg-primary/20 text-primary border border-primary/20 font-black px-3 py-1 rounded-full text-[10px] tracking-[0.2em] uppercase">Platinum Exclusive</Badge>
+                <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Análise de Performance</h2>
+                        <Badge variant="secondary" className="bg-primary/10 text-primary border border-primary/20 font-black px-4 py-1.5 rounded-2xl text-[9px] tracking-[0.3em] uppercase backdrop-blur-md">Elite Edition</Badge>
                     </div>
-                    <p className="text-muted-foreground/60 font-medium text-sm">Inteligência de dados e métricas de elite para sua operação.</p>
+                    <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
+                        <span className="h-[1px] w-8 bg-primary/30" />
+                        Inteligência & Otimização
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap items-center gap-3 w-full xl:w-auto">
@@ -250,8 +253,8 @@ const PerformanceReports: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
-                <Card className="lg:col-span-2 bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden group shadow-2xl">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <Card className="lg:col-span-2 rounded-[2.5rem] glass-high-fidelity group shadow-2xl">
                     <CardHeader className="md:pb-2">
                         <div className="flex items-center justify-between">
                             <CardTitle className="flex items-center gap-3 text-lg md:text-xl">
@@ -302,8 +305,7 @@ const PerformanceReports: React.FC = () => {
                         </ResponsiveContainer>
                     </CardContent>
                 </Card>
-
-                <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2rem] overflow-hidden group shadow-2xl">
+                <Card className="rounded-[2.5rem] glass-high-fidelity group shadow-2xl">
                     <CardHeader className="md:pb-2">
                         <CardTitle className="flex items-center gap-3 text-lg md:text-xl">
                             <div className="p-2.5 bg-amber-500/10 rounded-xl text-amber-500">

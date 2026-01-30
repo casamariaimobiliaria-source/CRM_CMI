@@ -50,7 +50,7 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
     setFilterBroker
 }) => {
     return (
-        <div className="bg-background/80 backdrop-blur-3xl border-b border-white/5 sticky top-20 z-40 py-6 md:py-8 shrink-0 transition-all">
+        <div className="bg-background/80 backdrop-blur-xl border-b border-border sticky top-0 z-40 py-4 md:py-6 shrink-0 transition-all">
             <div className="max-w-7xl mx-auto space-y-6 px-4 md:px-8">
 
                 <div className="relative group max-w-2xl mx-auto">

@@ -72,7 +72,7 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead }) => {
                 {/* Project */}
                 <div className="col-span-1 md:col-span-3 min-w-0 pl-14 md:pl-0 -mt-4 md:mt-0">
                     <span className="text-[11px] font-bold text-primary/80 truncate uppercase tracking-[0.1em] italic block">
-                        {lead.empreendimento || 'PREMIUM REAL ESTATE'}
+                        {lead.empreendimento || 'IMÓVEL PREMIUM'}
                     </span>
                 </div>
 

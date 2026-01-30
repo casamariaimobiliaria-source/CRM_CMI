@@ -11,9 +11,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 import { leadFormSchema, type LeadFormValues } from '../lib/validations';
 import { cn } from '../lib/utils';
+import { Trash2 } from 'lucide-react';
 
 const LeadForm: React.FC = () => {
-    const { addLead, updateLead, leads } = useLead();
+    const { addLead, updateLead, deleteLead, leads } = useLead();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -102,9 +103,23 @@ const LeadForm: React.FC = () => {
         }
     };
 
-    const labelClasses = "text-[10px] font-bold text-muted-foreground/60 uppercase tracking-[0.2em] mb-2 block ml-1";
-    const inputClasses = "bg-white/5 border-white/5 focus:bg-white/10 focus:border-primary/30 rounded-2xl h-14 px-5 text-base transition-all duration-500";
-    const selectClasses = "flex h-14 w-full items-center justify-between rounded-2xl border border-white/5 bg-white/5 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/20 focus:border-primary/30 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500";
+    const handleDelete = async () => {
+        if (window.confirm('Tem certeza que deseja excluir este lead? Esta ação não pode ser desfeita.')) {
+            try {
+                if (id) {
+                    await deleteLead(id);
+                    toast.success('Lead excluído com sucesso');
+                    navigate('/');
+                }
+            } catch (error) {
+                toast.error('Erro ao excluir lead');
+            }
+        }
+    };
+
+    const labelClasses = "text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1";
+    const inputClasses = "bg-secondary/50 border-input focus:bg-background focus:border-primary/50 text-foreground placeholder:text-muted-foreground/50 rounded-2xl h-14 px-5 text-base transition-all duration-500 border focus:ring-4 focus:ring-primary/10";
+    const selectClasses = "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500 text-foreground";
 
     return (
         <div className="max-w-4xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 animate-in fade-in slide-in-from-bottom-8 duration-1000">
@@ -117,7 +132,7 @@ const LeadForm: React.FC = () => {
                 </p>
             </header>
 
-            <Card className="bg-card/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
+            <Card className="bg-card/40 backdrop-blur-xl border border-border rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <CardContent className="p-8 md:p-12 space-y-10">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -236,7 +251,7 @@ const LeadForm: React.FC = () => {
                             <textarea
                                 rows={6}
                                 className={cn(
-                                    "flex w-full rounded-[1.5rem] border border-white/5 bg-white/5 px-6 py-5 text-base shadow-sm placeholder:text-muted-foreground/30 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 focus-visible:border-primary/30 disabled:cursor-not-allowed disabled:opacity-50 resize-none font-medium transition-all duration-500",
+                                    "flex w-full rounded-[1.5rem] border border-input bg-secondary/50 px-6 py-5 text-base shadow-sm placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 resize-none font-medium transition-all duration-500 text-foreground",
                                     errors.historico && "border-destructive focus-visible:ring-destructive"
                                 )}
                                 placeholder="Descreva o movimento estratégico..."
@@ -245,23 +260,38 @@ const LeadForm: React.FC = () => {
                         </div>
                     </CardContent>
 
-                    <CardFooter className="bg-black/40 p-8 md:p-12 border-t border-white/5 flex flex-col md:flex-row justify-between gap-6">
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            onClick={() => navigate('/')}
-                            className="h-14 px-10 text-[10px] font-bold tracking-widest text-muted-foreground/40 hover:text-foreground rounded-2xl"
-                            disabled={isSubmitting}
-                        >
-                            ABANDONAR ALTERAÇÕES
-                        </Button>
+                    <CardFooter className="bg-muted/30 p-8 md:p-12 border-t border-border flex flex-col md:flex-row justify-between gap-6">
+                        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => navigate('/')}
+                                className="h-14 px-6 text-[10px] font-bold tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-2xl w-full md:w-auto"
+                                disabled={isSubmitting}
+                            >
+                                CANCELAR
+                            </Button>
 
-                        <div className="flex gap-4">
+                            {id && (
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    onClick={handleDelete}
+                                    className="h-14 px-6 text-[10px] font-bold tracking-widest text-destructive hover:text-destructive hover:bg-destructive/10 rounded-2xl w-full md:w-auto"
+                                    disabled={isSubmitting}
+                                >
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    EXCLUIR
+                                </Button>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
                             {id && (
                                 <Button
                                     type="button"
                                     variant="outline"
-                                    className="h-14 px-8 rounded-2xl border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/5 transition-all"
+                                    className="h-14 px-8 rounded-2xl border-emerald-500/50 text-emerald-600 dark:text-emerald-500 hover:bg-emerald-500/10 transition-all w-full md:w-auto"
                                     onClick={() => {
                                         const phone = getValues('telefone').replace(/\D/g, '');
                                         const finalPhone = phone.length === 11 || phone.length === 10
@@ -270,16 +300,15 @@ const LeadForm: React.FC = () => {
                                         window.open(`https://wa.me/${finalPhone}`, '_blank');
                                     }}
                                 >
-                                    WHATSAPP DIRETO
+                                    WHATSAPP
                                 </Button>
                             )}
                             <Button
                                 type="submit"
-                                variant="luxury"
-                                className="h-14 px-12 rounded-2xl"
+                                className="w-full h-12 text-sm font-bold tracking-widest"
                                 isLoading={isSubmitting}
                             >
-                                {id ? 'SINCRONIZAR DADOS' : 'PUBLICAR REGISTRO'}
+                                {id ? 'SALVAR DADOS' : 'CRIAR LEAD'}
                             </Button>
                         </div>
                     </CardFooter>

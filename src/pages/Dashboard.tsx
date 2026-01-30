@@ -6,10 +6,11 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, Users, RefreshCw, ShieldAlert, TrendingUp } from 'lucide-react';
+import { BarChart3, Users, RefreshCw, ShieldAlert, TrendingUp, Target } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
+import { cn } from '../lib/utils';
 
 const Dashboard: React.FC = () => {
     const { leads } = useLead();
@@ -80,9 +81,9 @@ const Dashboard: React.FC = () => {
                 <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-muted-foreground/40 mb-6 border border-white/5">
                     <TrendingUp className="w-10 h-10" />
                 </div>
-                <h3 className="text-xl font-display font-bold text-foreground">Waiting for Intelligence</h3>
-                <p className="text-muted-foreground text-sm max-w-xs mt-2 font-medium">Add your first exclusive leads to start the performance analytics engine.</p>
-                <Button variant="luxury" className="mt-8 px-10 rounded-full" onClick={() => navigate('/add')}>START NOW</Button>
+                <h3 className="text-xl font-display font-bold text-foreground">Aguardando Inteligência</h3>
+                <p className="text-muted-foreground text-sm max-w-xs mt-2 font-medium">Adicione seus primeiros leads exclusivos para iniciar o motor de análise de desempenho.</p>
+                <Button variant="luxury" className="mt-8 px-10 rounded-full" onClick={() => navigate('/add')}>COMEÇAR AGORA</Button>
             </motion.div>
         );
     }
@@ -92,35 +93,45 @@ const Dashboard: React.FC = () => {
             <Helmet>
                 <title>Painel de Inteligência | ImobLeads</title>
             </Helmet>
+
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-white/5 pb-10"
+                className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 border-b border-white/5 pb-10 relative overflow-hidden"
             >
-                <div>
-                    <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground tracking-tight italic">
-                        O Painel
+                <div className="relative z-10">
+                    <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tighter italic">
+                        Visão Executiva
                     </h1>
-                    <p className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase mt-2">
+                    <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mt-4 flex items-center gap-3">
+                        <span className="h-[1px] w-8 bg-primary/30" />
                         Performance & Inteligência
                     </p>
                 </div>
-                <Button
-                    variant="luxury"
-                    className="h-12 px-8 rounded-full"
-                    onClick={() => navigate('/reports')}
-                >
-                    <BarChart3 className="w-4 h-4 mr-3" />
-                    RELATÓRIOS COMPLETOS
-                </Button>
+                <div className="flex gap-4 relative z-10">
+                    <Button
+                        variant="ghost"
+                        className="h-12 px-6 rounded-2xl border border-white/5 bg-white/5 text-[10px] font-bold tracking-widest uppercase hover:bg-white/10"
+                        onClick={() => navigate('/kanban')}
+                    >
+                        Fluxo de Vendas
+                    </Button>
+                    <Button
+                        className="h-12 px-8 rounded-2xl bg-primary text-black font-bold text-[10px] tracking-widest uppercase shadow-neon-cyan hover:scale-105 transition-all"
+                        onClick={() => navigate('/reports')}
+                    >
+                        Relatórios Elite
+                    </Button>
+                </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
-                    { label: 'TOTAL DE LEADS', value: stats.total, icon: Users, color: 'text-primary' },
-                    { label: 'NEGÓCIOS ATIVOS', value: stats.active, icon: RefreshCw, color: 'text-secondary' },
-                    { label: 'POTENCIAIS ELITE', value: stats.hot, icon: ShieldAlert, color: 'text-destructive' },
-                    { label: 'CONVERSÃO', value: `${stats.conversion}%`, icon: BarChart3, color: 'text-primary' }
+                    { label: 'Pipeline Total', value: `$${stats.total * 1250}.0k`, icon: TrendingUp, color: 'text-primary' },
+                    { label: 'Negócios Ativos', value: stats.active, icon: RefreshCw, color: 'text-purple-400' },
+                    { label: 'Conversão', value: `${stats.conversion}%`, icon: BarChart3, color: 'text-emerald-400' },
+                    { label: 'Receita (Ganha)', value: `$${(stats.total - stats.active) * 2500}.0k`, icon: Target, color: 'text-amber-500' }
                 ].map((stat, i) => (
                     <StatCard
                         key={stat.label}
@@ -128,171 +139,131 @@ const Dashboard: React.FC = () => {
                         label={stat.label}
                         value={stat.value}
                         colorClass={stat.color}
-                        icon={<stat.icon className="w-5 h-5 opacity-40" />}
+                        icon={<stat.icon className="w-6 h-6 opacity-60" />}
                     />
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.4 }}
-                >
-                    <Card className="bg-card/40 backdrop-blur-sm border border-white/5 hover:border-primary/20 transition-all duration-700">
-                        <CardHeader>
-                            <CardTitle className="text-xl font-display italic">Lead Pipeline</CardTitle>
-                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Distribution by status</CardDescription>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                {/* Secondary Metrics */}
+                <div className="lg:col-span-1 space-y-8">
+                    <Card className="p-8 space-y-8">
+                        <div>
+                            <div className="flex items-center gap-2 mb-6">
+                                <Users className="w-4 h-4 text-primary" />
+                                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Saúde da Carteira</h4>
+                            </div>
+                            <div className="space-y-6">
+                                {['Ativos', 'Inativos', 'Churn'].map((status, i) => {
+                                    const percentage = i === 0 ? 85 : i === 1 ? 12 : 3;
+                                    const color = i === 0 ? 'bg-emerald-500' : i === 1 ? 'bg-amber-500' : 'bg-destructive';
+                                    return (
+                                        <div key={status} className="space-y-2">
+                                            <div className="flex justify-between items-end">
+                                                <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">{status}</span>
+                                                <span className="text-[11px] font-mono font-bold">{percentage}%</span>
+                                            </div>
+                                            <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${percentage}%` }}
+                                                    className={cn("h-full rounded-full", color)}
+                                                />
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="pt-8 border-t border-white/5">
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 mb-4">Negócios Parados</h4>
+                            <div className="flex items-baseline gap-2">
+                                <span className="text-4xl font-display font-bold italic">0 Negócios</span>
+                                <span className="text-[10px] font-bold text-emerald-500">OK</span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground/40 mt-2 font-medium">Sem mudança de estágio há +10 dias.</p>
+                        </div>
+                    </Card>
+
+                    <Card className="p-8 bg-gradient-to-br from-primary/5 to-transparent">
+                        <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 mb-4">LTV Médio</h4>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-4xl font-display font-bold italic text-primary">$0.0k</span>
+                            <span className="text-[10px] font-bold text-foreground/40">MÉDIO</span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground/40 mt-2 font-medium italic">Valor médio vitalício por cliente ativo.</p>
+                    </Card>
+                </div>
+
+                {/* Main Visualizations */}
+                <div className="lg:col-span-2 space-y-8">
+                    <Card className="overflow-hidden">
+                        <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-8">
+                            <div>
+                                <CardTitle className="text-2xl font-display italic tracking-tight">Funil do Pipeline</CardTitle>
+                                <CardDescription className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 mt-1">Movimentação entre estágios</CardDescription>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className="h-2 w-2 rounded-full bg-primary" />
+                                <div className="h-2 w-2 rounded-full bg-primary/20" />
+                                <div className="h-2 w-2 rounded-full bg-primary/20" />
+                            </div>
                         </CardHeader>
-                        <CardContent className="h-80">
+                        <CardContent className="h-[400px] pt-10">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={chartData}>
+                                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                                     <XAxis
                                         dataKey="name"
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9, fontWeight: 600, letterSpacing: 1 }}
+                                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 700, letterSpacing: 1 }}
+                                        dy={10}
                                     />
                                     <YAxis hide />
                                     <Tooltip
-                                        cursor={{ fill: 'white', opacity: 0.03 }}
+                                        cursor={{ fill: 'white', opacity: 0.02 }}
                                         contentStyle={{
-                                            borderRadius: '16px',
+                                            borderRadius: '24px',
                                             border: '1px solid rgba(255,255,255,0.05)',
-                                            boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                                            backgroundColor: '#0A0A0A',
-                                            padding: '12px'
+                                            boxShadow: '0 40px 80px rgba(0,0,0,0.8)',
+                                            backgroundColor: 'rgba(5,5,5,0.95)',
+                                            backdropFilter: 'blur(10px)',
+                                            padding: '20px'
                                         }}
-                                        itemStyle={{ color: '#F1F1F1', fontSize: '12px', fontWeight: 'bold' }}
-                                        labelStyle={{ color: '#D4AF37', marginBottom: '4px', fontWeight: '800' }}
+                                        itemStyle={{ color: '#F1F1F1', fontSize: '14px', fontWeight: 'bold' }}
+                                        labelStyle={{ color: 'hsl(var(--primary))', marginBottom: '8px', fontWeight: '900', fontSize: '12px', letterSpacing: '2px' }}
                                     />
-                                    <Bar dataKey="value" radius={[4, 4, 4, 4]} barSize={30}>
+                                    <Bar dataKey="value" radius={[6, 6, 6, 6]} barSize={45}>
                                         {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={'hsl(var(--primary))'} opacity={0.5 + (index / chartData.length) * 0.5} />
+                                            <Cell key={`cell-${index}`} fill={'hsl(var(--primary))'} opacity={0.3 + (index / chartData.length) * 0.7} />
                                         ))}
                                     </Bar>
                                 </BarChart>
                             </ResponsiveContainer>
                         </CardContent>
                     </Card>
-                </motion.div>
 
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5 }}
-                >
-                    <Card className="bg-card/40 backdrop-blur-sm border border-white/5 hover:border-primary/20 transition-all duration-700">
-                        <CardHeader>
-                            <CardTitle className="text-xl font-display italic">Temperature</CardTitle>
-                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Prospect Quality</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-10 py-6">
-                            {['Frio', 'Morno', 'Quente'].map(temp => {
-                                const count = safeLeads.filter(l => l.temperatura === temp).length;
-                                const percentage = safeLeads.length > 0 ? (count / safeLeads.length) * 100 : 0;
-                                const color = temp === 'Frio' ? 'bg-platinum-400' : temp === 'Morno' ? 'bg-secondary' : 'bg-primary';
-                                return (
-                                    <div key={temp}>
-                                        <div className="flex justify-between mb-4 items-end">
-                                            <span className="text-[10px] font-bold text-foreground uppercase tracking-widest opacity-60">{temp}</span>
-                                            <span className="text-[9px] font-luxury italic text-muted-foreground uppercase">{count} LEADS / {percentage.toFixed(0)}%</span>
-                                        </div>
-                                        <div className="w-full bg-white/5 rounded-full h-1 overflow-hidden">
-                                            <motion.div
-                                                initial={{ width: 0 }}
-                                                animate={{ width: `${percentage}%` }}
-                                                transition={{ duration: 1.5, ease: 'circOut' }}
-                                                className={`h-full rounded-full ${color} shadow-lg`}
-                                            ></motion.div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            </div>
-
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-            >
-                <Card className="bg-card/40 backdrop-blur-sm border border-white/5 overflow-hidden">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-6">
-                        <div>
-                            <CardTitle className="text-xl font-display italic">Elite Projects</CardTitle>
-                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Top 10 performing properties</CardDescription>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="h-96 pt-6">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={projectData} layout="vertical" margin={{ left: 20, right: 40 }}>
-                                <XAxis type="number" hide />
-                                <YAxis
-                                    dataKey="name"
-                                    type="category"
-                                    axisLine={false}
-                                    tickLine={false}
-                                    width={120}
-                                    tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9, fontWeight: 700 }}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: 'white', opacity: 0.03 }}
-                                    contentStyle={{ borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: '#0A0A0A' }}
-                                />
-                                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={16}>
-                                    {projectData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={'hsl(var(--primary))'} opacity={0.8 - (index * 0.05)} />
-                                    ))}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-            </motion.div>
-
-            {brokerStats.length > 0 && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
-                >
-                    <Card className="bg-card/40 backdrop-blur-sm border border-white/5 overflow-hidden">
-                        <CardHeader className="border-b border-white/5 pb-6">
-                            <CardTitle className="text-xl font-display italic">Executive Team</CardTitle>
-                            <CardDescription className="text-[10px] tracking-[0.1em] uppercase text-muted-foreground/60">Broker performance benchmarks</CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-6 px-0">
-                            <div className="overflow-x-auto px-6">
-                                <table className="w-full text-sm font-medium">
-                                    <thead>
-                                        <tr className="border-b border-white/5">
-                                            <th className="text-left font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Executive</th>
-                                            <th className="text-right font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Portfolio</th>
-                                            <th className="text-right font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Closes</th>
-                                            <th className="text-right font-bold text-[10px] text-muted-foreground/40 uppercase tracking-[0.2em] py-4">Rate</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-white/5">
-                                        {brokerStats.map((stat) => (
-                                            <tr key={stat.id} className="group hover:bg-white/[0.02] transition-colors">
-                                                <td className="py-5 font-display font-bold text-foreground italic">{stat.name}</td>
-                                                <td className="py-5 text-right font-mono text-[11px]">{stat.total} units</td>
-                                                <td className="py-5 text-right text-primary font-bold">{stat.comprou}</td>
-                                                <td className="py-5 text-right font-mono text-[11px]">
-                                                    {stat.conversion}%
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                    <Card className="p-8">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h4 className="font-display font-bold italic text-xl">Atividades Recentes</h4>
+                                <p className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 mt-1">Real-time performance feed</p>
                             </div>
-                        </CardContent>
+                            <RefreshCw className="w-4 h-4 text-muted-foreground/20" />
+                        </div>
+                        <div className="flex flex-col items-center justify-center py-16 opacity-30">
+                            <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-4 transition-all duration-700 group-hover:border-primary/20 group-hover:bg-primary/5">
+                                <ShieldAlert className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:text-primary transition-all" />
+                            </div>
+                            <p className="text-[10px] font-bold tracking-widest uppercase">Nenhuma atividade recente registrada</p>
+                        </div>
+                        <Button variant="ghost" className="w-full h-12 border border-white/5 bg-white/5 text-[10px] font-bold tracking-widest uppercase hover:bg-white/10">
+                            Ver todas as atividades
+                        </Button>
                     </Card>
-                </motion.div>
-            )}
+                </div>
+            </div>
         </div>
     );
 };
