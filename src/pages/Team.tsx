@@ -270,7 +270,7 @@ const Team: React.FC = () => {
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Gerenciar Equipe</h1>
                 <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
                     <span className="h-[1px] w-8 bg-primary/30" />
-                    Squad & Governance
+                    Equipe & Governança
                 </p>
             </div>
 

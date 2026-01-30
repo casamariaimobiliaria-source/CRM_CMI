@@ -150,7 +150,7 @@ const LeadForm: React.FC = () => {
                                 <label className={labelClasses}>Endereço de E-mail</label>
                                 <Input
                                     type="email"
-                                    placeholder="email@luxo.com"
+                                    placeholder="contato@imovelpremium.com"
                                     className={inputClasses}
                                     error={errors.email?.message}
                                     {...register('email')}
