@@ -17,6 +17,11 @@ const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports')
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
 
+console.log("Vite Env Check:", {
+    hasOpenAI: !!import.meta.env.VITE_OPENAI_API_KEY,
+    hasSupabase: !!import.meta.env.VITE_SUPABASE_URL
+});
+
 // Error Boundary Component
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
     constructor(props: { children: React.ReactNode }) {
