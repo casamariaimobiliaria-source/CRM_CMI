@@ -113,8 +113,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                     </motion.div>
                 ) : (
                     <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        key="content"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                         className="space-y-6"
                     >
                         {/* Summary & Strategy */}
@@ -161,6 +162,21 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Debug View - Only visible if suggestions exist but something seems wrong */}
+            {suggestions && (
+                <div className="mt-8 pt-4 border-t border-primary/10 opacity-20 hover:opacity-100 transition-opacity">
+                    <p className="text-[8px] font-mono text-muted-foreground uppercase mb-2">Diagnostic Data (Developer Only)</p>
+                    <pre className="text-[9px] font-mono bg-black/5 p-2 rounded max-h-32 overflow-auto">
+                        {JSON.stringify({
+                            hasSuggestions: !!suggestions,
+                            opcoesCount: suggestions?.opcoes?.length,
+                            hasAnalysis: !!analysis,
+                            leadId: lead.id
+                        }, null, 2)}
+                    </pre>
+                </div>
+            )}
         </div>
     );
 };
