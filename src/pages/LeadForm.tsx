@@ -119,10 +119,6 @@ const LeadForm: React.FC = () => {
         }
     };
 
-    const labelClasses = "text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1";
-    const inputClasses = "bg-secondary/50 border-input focus:bg-background focus:border-primary/50 text-foreground placeholder:text-muted-foreground/50 rounded-2xl h-14 px-5 text-base transition-all duration-500 border focus:ring-4 focus:ring-primary/10";
-    const selectClasses = "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500 text-foreground";
-
     const currentLead = id ? leads.find(l => l.id === id) : null;
 
     return (
@@ -138,36 +134,33 @@ const LeadForm: React.FC = () => {
 
             <div className={cn("grid grid-cols-1 gap-8", id && "lg:grid-cols-3")}>
                 <div className={cn("space-y-8", id && "lg:col-span-2")}>
-                    <Card className="bg-[#0b0e14] backdrop-blur-none before:hidden border border-white/5 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl">
+                    <Card className="bg-card border border-border rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <CardContent className="p-6 md:p-12 space-y-8 md:space-y-10">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="md:col-span-2">
-                                        <label className={labelClasses}>Identidade Completa</label>
                                         <Input
+                                            label="Identidade Completa"
                                             placeholder="Digite o nome completo..."
-                                            className={inputClasses}
                                             error={errors.nome?.message}
                                             {...register('nome')}
                                         />
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Endereço de E-mail</label>
                                         <Input
+                                            label="Endereço de E-mail"
                                             type="email"
                                             placeholder="contato@imovelpremium.com"
-                                            className={inputClasses}
                                             error={errors.email?.message}
                                             {...register('email')}
                                         />
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Contato Direto (WhatsApp)</label>
                                         <MaskedInput
+                                            label="Contato Direto (WhatsApp)"
                                             placeholder="+55 (00) 00000-0000"
-                                            className={inputClasses}
                                             error={errors.telefone?.message}
                                             {...register('telefone', {
                                                 onChange: (e) => {
@@ -184,39 +177,36 @@ const LeadForm: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Acompanhamento Estratégico</label>
                                         <Input
+                                            label="Acompanhamento Estratégico"
                                             type="datetime-local"
-                                            className={cn(inputClasses, "block")}
                                             error={errors.nextContact?.message}
                                             {...register('nextContact')}
                                         />
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Empreendimento Elite</label>
                                         <Input
+                                            label="Empreendimento Elite"
                                             placeholder="Nome do Edifício / Ativo"
-                                            className={inputClasses}
                                             {...register('empreendimento')}
                                         />
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Canal de Aquisição</label>
                                         <Input
+                                            label="Canal de Aquisição"
                                             placeholder="Origem da exclusividade"
-                                            className={inputClasses}
                                             {...register('midia')}
                                         />
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Nível de Interesse (Calor)</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Nível de Interesse (Calor)</label>
                                         <div className="relative">
                                             <select
                                                 className={cn(
-                                                    selectClasses,
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500 text-foreground",
                                                     errors.temperatura && "border-destructive focus:ring-destructive"
                                                 )}
                                                 {...register('temperatura')}
@@ -232,11 +222,11 @@ const LeadForm: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className={labelClasses}>Status do Funil</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Status do Funil</label>
                                         <div className="relative">
                                             <select
                                                 className={cn(
-                                                    selectClasses,
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500 text-foreground",
                                                     errors.status && "border-destructive focus:ring-destructive"
                                                 )}
                                                 {...register('status')}
@@ -253,7 +243,7 @@ const LeadForm: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    <label className={labelClasses}>Briefing Confidencial & Inteligência</label>
+                                    <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Briefing Confidencial & Inteligência</label>
                                     <textarea
                                         rows={6}
                                         className={cn(
@@ -266,7 +256,7 @@ const LeadForm: React.FC = () => {
                                 </div>
                             </CardContent>
 
-                            <CardFooter className="p-6 md:p-12 border-t border-white/5 flex flex-col md:flex-row justify-between gap-6">
+                            <CardFooter className="p-6 md:p-12 border-t border-border flex flex-col md:flex-row justify-between gap-6">
                                 <div className="flex flex-col md:flex-row gap-3 md:gap-4 w-full md:w-auto">
                                     <Button
                                         type="button"

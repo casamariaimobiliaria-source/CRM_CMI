@@ -35,7 +35,7 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
         return (
             <div className="w-full space-y-2">
                 {label && (
-                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider ml-1">
+                    <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">
                         {label}
                     </label>
                 )}
@@ -44,12 +44,12 @@ const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
                     ref={ref}
                     onChange={handleChange}
                     className={cn(
-                        "flex h-11 w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm font-medium transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/40 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 hover:border-primary/30",
-                        error && "border-destructive/50 focus-visible:ring-destructive/20 focus-visible:border-destructive",
+                        "flex h-14 w-full rounded-2xl border border-input bg-secondary/50 px-5 text-base transition-all duration-500 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 text-foreground",
+                        error && "border-destructive focus:ring-destructive",
                         className
                     )}
                 />
-                {error && <p className="text-[10px] text-destructive font-medium ml-1">{error}</p>}
+                {error && <p className="text-xs text-destructive font-medium ml-1">{error}</p>}
             </div>
         )
     }
