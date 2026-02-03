@@ -3,15 +3,20 @@ import { Lead } from '../types';
 
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
-const openai = new OpenAI({
+// Inicializa o cliente apenas se a chave existir para evitar crash no topo da aplicação
+const openai = apiKey ? new OpenAI({
     apiKey: apiKey,
     dangerouslyAllowBrowser: true // No ambiente Vite/Client-side, precisamos disso. 
-});
+}) : null;
 
 /**
  * Gera sugestões de abordagem via WhatsApp baseadas no histórico do Lead.
  */
 export async function generateWhatsAppSuggestions(lead: Lead) {
+    if (!openai) {
+        console.warn('OpenAI: Chave API não configurada.');
+        return null;
+    }
     const prompt = `
         Você é um assistente de vendas de elite para corretores de imóveis.
         Analise o seguinte Lead e sugira 3 opções de abordagem inicial via WhatsApp.
@@ -56,6 +61,7 @@ export async function generateWhatsAppSuggestions(lead: Lead) {
  * Gera um resumo rápido e análise de saúde do lead.
  */
 export async function analyzeLeadProfile(lead: Lead) {
+    if (!openai) return null;
     const prompt = `
         Analise este lead imobiliário e forneça um resumo curtinho (no máximo 2 frases) e uma dica estratégica.
         Lead: ${lead.nome}
@@ -84,6 +90,7 @@ export async function analyzeLeadProfile(lead: Lead) {
  * Gera insights executivos para o Dashboard baseados no volume geral de leads.
  */
 export async function getExecutiveInsights(leads: Lead[]) {
+    if (!openai) return null;
     // Pegamos apenas dados essenciais para economizar tokens e privacidade
     const leadDataSummary = leads.map(l => ({
         status: l.status,

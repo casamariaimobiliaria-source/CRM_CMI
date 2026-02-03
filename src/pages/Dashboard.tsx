@@ -100,7 +100,6 @@ const Dashboard: React.FC = () => {
 
     return (
         <div className="px-6 md:px-10 py-8 md:py-12 pb-32 space-y-12 max-w-7xl mx-auto w-full">
-            <div className="bg-red-500 text-white p-2 font-bold text-center z-[9999]">DEBUG: DASHBOARD RENDERED</div>
             <Helmet>
                 <title>Painel de Inteligência | ImobLeads</title>
             </Helmet>
