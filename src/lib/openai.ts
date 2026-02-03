@@ -3,6 +3,12 @@ import { Lead } from '../types';
 
 const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
 
+if (!apiKey) {
+    console.warn('OpenAI: VITE_OPENAI_API_KEY não encontrada no ambiente.');
+} else {
+    console.log('OpenAI: Chave API detectada.');
+}
+
 // Inicializa o cliente apenas se a chave existir
 const openai = apiKey ? new OpenAI({
     apiKey: apiKey,

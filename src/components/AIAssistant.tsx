@@ -26,11 +26,17 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                 generateWhatsAppSuggestions(lead),
                 analyzeLeadProfile(lead)
             ]);
+
+            if (!suggs || !anal) {
+                throw new Error('A IA não retornou dados válidos.');
+            }
+
             setSuggestions(suggs);
             setAnalysis(anal);
             toast.success('IA gerou novas sugestões!');
         } catch (error) {
-            toast.error('Erro ao consultar a IA.');
+            console.error('AIAssistant Error:', error);
+            toast.error('Erro ao consultar a IA. Verifique sua chave API ou histórico.');
         } finally {
             setLoading(false);
         }
@@ -119,7 +125,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                         {/* WhatsApp Options */}
                         <div className="space-y-3">
                             <label className="text-[10px] font-bold text-primary tracking-widest uppercase ml-1">Sugestões de Abordagem</label>
-                            {suggestions.opcoes.map((op: any, i: number) => (
+                            {suggestions?.opcoes?.map((op: any, i: number) => (
                                 <motion.div
                                     key={i}
                                     whileHover={{ x: 4 }}
@@ -139,6 +145,9 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                                     </p>
                                 </motion.div>
                             ))}
+                            {(!suggestions?.opcoes || suggestions.opcoes.length === 0) && (
+                                <p className="text-[10px] text-muted-foreground italic ml-1">Nenhuma sugestão disponível.</p>
+                            )}
                         </div>
                     </motion.div>
                 )}
