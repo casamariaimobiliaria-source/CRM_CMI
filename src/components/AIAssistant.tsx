@@ -78,16 +78,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                         <p className="text-[9px] text-primary font-bold tracking-[0.2em] uppercase">Powered by OpenAI</p>
                     </div>
                 </div>
-                {!suggestions && (
-                    <Button
-                        size="sm"
-                        onClick={handleGenerate}
-                        isLoading={loading}
-                        className="bg-primary text-primary-foreground rounded-full px-4 text-[10px] shadow-neon-cyan hover:scale-105 transition-all whitespace-nowrap"
-                    >
-                        Analisar Lead
-                    </Button>
-                )}
+
                 {suggestions && (
                     <button
                         onClick={handleGenerate}
@@ -99,26 +90,35 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                 )}
             </div>
 
-            <AnimatePresence mode="wait">
-                {!suggestions ? (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="py-8 text-center"
-                    >
-                        <BrainCircuit className="w-12 h-12 text-primary/20 mx-auto mb-4 animate-pulse" />
-                        <p className="text-xs text-muted-foreground/60 max-w-[200px] mx-auto leading-relaxed italic">
-                            Clique para analisar o perfil deste lead e gerar abordagens de alto impacto via WhatsApp.
+            {/* Main Content Area */}
+            <div className="min-h-[100px]">
+                {loading && (
+                    <div className="py-8 text-center animate-pulse">
+                        <BrainCircuit className="w-12 h-12 text-primary mx-auto mb-4 animate-spin-slow" />
+                        <p className="text-[10px] text-primary font-bold uppercase tracking-widest">Processando Inteligência...</p>
+                    </div>
+                )}
+
+                {!loading && !suggestions && (
+                    <div className="py-8 text-center">
+                        <BrainCircuit className="w-12 h-12 text-primary/20 mx-auto mb-4" />
+                        <p className="text-xs text-muted-foreground/60 max-w-[200px] mx-auto leading-relaxed italic mb-6">
+                            Clique para analisar o perfil de {lead.nome.split(' ')[0]} e gerar abordagens de alto impacto.
                         </p>
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="content"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-6"
-                    >
-                        {/* Summary & Strategy */}
+                        <Button
+                            size="sm"
+                            onClick={handleGenerate}
+                            className="bg-primary text-primary-foreground rounded-full px-6 text-[10px] shadow-neon-cyan hover:scale-105 transition-all w-full"
+                        >
+                            <Sparkles className="w-3 h-3 mr-2" />
+                            ANALISAR AGORA
+                        </Button>
+                    </div>
+                )}
+
+                {!loading && suggestions && (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        {/* Summary */}
                         {analysis && (
                             <div className="p-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-2xl space-y-3">
                                 <div className="flex items-start gap-3">
@@ -127,54 +127,53 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                                 </div>
                                 <div className="flex items-start gap-3 pt-2 border-t border-primary/10">
                                     <Lightbulb className="w-4 h-4 text-amber-500 mt-1 shrink-0" />
-                                    <p className="text-[11px] text-muted-foreground"><span className="font-bold text-amber-600 dark:text-amber-500">ESTRATÉGIA:</span> {analysis.dica}</p>
+                                    <p className="text-[11px] text-muted-foreground"><span className="font-bold text-amber-600 dark:text-amber-500 uppercase tracking-tighter mr-1">Tática:</span> {analysis.dica}</p>
                                 </div>
                             </div>
                         )}
 
                         {/* WhatsApp Options */}
                         <div className="space-y-3">
-                            <label className="text-[10px] font-bold text-primary tracking-widest uppercase ml-1">Sugestões de Abordagem</label>
-                            {suggestions?.opcoes?.map((op: any, i: number) => (
-                                <motion.div
-                                    key={i}
-                                    whileHover={{ x: 4 }}
-                                    className="group relative p-4 bg-card border border-border/50 rounded-2xl hover:border-primary/30 transition-all cursor-pointer shadow-premium"
-                                    onClick={() => copyToClipboard(op.texto, i)}
-                                >
-                                    <div className="flex justify-between items-center mb-1">
-                                        <Badge variant="outline" className="text-[8px] font-black uppercase tracking-tighter px-2 py-0 h-4 border-primary/20 text-primary">
-                                            {op.titulo}
-                                        </Badge>
-                                        <div className="p-1.5 rounded-lg bg-primary/5 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                                            {copiedIndex === i ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                            <label className="text-[10px] font-bold text-primary tracking-widest uppercase ml-1 opacity-70">Abordagens Sugeridas</label>
+                            {suggestions.opcoes && suggestions.opcoes.length > 0 ? (
+                                suggestions.opcoes.map((op: any, i: number) => (
+                                    <div
+                                        key={i}
+                                        className="group relative p-4 bg-card border border-border/50 rounded-2xl hover:border-primary/40 transition-all cursor-pointer shadow-premium active:scale-[0.98]"
+                                        onClick={() => copyToClipboard(op.texto, i)}
+                                    >
+                                        <div className="flex justify-between items-center mb-1">
+                                            <Badge variant="outline" className="text-[8px] font-black uppercase tracking-tighter px-2 py-0 h-4 border-primary/20 text-primary">
+                                                {op.titulo}
+                                            </Badge>
+                                            <div className="p-1.5 rounded-lg bg-primary/5 text-primary">
+                                                {copiedIndex === i ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3 opacity-30 group-hover:opacity-100" />}
+                                            </div>
                                         </div>
+                                        <p className="text-[11px] text-muted-foreground italic leading-relaxed">
+                                            "{op.texto}"
+                                        </p>
                                     </div>
-                                    <p className="text-[11px] text-muted-foreground line-clamp-2 italic leading-relaxed">
-                                        "{op.texto}"
-                                    </p>
-                                </motion.div>
-                            ))}
-                            {(!suggestions?.opcoes || suggestions.opcoes.length === 0) && (
-                                <p className="text-[10px] text-muted-foreground italic ml-1">Nenhuma sugestão disponível.</p>
+                                ))
+                            ) : (
+                                <div className="p-4 bg-destructive/5 border border-destructive/20 rounded-2xl text-center">
+                                    <p className="text-[10px] text-destructive italic">A IA não conseguiu formatar as sugestões. Tente novamente.</p>
+                                </div>
                             )}
                         </div>
-                    </motion.div>
+                    </div>
                 )}
-            </AnimatePresence>
+            </div>
 
-            {/* Debug View - Only visible if suggestions exist but something seems wrong */}
+            {/* Diagnostic Data */}
             {suggestions && (
-                <div className="mt-8 pt-4 border-t border-primary/10 opacity-20 hover:opacity-100 transition-opacity">
-                    <p className="text-[8px] font-mono text-muted-foreground uppercase mb-2">Diagnostic Data (Developer Only)</p>
-                    <pre className="text-[9px] font-mono bg-black/5 p-2 rounded max-h-32 overflow-auto">
-                        {JSON.stringify({
-                            hasSuggestions: !!suggestions,
-                            opcoesCount: suggestions?.opcoes?.length,
-                            hasAnalysis: !!analysis,
-                            leadId: lead.id
-                        }, null, 2)}
-                    </pre>
+                <div className="mt-8 pt-4 border-t border-primary/10">
+                    <details className="cursor-pointer">
+                        <summary className="text-[8px] font-mono text-muted-foreground/40 uppercase hover:text-primary transition-colors">Ver dados de suporte</summary>
+                        <pre className="text-[9px] font-mono bg-black/5 p-3 rounded-xl mt-2 overflow-auto max-h-40 text-muted-foreground/60 scrollbar-hide">
+                            {JSON.stringify(suggestions, null, 2)}
+                        </pre>
+                    </details>
                 </div>
             )}
         </div>
