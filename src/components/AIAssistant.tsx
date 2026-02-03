@@ -22,13 +22,22 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
     const handleGenerate = async () => {
         setLoading(true);
         try {
+            console.log('AIAssistant: Iniciando análise do lead:', lead.nome);
             const [suggs, anal] = await Promise.all([
                 generateWhatsAppSuggestions(lead),
                 analyzeLeadProfile(lead)
             ]);
 
+            console.log('AIAssistant: Dados retornados:', { suggs, anal });
+
             if (!suggs || !anal) {
+                console.error('AIAssistant: Resposta incompleta da IA.');
                 throw new Error('A IA não retornou dados válidos.');
+            }
+
+            if (!Array.isArray(suggs.opcoes)) {
+                console.error('AIAssistant: "opcoes" não é um array.', suggs);
+                throw new Error('O formato das sugestões está incorreto.');
             }
 
             setSuggestions(suggs);
