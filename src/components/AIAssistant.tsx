@@ -135,29 +135,36 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                         {/* WhatsApp Options */}
                         <div className="space-y-3">
                             <label className="text-[10px] font-bold text-primary tracking-widest uppercase ml-1 opacity-70">Abordagens Sugeridas</label>
-                            {suggestions.opcoes && suggestions.opcoes.length > 0 ? (
+                            {suggestions && Array.isArray(suggestions.opcoes) && suggestions.opcoes.length > 0 ? (
                                 suggestions.opcoes.map((op: any, i: number) => (
                                     <div
-                                        key={i}
+                                        key={`suggestion-${i}`}
                                         className="group relative p-4 bg-card border border-border/50 rounded-2xl hover:border-primary/40 transition-all cursor-pointer shadow-premium active:scale-[0.98]"
                                         onClick={() => copyToClipboard(op.texto, i)}
                                     >
                                         <div className="flex justify-between items-center mb-1">
                                             <Badge variant="outline" className="text-[8px] font-black uppercase tracking-tighter px-2 py-0 h-4 border-primary/20 text-primary">
-                                                {op.titulo}
+                                                {op.titulo || 'Sugestão'}
                                             </Badge>
                                             <div className="p-1.5 rounded-lg bg-primary/5 text-primary">
                                                 {copiedIndex === i ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3 opacity-30 group-hover:opacity-100" />}
                                             </div>
                                         </div>
-                                        <p className="text-[11px] text-muted-foreground italic leading-relaxed">
-                                            "{op.texto}"
+                                        <p className="text-[11px] text-foreground font-medium italic leading-relaxed">
+                                            "{op.texto || 'Sem texto disponível'}"
                                         </p>
                                     </div>
                                 ))
                             ) : (
                                 <div className="p-4 bg-destructive/5 border border-destructive/20 rounded-2xl text-center">
-                                    <p className="text-[10px] text-destructive italic">A IA não conseguiu formatar as sugestões. Tente novamente.</p>
+                                    <p className="text-[10px] text-destructive italic">
+                                        {!suggestions ? 'Aguardando dados...' :
+                                            !Array.isArray(suggestions.opcoes) ? 'Erro: Lista de sugestões não encontrada.' :
+                                                'Nenhuma sugestão retornada pela IA.'}
+                                    </p>
+                                    <pre className="text-[8px] text-left mt-2 overflow-auto max-h-20 opacity-50">
+                                        {JSON.stringify(suggestions, null, 2)}
+                                    </pre>
                                 </div>
                             )}
                         </div>

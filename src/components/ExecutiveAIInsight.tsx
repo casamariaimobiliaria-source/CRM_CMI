@@ -60,17 +60,21 @@ export const ExecutiveAIInsight: React.FC<ExecutiveAIInsightProps> = ({ leads })
                                     </div>
                                 ) : insight ? (
                                     <div className="space-y-4 animate-in fade-in slide-in-from-left-2 duration-500">
-                                        <p className="text-base text-foreground font-medium max-w-2xl leading-relaxed italic">
-                                            "{insight.insight}"
-                                        </p>
+                                        {insight.insight ? (
+                                            <p className="text-base text-foreground font-medium max-w-2xl leading-relaxed italic">
+                                                "{insight.insight}"
+                                            </p>
+                                        ) : (
+                                            <p className="text-xs text-destructive italic">Insight gerado sem texto formatado.</p>
+                                        )}
                                         <div className="flex flex-wrap gap-4">
                                             <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-xl border border-border/50 shadow-sm">
                                                 <AlertCircle className={cn("w-4 h-4", insight.prioridade === 'alta' ? "text-destructive" : "text-amber-500")} />
-                                                <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">Prioridade {insight.prioridade}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">Prioridade {insight.prioridade || 'Normal'}</span>
                                             </div>
                                             <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-xl border border-primary/20 shadow-sm">
                                                 <TrendingUp className="w-4 h-4 text-primary" />
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary font-bold">Ação Sugerida: {insight.acao_sugerida}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary font-bold">Ação Sugerida: {insight.acao_sugerida || 'Aguardando...'}</span>
                                             </div>
                                         </div>
                                     </div>
