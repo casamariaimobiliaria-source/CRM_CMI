@@ -52,55 +52,58 @@ export const ExecutiveAIInsight: React.FC<ExecutiveAIInsightProps> = ({ leads })
                                 </div>
                             </div>
 
-                            <AnimatePresence mode="wait">
+                            <div className="min-h-[60px]">
                                 {loading ? (
-                                    <motion.div
-                                        key="loading"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        className="flex items-center gap-2 text-muted-foreground/60 text-sm italic"
-                                    >
+                                    <div className="flex items-center gap-2 text-primary text-sm italic animate-pulse">
                                         <RefreshCw className="w-4 h-4 animate-spin" />
                                         Processando performance operacional...
-                                    </motion.div>
+                                    </div>
                                 ) : insight ? (
-                                    <motion.div
-                                        key="content"
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        className="space-y-4"
-                                    >
-                                        <p className="text-base text-foreground font-medium max-w-2xl leading-relaxed">
+                                    <div className="space-y-4 animate-in fade-in slide-in-from-left-2 duration-500">
+                                        <p className="text-base text-foreground font-medium max-w-2xl leading-relaxed italic">
                                             "{insight.insight}"
                                         </p>
                                         <div className="flex flex-wrap gap-4">
-                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-xl border border-border/50">
+                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-background/50 rounded-xl border border-border/50 shadow-sm">
                                                 <AlertCircle className={cn("w-4 h-4", insight.prioridade === 'alta' ? "text-destructive" : "text-amber-500")} />
-                                                <span className="text-[10px] font-bold uppercase tracking-widest">Prioridade {insight.prioridade}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-widest opacity-70">Prioridade {insight.prioridade}</span>
                                             </div>
-                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-xl border border-primary/20">
+                                            <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-xl border border-primary/20 shadow-sm">
                                                 <TrendingUp className="w-4 h-4 text-primary" />
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">Ação: {insight.acao_sugerida}</span>
+                                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary font-bold">Ação Sugerida: {insight.acao_sugerida}</span>
                                             </div>
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 ) : (
-                                    <p className="text-sm text-muted-foreground italic">Clique para gerar uma análise estratégica da sua base.</p>
+                                    <p className="text-sm text-muted-foreground italic opacity-60">
+                                        Analise o comportamento de {leads.length} leads em tempo real.
+                                    </p>
                                 )}
-                            </AnimatePresence>
+                            </div>
                         </div>
                     </div>
 
                     <Button
                         onClick={fetchInsight}
                         disabled={loading}
-                        className="h-12 px-8 rounded-2xl bg-foreground/10 border border-white/10 hover:bg-foreground/20 text-foreground text-[10px] font-bold tracking-[0.2em] uppercase shrink-0 transition-all backdrop-blur-md"
+                        className="h-12 px-8 rounded-2xl bg-primary text-primary-foreground shadow-neon-cyan hover:scale-105 transition-all text-[10px] font-bold tracking-[0.2em] uppercase shrink-0"
                     >
-                        {loading ? 'ANALISANDO...' : (insight ? 'RECRIAR INSIGHT' : 'GERAR INSIGHT')}
+                        {loading ? 'PROCESSANDO...' : (insight ? 'RECRIAR ANÁLISE' : 'GERAR INSIGHT')}
                     </Button>
                 </div>
             </CardContent>
+
+            {/* Support Data Link */}
+            {insight && (
+                <div className="px-8 pb-4">
+                    <details className="cursor-pointer group">
+                        <summary className="text-[8px] font-mono text-muted-foreground/30 uppercase group-hover:text-primary transition-colors">Technical Trace</summary>
+                        <pre className="text-[9px] font-mono bg-black/5 p-3 rounded-xl mt-2 overflow-auto max-h-32 text-muted-foreground/50">
+                            {JSON.stringify(insight, null, 2)}
+                        </pre>
+                    </details>
+                </div>
+            )}
         </Card>
     );
 };
