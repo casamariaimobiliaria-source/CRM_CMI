@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BrainCircuit, TrendingUp, AlertCircle, ArrowRight, Zap, RefreshCw } from 'lucide-react';
 import { Lead } from '../types';
-import { getExecutiveInsights } from '../lib/openai';
+import { getAIAnalysis } from '../services/aiService';
 import { cn } from '../lib/utils';
 import { Button } from './ui/Button';
 
@@ -18,10 +18,28 @@ export const ExecutiveAIInsight: React.FC<ExecutiveAIInsightProps> = ({ leads })
         if (leads.length === 0) return;
         setLoading(true);
         try {
-            const data = await getExecutiveInsights(leads);
-            setInsight(data);
-        } catch (error) {
-            console.error('Erro Insight:', error);
+            // Enviamos uma amostra ou resumo dos leads para não exceder limites
+            const limitedLeads = leads.slice(0, 10).map(l => ({
+                nome: l.nome,
+                status: l.status,
+                projeto: l.empreendimento
+            }));
+
+            const result = await getAIAnalysis({ leads: limitedLeads, total: leads.length });
+
+            if (result.error) throw new Error(result.error);
+
+            // Adapta o formato da Edge Function para o que o componente espera
+            // { status, insights: string[], sugestao: string }
+            setInsight({
+                status: result.status,
+                insights: result.insights,
+                sugestao: result.suggestao
+            });
+        } catch (error: any) {
+            console.error('Erro Insight Executivo:', error);
+            const { toast } = await import('sonner');
+            toast.error(error.message || 'Erro ao gerar insight executivo');
         } finally {
             setLoading(false);
         }

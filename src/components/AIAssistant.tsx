@@ -22,30 +22,33 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
     const handleGenerate = async () => {
         setLoading(true);
         try {
-            console.log('AIAssistant: Iniciando análise do lead:', lead.nome);
-            const [suggs, anal] = await Promise.all([
-                generateWhatsAppSuggestions(lead),
-                analyzeLeadProfile(lead)
-            ]);
+            const { getAIAnalysis } = await import('../services/aiService');
+            console.log('AIAssistant: Iniciando análise via Supabase para:', lead.nome);
 
-            console.log('AIAssistant: Dados retornados:', { suggs, anal });
+            const result = await getAIAnalysis(lead);
 
-            if (!suggs || !anal) {
-                console.error('AIAssistant: Resposta incompleta da IA.');
-                throw new Error('A IA não retornou dados válidos.');
+            if (result.error) {
+                toast.error(result.error);
+                return;
             }
 
-            if (!Array.isArray(suggs.opcoes)) {
-                console.error('AIAssistant: "opcoes" não é um array.', suggs);
-                throw new Error('O formato das sugestões está incorreto.');
-            }
+            // Adaptando o resultado para o estado interno do componente
+            setAnalysis({
+                resumo: `Lead classificado como ${result.status.toUpperCase()}.`,
+                dica: result.suggestao
+            });
 
-            setSuggestions(suggs);
-            setAnalysis(anal);
+            setSuggestions({
+                opcoes: result.insights.map((text, i) => ({
+                    titulo: `Insight ${i + 1}`,
+                    texto: text
+                }))
+            });
+
             toast.success('IA gerou novas sugestões!');
-        } catch (error) {
+        } catch (error: any) {
             console.error('AIAssistant Error:', error);
-            toast.error('Erro ao consultar a IA. Verifique sua chave API ou histórico.');
+            toast.error('Erro na comunicação com a IA do Supabase.');
         } finally {
             setLoading(false);
         }

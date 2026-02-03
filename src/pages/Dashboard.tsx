@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* AI Executive Insight */}
-            <div>
+            <div className="space-y-8">
                 <ExecutiveAIInsight leads={safeLeads as Lead[]} />
             </div>
 
