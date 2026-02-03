@@ -38,12 +38,13 @@ export async function generateWhatsAppSuggestions(lead: Lead) {
         2. Opção 2: Persuasiva (Focada em um benefício do empreendimento ou urgência).
         3. Opção 3: Consultiva (Focada em entender as necessidades antes de oferecer).
         
-        FORMATO DE RESPOSTA: Retorne apenas um JSON válido com a estrutura:
+        FORMATO DE RESPOSTA (OBRIGATÓRIO): Retorne APENAS um JSON válido. Não use blocos de código ou explicações.
+        ESTRUTURA:
         {
           "opcoes": [
-            { "titulo": "Profissional", "texto": "..." },
-            { "titulo": "Persuasiva", "texto": "..." },
-            { "titulo": "Consultiva", "texto": "..." }
+            { "titulo": "Profissional", "texto": "Texto aqui..." },
+            { "titulo": "Persuasiva", "texto": "Texto aqui..." },
+            { "titulo": "Consultiva", "texto": "Texto aqui..." }
           ]
         }
     `;
@@ -56,7 +57,16 @@ export async function generateWhatsAppSuggestions(lead: Lead) {
         });
 
         const content = response.choices[0].message.content;
-        return content ? JSON.parse(content) : null;
+        console.log('OpenAI raw response (WhatsApp):', content);
+        if (!content) return null;
+
+        const parsed = JSON.parse(content);
+        // Garantir que a estrutura básica exista
+        if (!parsed.opcoes || !Array.isArray(parsed.opcoes)) {
+            console.error('OpenAI: JSON retornado não contém a lista "opcoes".');
+            return null;
+        }
+        return parsed;
     } catch (error) {
         console.error('Erro OpenAI WhatsApp:', error);
         return null;
@@ -85,7 +95,15 @@ export async function analyzeLeadProfile(lead: Lead) {
         });
 
         const content = response.choices[0].message.content;
-        return content ? JSON.parse(content) : null;
+        console.log('OpenAI raw response (Analysis):', content);
+        if (!content) return null;
+
+        const parsed = JSON.parse(content);
+        if (!parsed.resumo || !parsed.dica) {
+            console.error('OpenAI: JSON de análise incompleto.');
+            return null;
+        }
+        return parsed;
     } catch (error) {
         console.error('Erro OpenAI Análise:', error);
         return null;
@@ -123,7 +141,15 @@ export async function getExecutiveInsights(leads: Lead[]) {
         });
 
         const content = response.choices[0].message.content;
-        return content ? JSON.parse(content) : null;
+        console.log('OpenAI raw response (Executive):', content);
+        if (!content) return null;
+
+        const parsed = JSON.parse(content);
+        if (!parsed.insight) {
+            console.error('OpenAI: JSON executivo incompleto.');
+            return null;
+        }
+        return parsed;
     } catch (error) {
         console.error('Erro OpenAI Executivo:', error);
         return null;
