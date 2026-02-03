@@ -55,6 +55,7 @@ const LeadList: React.FC = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-background p-6 md:p-10 space-y-12">
+            <div className="bg-red-500 text-white p-2 font-bold text-center z-[9999]">DEBUG: LEADLIST RENDERED</div>
             <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="space-y-4">
                     <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Fluxo de Leads</h1>
