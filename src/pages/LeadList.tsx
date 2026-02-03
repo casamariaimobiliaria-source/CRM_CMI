@@ -21,6 +21,9 @@ const LeadList: React.FC = () => {
     const [viewMode, setViewMode] = React.useState<'cards' | 'table'>('cards');
     const { brokers } = useBrokers();
 
+    const leadsInfo = useLeads(leads);
+    console.log("LeadList Debug:", { leadsCount: leads.length, isSyncing, filteredCount: leadsInfo.filteredLeads.length });
+
     const {
         searchTerm,
         setSearchTerm,
@@ -37,7 +40,7 @@ const LeadList: React.FC = () => {
         filterBroker,
         setFilterBroker,
         filteredLeads
-    } = useLeads(leads);
+    } = leadsInfo;
 
     if (isSyncing && leads.length === 0) {
         return (
@@ -95,41 +98,36 @@ const LeadList: React.FC = () => {
                 />
 
                 <main className="space-y-6 pb-40 relative z-10">
-                    <AnimatePresence mode="popLayout">
-                        {filteredLeads.length === 0 ? (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="py-32 text-center flex flex-col items-center"
-                            >
-                                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
-                                    <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                                </div>
-                                <h3 className="text-xl font-display font-bold text-foreground italic mb-2">Nenhum Registro Encontrado</h3>
-                                <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-[0.2em]">
-                                    {searchTerm ? `A busca por "${searchTerm}" não retornou dados` : "A base exclusiva de Leads está vazia"}
-                                </p>
-                                {searchTerm && (
-                                    <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold">LIMPAR BUSCA</Button>
-                                )}
-                            </motion.div>
-                        ) : (
-                            <motion.div
-                                layout
-                                className={cn(
-                                    viewMode === 'table'
-                                        ? "bg-black/20 backdrop-blur-md rounded-3xl border border-white/5 divide-y divide-white/5 overflow-hidden"
-                                        : "grid grid-cols-1 gap-6"
-                                )}
-                            >
-                                {filteredLeads.map(lead => (
-                                    viewMode === 'cards'
-                                        ? <LeadCard key={lead.id} lead={lead} />
-                                        : <LeadTableRow key={lead.id} lead={lead} />
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    {filteredLeads.length === 0 ? (
+                        <div
+                            className="py-32 text-center flex flex-col items-center"
+                        >
+                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
+                                <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            </div>
+                            <h3 className="text-xl font-display font-bold text-foreground italic mb-2">Nenhum Registro Encontrado</h3>
+                            <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-[0.2em]">
+                                {searchTerm ? `A busca por "${searchTerm}" não retornou dados` : "A base exclusiva de Leads está vazia"}
+                            </p>
+                            {searchTerm && (
+                                <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold">LIMPAR BUSCA</Button>
+                            )}
+                        </div>
+                    ) : (
+                        <div
+                            className={cn(
+                                viewMode === 'table'
+                                    ? "bg-black/20 backdrop-blur-md rounded-3xl border border-white/5 divide-y divide-white/5 overflow-hidden"
+                                    : "grid grid-cols-1 gap-6"
+                            )}
+                        >
+                            {filteredLeads.map(lead => (
+                                viewMode === 'cards'
+                                    ? <LeadCard key={lead.id} lead={lead} />
+                                    : <LeadTableRow key={lead.id} lead={lead} />
+                            ))}
+                        </div>
+                    )}
                 </main>
             </div>
         </div>

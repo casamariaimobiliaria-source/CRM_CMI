@@ -17,6 +17,47 @@ const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports')
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
 
+// Error Boundary Component
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
+    constructor(props: { children: React.ReactNode }) {
+        super(props);
+        this.state = { hasError: false, error: null };
+    }
+
+    static getDerivedStateFromError(error: Error) {
+        return { hasError: true, error };
+    }
+
+    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+        console.error("ErrorBoundary caught an error", error, errorInfo);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div className="min-h-screen flex flex-col items-center justify-center bg-background p-10 text-center">
+                    <div className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center text-destructive mb-6">
+                        <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <h2 className="text-2xl font-bold text-foreground mb-4">Algo deu errado</h2>
+                    <p className="text-muted-foreground max-w-md mb-8">Ocorreu um erro inesperado ao carregar esta página. Por favor, tente recarregar.</p>
+                    <pre className="p-4 bg-muted rounded-xl text-[10px] text-left overflow-auto max-w-full mb-8 text-destructive max-h-40">
+                        {this.state.error?.toString()}
+                    </pre>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-8 py-3 bg-primary text-primary-foreground rounded-xl font-bold uppercase tracking-widest text-[10px]"
+                    >
+                        Recarregar Sistema
+                    </button>
+                </div>
+            );
+        }
+
+        return this.props.children;
+    }
+}
+
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { session, isLoading } = useLead();
     const location = useLocation();
@@ -113,7 +154,9 @@ const App: React.FC = () => {
                                 <p className="text-[10px] font-bold text-primary uppercase tracking-[0.4em] animate-pulse">Carregando Módulos</p>
                             </div>
                         }>
-                            <AppRoutes />
+                            <ErrorBoundary>
+                                <AppRoutes />
+                            </ErrorBoundary>
                         </React.Suspense>
                         <Toaster position="top-center" richColors />
                     </BrowserRouter>

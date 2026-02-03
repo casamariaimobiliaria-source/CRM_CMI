@@ -32,11 +32,20 @@ const Dashboard: React.FC = () => {
     }, [safeLeads]);
 
     const chartData = useMemo(() => {
-        if (safeLeads.length === 0) return [];
-        const statusCounts: Record<string, number> = {};
-        Object.values(LeadStatus).forEach(s => statusCounts[s] = 0);
-        safeLeads.forEach(l => { if (l.status) statusCounts[l.status] = (statusCounts[l.status] || 0) + 1; });
-        return Object.keys(statusCounts).map(key => ({ name: key, value: statusCounts[key] })).filter(item => item.value > 0);
+        try {
+            if (safeLeads.length === 0) return [];
+            const statusCounts: Record<string, number> = {};
+            Object.values(LeadStatus).forEach(s => statusCounts[s] = 0);
+            safeLeads.forEach(l => {
+                if (l && l.status) {
+                    statusCounts[l.status] = (statusCounts[l.status] || 0) + 1;
+                }
+            });
+            return Object.keys(statusCounts).map(key => ({ name: key, value: statusCounts[key] })).filter(item => item.value > 0);
+        } catch (error) {
+            console.error("Error calculating chartData:", error);
+            return [];
+        }
     }, [safeLeads]);
 
     const projectData = useMemo(() => {
@@ -71,10 +80,9 @@ const Dashboard: React.FC = () => {
     }, [safeLeads, brokers]);
 
     if (safeLeads.length === 0) {
+        console.log("Dashboard: No leads found, rendering empty state");
         return (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+            <div
                 className="flex-1 flex flex-col items-center justify-center py-20 text-center p-4 h-full"
             >
                 <Helmet>
@@ -86,7 +94,7 @@ const Dashboard: React.FC = () => {
                 <h3 className="text-xl font-display font-bold text-foreground">Aguardando Inteligência</h3>
                 <p className="text-muted-foreground text-sm max-w-xs mt-2 font-medium">Adicione seus primeiros leads exclusivos para iniciar o motor de análise de desempenho.</p>
                 <Button variant="luxury" className="mt-8 px-10 rounded-full" onClick={() => navigate('/add')}>COMEÇAR AGORA</Button>
-            </motion.div>
+            </div>
         );
     }
 
@@ -96,9 +104,7 @@ const Dashboard: React.FC = () => {
                 <title>Painel de Inteligência | ImobLeads</title>
             </Helmet>
 
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
+            <div
                 className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-8 border-b border-white/5 pb-8 md:pb-10 relative overflow-hidden"
             >
                 <div className="relative z-10">
@@ -125,16 +131,12 @@ const Dashboard: React.FC = () => {
                         Relatórios Elite
                     </Button>
                 </div>
-            </motion.div>
+            </div>
 
             {/* AI Executive Insight */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 }}
-            >
+            <div>
                 <ExecutiveAIInsight leads={safeLeads as Lead[]} />
-            </motion.div>
+            </div>
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
