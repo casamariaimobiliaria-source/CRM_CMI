@@ -85,7 +85,8 @@ const Onboarding: React.FC = () => {
                     }
                     throw error;
                 }
-                toast.success('Conta criada! Verifique seu e-mail para confirmar o cadastro.');
+                toast.success('Conta criada com sucesso! Você já pode entrar.');
+                setIsLogin(true);
             }
         } catch (error: any) {
             toast.error(error.message || 'Erro na autenticação');
@@ -186,10 +187,16 @@ const Onboarding: React.FC = () => {
                                     )}
                                     <button
                                         type="button"
-                                        onClick={() => setIsLogin(!isLogin)}
+                                        onClick={() => {
+                                            if (isLogin) {
+                                                window.open('https://wa.me/5511999999999?text=Olá! Gostaria de solicitar acesso ao ImobLeads.', '_blank');
+                                            } else {
+                                                setIsLogin(true);
+                                            }
+                                        }}
                                         className="text-[11px] font-bold text-foreground/60 hover:text-primary transition-all border-t border-white/5 pt-4 mt-2"
                                     >
-                                        {isLogin ? 'NÃO TEM CONTA? SOLICITAR ACESSO' : 'JÁ POSSUI CONTA? FAZER LOGIN'}
+                                        {isLogin ? 'NÃO TEM CONTA? SOLICITAR ACESSO VIA WHATSAPP' : 'JÁ POSSUI CONTA? FAZER LOGIN'}
                                     </button>
                                 </div>
                             </CardFooter>
