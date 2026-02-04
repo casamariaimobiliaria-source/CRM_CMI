@@ -87,13 +87,13 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                     <div className="flex items-center gap-3 md:border-l border-white/10 md:pl-6 w-full md:w-auto justify-center">
                         <span className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase">Ordenar:</span>
                         <select
-                            className="bg-transparent border-none focus:ring-0 text-[11px] font-bold text-primary uppercase tracking-widest cursor-pointer outline-none"
+                            className="bg-secondary/50 border border-border/50 rounded-xl px-3 py-1 focus:ring-4 focus:ring-primary/10 text-[11px] font-bold text-primary uppercase tracking-widest cursor-pointer outline-none transition-all"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as any)}
                         >
-                            <option value="recent">MAIS RECENTES</option>
-                            <option value="name">NOME (A-Z)</option>
-                            <option value="overdue">ATRASADOS</option>
+                            <option value="recent" className="bg-card text-foreground">MAIS RECENTES</option>
+                            <option value="name" className="bg-card text-foreground">NOME (A-Z)</option>
+                            <option value="overdue" className="bg-card text-foreground">ATRASADOS</option>
                         </select>
                     </div>
                 </div>

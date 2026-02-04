@@ -212,7 +212,7 @@ const LeadForm: React.FC = () => {
                                                 {...register('temperatura')}
                                             >
                                                 {(Object.values(LeadTemperature) as string[]).map((temp: string) => (
-                                                    <option key={temp} value={temp}>{temp}</option>
+                                                    <option key={temp} value={temp} className="bg-card text-foreground">{temp}</option>
                                                 ))}
                                             </select>
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
@@ -232,7 +232,7 @@ const LeadForm: React.FC = () => {
                                                 {...register('status')}
                                             >
                                                 {(Object.values(LeadStatus) as string[]).map((status: string) => (
-                                                    <option key={status} value={status}>{status}</option>
+                                                    <option key={status} value={status} className="bg-card text-foreground">{status}</option>
                                                 ))}
                                             </select>
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">

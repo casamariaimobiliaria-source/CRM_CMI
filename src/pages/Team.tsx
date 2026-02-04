@@ -325,11 +325,11 @@ const Team: React.FC = () => {
                                             Função
                                         </label>
                                         <select
-                                            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                            className="flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500 text-foreground"
                                             {...register('role')}
                                         >
-                                            <option value="member">Corretor (Membro)</option>
-                                            <option value="admin">Administrador</option>
+                                            <option value="member" className="bg-card text-foreground">Corretor (Membro)</option>
+                                            <option value="admin" className="bg-card text-foreground">Administrador</option>
                                         </select>
                                     </div>
                                     <Button type="submit" className="w-full" isLoading={registering}>
