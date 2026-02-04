@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useLead } from '../contexts/LeadContext';
 import { useUser } from '../contexts/UserContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { CreditCard, Rocket, CheckCircle2, ShieldCheck, Zap } from 'lucide-react';
+import { ShieldCheck, Zap, TrendingUp, Users, Target, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { Helmet } from 'react-helmet-async';
+import { LeadStatus } from '../types';
 
 const Settings: React.FC = () => {
     const navigate = useNavigate();
@@ -32,43 +33,27 @@ const Settings: React.FC = () => {
 
     const canEditBranding = userProfile?.role === 'owner' || userProfile?.role === 'admin' || userProfile?.is_super_admin;
 
-    if (!org) return null;
+    // Agency Intelligence Metrics
+    const metrics = useMemo(() => {
+        const total = leads.length;
+        if (total === 0) return { conversion: 0, topSource: 'N/A', activeBrokers: 0 };
 
-    const safeLeads = Array.isArray(leads) ? leads : [];
-    const usagePercent = Math.min((safeLeads.length / org.max_leads) * 100, 100);
-    const isOverLimit = safeLeads.length >= org.max_leads;
+        const closed = leads.filter(l => l.status === LeadStatus.COMPROU).length;
+        const conversion = ((closed / total) * 100).toFixed(1);
 
-    const plans = [
-        {
-            name: 'Free',
-            tier: 'free',
-            price: 'R$ 0',
-            features: ['Até 50 Leads', '1 Usuário', 'Funil de Vendas', 'WhatsApp Direct'],
-            isCurrent: org.plan_tier === 'free'
-        },
-        {
-            name: 'Pro',
-            tier: 'pro',
-            price: 'R$ 49,90/mês',
-            features: ['Leads Ilimitados', 'Equipe até 5 pessoas', 'Dashboard Avançado', 'Exportação Excel', 'Suporte Prioritário'],
-            isCurrent: org.plan_tier === 'pro',
-            popular: true
-        },
-        {
-            name: 'Enterprise',
-            tier: 'enterprise',
-            price: 'Sob Consulta',
-            features: ['Múltiplas Filiais', 'Usuários Ilimitados', 'Configurações Customizadas', 'Treinamento VIP'],
-            isCurrent: org.plan_tier === 'enterprise'
-        }
-    ];
-
-    const onUpgrade = (tier: string) => {
-        if (tier === 'free') return;
-        toast.info('Em breve!', {
-            description: `Estamos refinando a integração com pagamentos. O plano ${tier.toUpperCase()} estará disponível para contratação automática nos próximos dias.`
+        const sources: Record<string, number> = {};
+        leads.forEach(l => {
+            const s = l.midia || 'Orgânico';
+            sources[s] = (sources[s] || 0) + 1;
         });
-    };
+        const topSource = Object.entries(sources).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A';
+
+        const brokers = new Set(leads.map(l => l.user_id)).size;
+
+        return { conversion, topSource, activeBrokers: brokers };
+    }, [leads]);
+
+    if (!org) return null;
 
     const handleSaveBranding = async () => {
         if (!org) return;
@@ -98,14 +83,14 @@ const Settings: React.FC = () => {
     return (
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             <Helmet>
-                <title>Configurações Enterprise | ImobLeads</title>
-                <meta name="description" content="Gerencie sua identidade corporativa e plano de assinatura no ecossistema ImobLeads." />
+                <title>Inteligência da Agência | ImobLeads</title>
+                <meta name="description" content="Gestão de marca e inteligência operacional da Casa Maria Imobiliária." />
             </Helmet>
             <header className="mb-12 space-y-4">
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Configurações</h1>
                 <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
                     <span className="h-[1px] w-8 bg-primary/30" />
-                    Centro de Controle Enterprise
+                    Centro de Inteligência da Agência
                 </p>
             </header>
 
@@ -115,7 +100,7 @@ const Settings: React.FC = () => {
                         <CardHeader className="border-b border-white/5 pb-6 flex flex-row items-center justify-between">
                             <CardTitle className="text-xl font-display italic flex items-center gap-3">
                                 <ShieldCheck className="w-5 h-5 text-primary opacity-60" />
-                                Identidade Corporativa
+                                Identidade da Agência
                             </CardTitle>
                             {canEditBranding && !isEditingBrand && (
                                 <Button
@@ -124,7 +109,7 @@ const Settings: React.FC = () => {
                                     className="text-[10px] font-bold tracking-widest text-primary/60 hover:text-primary uppercase"
                                     onClick={() => setIsEditingBrand(true)}
                                 >
-                                    Alterar Marca
+                                    Editar
                                 </Button>
                             )}
                         </CardHeader>
@@ -132,66 +117,38 @@ const Settings: React.FC = () => {
                             {isEditingBrand ? (
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">Nome da Imobiliária</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">Nome de Exibição</label>
                                         <input
                                             type="text"
                                             value={brandName}
                                             onChange={(e) => setBrandName(e.target.value)}
                                             className="w-full bg-foreground/5 border border-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground transition-all"
-                                            placeholder="Ex: Silva Imóveis"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">URL do Logo (SVG/PNG)</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">URL do Logo</label>
                                         <input
                                             type="text"
                                             value={brandLogo}
                                             onChange={(e) => setBrandLogo(e.target.value)}
                                             className="w-full bg-foreground/5 border border-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground transition-all"
-                                            placeholder="https://sua-logo.com/logo.png"
                                         />
                                     </div>
                                     <div className="flex gap-2 pt-2">
-                                        <Button
-                                            size="sm"
-                                            className="grow bg-primary text-primary-foreground font-bold h-10 rounded-xl"
-                                            onClick={handleSaveBranding}
-                                            isLoading={isSaving}
-                                        >
-                                            Salvar
-                                        </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="text-[10px] font-bold tracking-widest h-10 px-4 rounded-xl"
-                                            onClick={() => {
-                                                setIsEditingBrand(false);
-                                                setBrandName(org.brand_display_name || org.name);
-                                                setBrandLogo(org.logo_url || '');
-                                            }}
-                                        >
-                                            Cancelar
-                                        </Button>
+                                        <Button size="sm" className="grow" onClick={handleSaveBranding} isLoading={isSaving}>Salvar</Button>
+                                        <Button variant="ghost" size="sm" onClick={() => setIsEditingBrand(false)}>Cancelar</Button>
                                     </div>
                                 </div>
                             ) : (
                                 <>
                                     <div>
-                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome da Instituição</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Instituição</label>
                                         <p className="font-display font-bold text-xl text-foreground italic">{org.brand_display_name || org.name}</p>
                                     </div>
-                                    {org.logo_url && (
-                                        <div>
-                                            <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Logo Atual</label>
-                                            <div className="w-12 h-12 rounded-lg bg-foreground/5 p-2 border border-border/50">
-                                                <img src={org.logo_url} alt="Logo" className="w-full h-full object-contain" loading="lazy" />
-                                            </div>
-                                        </div>
-                                    )}
                                     <div>
-                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Credencial da Conta</label>
-                                        <Badge variant="outline" className="capitalize bg-foreground/5 border-border/50 text-primary font-bold tracking-widest px-3 py-1">
-                                            {org.subscription_status === 'active' ? 'ATIVO VERIFICADO' : org.subscription_status}
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Status da Licença</label>
+                                        <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-bold tracking-widest px-3 py-1">
+                                            ESTRUTURA VERIFICADA
                                         </Badge>
                                     </div>
                                 </>
@@ -203,111 +160,90 @@ const Settings: React.FC = () => {
                         <CardHeader className="border-b border-white/5 pb-6">
                             <CardTitle className="text-xl font-display italic flex items-center gap-3">
                                 <Zap className="w-5 h-5 text-primary opacity-60" />
-                                Alocação de Quota
+                                Integridade da Base
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="pt-8 space-y-8">
+                        <CardContent className="pt-8 mb-4">
                             <div className="space-y-4">
                                 <div className="flex justify-between items-end">
-                                    <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">Uso de Recursos</span>
-                                    <span className="text-[11px] font-mono text-foreground font-bold">{safeLeads.length} / {org.max_leads} UN</span>
+                                    <span className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em]">Volume Operacional</span>
+                                    <span className="text-[11px] font-mono text-foreground font-bold">{leads.length} LEADS ATIVOS</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${usagePercent}%` }}
-                                        transition={{ duration: 1.5, ease: 'easeOut' }}
-                                        className={cn(
-                                            "h-full rounded-full transition-all duration-1000",
-                                            isOverLimit ? "bg-destructive shadow-[0_0_10px_rgba(239,68,68,0.4)]" : "bg-primary shadow-luxury"
-                                        )}
-                                    />
+                                    <div className="h-full bg-primary shadow-luxury w-full opacity-30" />
                                 </div>
-                                {isOverLimit && (
-                                    <p className="text-[9px] text-destructive font-bold uppercase text-center tracking-widest animate-pulse">
-                                        ⚠ QUOTA EXCEDIDA - UPGRADE NECESSÁRIO
-                                    </p>
-                                )}
+                                <p className="text-[9px] text-muted-foreground/40 font-bold uppercase text-center tracking-widest">
+                                    Sincronização global ativa e protegida
+                                </p>
                             </div>
-
-                            <Button
-                                variant="outline"
-                                className="w-full border-border/50 h-12 rounded-xl text-[10px] font-bold tracking-widest hover:bg-foreground/5"
-                                onClick={() => navigate('/')}
-                            >
-                                <Rocket className="w-4 h-4 mr-3" />
-                                ACESSAR REPOSITÓRIO
-                            </Button>
                         </CardContent>
                     </Card>
                 </div>
 
-                <div className="lg:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                        {plans.map((plan) => (
-                            <Card
-                                key={plan.tier}
-                                className={cn(
-                                    "flex flex-col border transition-all duration-700 rounded-[2rem] overflow-hidden relative group",
-                                    plan.isCurrent
-                                        ? "bg-foreground/[0.03] border-primary/30 shadow-luxury"
-                                        : "bg-card/20 border-border/50 hover:border-primary/20 hover:bg-foreground/[0.02]"
-                                )}
-                            >
-                                {plan.isCurrent && (
-                                    <div className="absolute top-0 inset-x-0 h-1 bg-primary shadow-luxury" />
-                                )}
-
-                                <CardHeader className="text-center pt-10 pb-6 relative">
-                                    {plan.isCurrent && (
-                                        <span className="absolute top-4 left-1/2 -translate-x-1/2 text-[8px] font-bold text-primary uppercase tracking-[0.3em]">Plano Institucional</span>
-                                    )}
-                                    <CardTitle className="text-2xl font-display font-bold italic mb-2">{plan.name}</CardTitle>
-                                    <CardDescription className="text-lg font-bold text-foreground/60">{plan.price}</CardDescription>
-                                </CardHeader>
-
-                                <CardContent className="flex-1 px-8 py-6">
-                                    <ul className="space-y-4">
-                                        {plan.features.map((feature, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-[11px] font-medium text-muted-foreground/60 leading-relaxed group-hover:text-muted-foreground transition-colors">
-                                                <CheckCircle2 className="w-3.5 h-3.5 text-primary/40 shrink-0 mt-0.5" />
-                                                {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-
-                                <CardFooter className="p-8 pt-4">
-                                    <Button
-                                        className={cn(
-                                            "w-full h-12 rounded-xl text-[10px] font-bold tracking-widest transition-all duration-500",
-                                            plan.isCurrent
-                                                ? "bg-foreground/5 text-muted-foreground cursor-default border border-border/50"
-                                                : ""
-                                        )}
-                                        variant={plan.isCurrent ? 'ghost' : 'primary'}
-                                        disabled={plan.isCurrent}
-                                        onClick={() => onUpgrade(plan.tier)}
-                                    >
-                                        {plan.isCurrent ? 'ATIVO' : 'FAZER UPGRADE'}
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        ))}
-                    </div>
-
-                    <div className="mt-10 p-8 bg-card dark:bg-black/40 backdrop-blur-3xl rounded-[2rem] border border-border/50 flex items-center justify-between gap-6 shadow-premium relative overflow-hidden group">
-                        <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-primary/5 blur-[100px] pointer-events-none group-hover:bg-primary/10 transition-all duration-1000" />
-                        <div className="relative z-10 flex items-center gap-6">
-                            <div className="w-14 h-14 bg-foreground/5 border border-border/50 rounded-2xl flex items-center justify-center transition-all duration-700 group-hover:border-primary/20">
-                                <CreditCard className="w-6 h-6 text-primary opacity-60" />
+                <div className="lg:col-span-2 space-y-10">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Intelligence Card: Efficiency */}
+                        <Card className="glass-high-fidelity rounded-[2rem] border-white/5 hover:border-primary/20 transition-all duration-500 overflow-hidden relative group p-8 space-y-6">
+                            <div className="p-3 bg-emerald-500/10 rounded-2xl w-fit text-emerald-500">
+                                <Target className="w-6 h-6" />
                             </div>
                             <div>
-                                <h4 className="font-display font-bold italic text-lg leading-tight">Integração de Pagamento</h4>
-                                <p className="text-[11px] text-muted-foreground/60 uppercase tracking-widest mt-1">Sincronização com Gateway Stripe em andamento</p>
+                                <h4 className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] mb-1">Pipeline Efficiency</h4>
+                                <p className="text-4xl font-display font-bold italic text-foreground tracking-tighter">
+                                    {metrics.conversion}%
+                                </p>
+                                <p className="text-[10px] text-emerald-500/60 font-bold mt-2 uppercase tracking-widest">Taxa de Conversão Real</p>
+                            </div>
+                        </Card>
+
+                        {/* Intelligence Card: Top Source */}
+                        <Card className="glass-high-fidelity rounded-[2rem] border-white/5 hover:border-primary/20 transition-all duration-500 overflow-hidden relative group p-8 space-y-6">
+                            <div className="p-3 bg-primary/10 rounded-2xl w-fit text-primary">
+                                <TrendingUp className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h4 className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] mb-1">Source Velocity</h4>
+                                <p className="text-3xl font-display font-bold italic text-foreground tracking-tighter truncate">
+                                    {metrics.topSource}
+                                </p>
+                                <p className="text-[10px] text-primary/60 font-bold mt-2 uppercase tracking-widest">Canal de Maior Tração</p>
+                            </div>
+                        </Card>
+
+                        {/* Intelligence Card: Team */}
+                        <Card className="glass-high-fidelity rounded-[2rem] border-white/5 hover:border-primary/20 transition-all duration-500 overflow-hidden relative group p-8 space-y-6">
+                            <div className="p-3 bg-amber-500/10 rounded-2xl w-fit text-amber-500">
+                                <Users className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h4 className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] mb-1">Broker Activity</h4>
+                                <p className="text-4xl font-display font-bold italic text-foreground tracking-tighter">
+                                    {metrics.activeBrokers}
+                                </p>
+                                <p className="text-[10px] text-amber-500/60 font-bold mt-2 uppercase tracking-widest">Corretores em Operação</p>
+                            </div>
+                        </Card>
+                    </div>
+
+                    <div className="p-10 bg-card dark:bg-black/40 backdrop-blur-3xl rounded-[2.5rem] border border-border/50 flex flex-col md:flex-row items-center justify-between gap-8 shadow-premium relative overflow-hidden group">
+                        <div className="absolute -right-20 -bottom-20 w-40 h-40 bg-primary/2blur-[100px] pointer-events-none group-hover:bg-primary/5 transition-all duration-1000" />
+                        <div className="relative z-10 flex items-center gap-6">
+                            <div className="w-16 h-16 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-center transition-all duration-700 group-hover:scale-110">
+                                <ShieldCheck className="w-8 h-8 text-primary" />
+                            </div>
+                            <div>
+                                <h4 className="font-display font-bold italic text-2xl leading-tight">Configurações Avançadas</h4>
+                                <p className="text-[11px] text-muted-foreground/60 uppercase tracking-[0.2em] mt-2 max-w-sm">
+                                    Ajuste os parâmetros fundamentais da sua base exclusiva de dados.
+                                </p>
                             </div>
                         </div>
-                        <Badge variant="outline" className="bg-foreground/5 border-border/50 text-muted-foreground/60 text-[9px] font-bold tracking-[0.2em] py-1 px-3">EM BREVE</Badge>
+                        <Button
+                            className="h-14 px-10 rounded-2xl font-bold tracking-widest text-[10px] shadow-luxury"
+                            onClick={() => navigate('/reports')}
+                        >
+                            VER RELATÓRIOS COMPLETOS
+                        </Button>
                     </div>
                 </div>
             </div>
