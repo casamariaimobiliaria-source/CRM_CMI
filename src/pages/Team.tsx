@@ -202,7 +202,14 @@ const Team: React.FC = () => {
             fetchData();
         } catch (error: any) {
             console.error('Error registering member:', error);
-            toast.error(`Erro ao cadastrar: ${error.message || 'Verifique os dados.'}`);
+            const msg = error.message || '';
+            if (msg.includes('email rate limit exceeded')) {
+                toast.error('Limite de emails do Supabase atingido. Sugestão: Desabilite "Confirm Email" no Dashboard do Supabase.');
+            } else if (msg.includes('Email not confirmed')) {
+                toast.error('E-mail não confirmado. O trigger de auto-confirmação deve resolver isso no próximo login.');
+            } else {
+                toast.error(`Erro ao cadastrar: ${msg || 'Verifique os dados.'}`);
+            }
         } finally {
             setRegistering(false);
         }
