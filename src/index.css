@@ -8,26 +8,29 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 4%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 240 10% 4%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222 47% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222 47% 11.2%;
+    --popover-foreground: 240 10% 4%;
+    --primary: 38 65% 48%; /* Ouro Refinado */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 20% 96%;
+    --secondary-foreground: 240 10% 4%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 240 5% 45%;
+    --accent: 38 65% 96%;
+    --accent-foreground: 38 65% 20%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
-    --radius: 0.75rem;
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 38 65% 48%;
+    --radius: 1rem;
+
+    /* Custom Accents */
+    --luxury-glow: 38 65% 48% / 0.3;
   }
 
   .dark {
@@ -56,6 +59,8 @@
     --neon-cyan: 190 100% 50%;
     --neon-purple: 270 100% 60%;
     --neon-amber: 35 100% 55%;
+
+    --luxury-glow: 190 100% 50% / 0.3;
   }
 
   * {
@@ -77,6 +82,14 @@
 
   .shadow-neon-cyan {
     box-shadow: 0 0 15px hsl(var(--neon-cyan) / 0.3);
+  }
+
+  .shadow-gold-glow {
+    box-shadow: 0 0 20px hsla(38, 65%, 48%, 0.2);
+  }
+
+  .shadow-luxury {
+    box-shadow: 0 10px 30px -10px hsla(var(--luxury-glow));
   }
 
   .glass-high-fidelity {

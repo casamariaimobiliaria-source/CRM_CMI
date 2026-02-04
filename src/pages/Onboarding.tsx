@@ -119,7 +119,7 @@ const Onboarding: React.FC = () => {
                                 initial={{ scale: 0.8, rotate: -10 }}
                                 animate={{ scale: 1, rotate: 0 }}
                                 transition={{ delay: 0.5, type: "spring" }}
-                                className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center text-primary text-4xl font-black mx-auto mb-8 shadow-[0_0_30px_hsl(var(--neon-cyan)/0.2)] border border-primary/20 backdrop-blur-md"
+                                className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center text-primary text-4xl font-black mx-auto mb-8 shadow-luxury border border-primary/20 backdrop-blur-md"
                             >
                                 N
                             </motion.div>
@@ -168,7 +168,7 @@ const Onboarding: React.FC = () => {
                             <CardFooter className="flex flex-col gap-6 pt-4">
                                 <Button
                                     type="submit"
-                                    className="w-full h-14 text-sm font-bold tracking-[0.2em] uppercase bg-primary hover:bg-primary/80 text-primary-foreground shadow-neon-cyan transition-all"
+                                    className="w-full h-14 text-sm font-bold tracking-[0.2em] uppercase bg-primary hover:bg-primary/80 text-primary-foreground shadow-luxury transition-all"
                                     isLoading={loading}
                                 >
                                     {isLogin ? 'ENTRAR AGORA' : 'CADASTRAR IMOBILIÁRIA'}

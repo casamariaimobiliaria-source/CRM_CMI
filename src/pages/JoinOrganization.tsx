@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { useLead } from '../contexts/LeadContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { toast } from 'sonner';
@@ -10,7 +10,7 @@ const JoinOrganization: React.FC = () => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
     const navigate = useNavigate();
-    const { session } = useLead();
+    const { session } = useAuth();
     const [loading, setLoading] = useState(false);
     const [verifying, setVerifying] = useState(true);
     const [inviteData, setInviteData] = useState<any>(null);
@@ -75,8 +75,6 @@ const JoinOrganization: React.FC = () => {
     }
 
     if (!session) {
-        // Redirect to login preserving the token
-        // In a real app, passing state to login would be better
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-50">
                 <Card className="w-full max-w-md text-center">

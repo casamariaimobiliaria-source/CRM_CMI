@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '../lib/supabase';
-import { useLead } from '../contexts/LeadContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
@@ -19,7 +19,7 @@ const setupSchema = z.object({
 type SetupFormValues = z.infer<typeof setupSchema>;
 
 const SetupOrganization: React.FC = () => {
-    const { session, signOut } = useLead();
+    const { session, signOut } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
 

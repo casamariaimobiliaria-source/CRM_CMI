@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { createClient } from '@supabase/supabase-js';
-import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { MaskedInput } from '../components/MaskedInput';
@@ -36,7 +36,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Team: React.FC = () => {
-    const { userProfile } = useLead();
+    const { userProfile } = useUser();
     const [members, setMembers] = useState<Member[]>([]);
     const [loading, setLoading] = useState(true);
     const [registering, setRegistering] = useState(false);
@@ -109,8 +109,6 @@ const Team: React.FC = () => {
                     .update({
                         name: data.name,
                         role: data.role,
-                        // We don't usually let them change email here to avoid auth sync issues
-                        // unless specifically implemented.
                     })
                     .eq('id', userId);
 
@@ -127,22 +125,12 @@ const Team: React.FC = () => {
 
                 if (memberError) throw memberError;
 
-                // 3. Optional: Update Password if provided
-                if (data.password && data.password.length >= 6) {
-                    // This requires special handling or a dedicated function if using Auth API
-                    // In a multi-tenant SaaS, admins usually don't change passwords directly 
-                    // for security, but we can call a function or use service role if needed.
-                    // For now, we focus on profile/role.
-                    toast.info('Alteração de senha deve ser feita pelo próprio usuário via "Esqueci minha senha".');
-                }
-
                 toast.success('Membro atualizado com sucesso!');
                 setEditingMember(null);
             } else {
                 // CREATE Logic
                 if (!data.password) throw new Error('Senha é obrigatória para novos cadastros.');
 
-                // 1. Create User using a temporary client to avoid signing out the admin
                 const tempSupabase = createClient(supabaseUrl, supabaseAnonKey, {
                     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
                 });
@@ -229,7 +217,6 @@ const Team: React.FC = () => {
         }
 
         try {
-            // Remove from org members
             const { error } = await supabase
                 .from('organization_members')
                 .delete()
@@ -250,11 +237,11 @@ const Team: React.FC = () => {
 
     const handleEditMember = (member: Member) => {
         setEditingMember(member);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Setting form values
         setValue('name', member.user?.name || '');
         setValue('email', member.user?.email || '');
         setValue('role', member.role as 'admin' | 'member');
-        // Phone would need to be passed in from profile if available
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const cancelEdit = () => {
@@ -263,6 +250,8 @@ const Team: React.FC = () => {
     };
 
     if (loading) return <div className="p-8 text-center text-muted-foreground">Carregando equipe...</div>;
+
+    const isAdmin = userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin;
 
     return (
         <div className="max-w-5xl mx-auto p-6 pb-32 space-y-8 animate-in fade-in duration-500">
@@ -274,9 +263,8 @@ const Team: React.FC = () => {
                 </p>
             </div>
 
-            <div className={`grid grid-cols-1 ${userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin ? 'lg:grid-cols-3' : ''} gap-8`}>
-                {/* Registration Form */}
-                {(userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin) && (
+            <div className={`grid grid-cols-1 ${isAdmin ? 'lg:grid-cols-3' : ''} gap-8`}>
+                {isAdmin && (
                     <div className="lg:col-span-1">
                         <Card className="glass-high-fidelity rounded-[2.5rem] sticky top-24">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0">
@@ -365,7 +353,7 @@ const Team: React.FC = () => {
                 )}
 
                 {/* Members List */}
-                <div className={`${userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin ? 'lg:col-span-2' : 'max-w-3xl mx-auto w-full'} space-y-6`}>
+                <div className={`${isAdmin ? 'lg:col-span-2' : 'max-w-3xl mx-auto w-full'} space-y-6`}>
                     <Card className="glass-high-fidelity rounded-[2.5rem]">
                         <CardHeader>
                             <CardTitle className="text-lg">Membros da Equipe</CardTitle>
@@ -387,7 +375,7 @@ const Team: React.FC = () => {
                                         <Badge variant={member.role === 'owner' ? 'default' : member.role === 'admin' ? 'secondary' : 'outline'}>
                                             {member.role === 'owner' ? 'Proprietário' : member.role === 'admin' ? 'Admin' : 'Corretor'}
                                         </Badge>
-                                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner' || userProfile?.is_super_admin) && member.role !== 'owner' && (
+                                        {isAdmin && member.role !== 'owner' && (
                                             <div className="flex items-center gap-1">
                                                 <Button
                                                     size="sm"

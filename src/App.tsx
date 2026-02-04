@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { LeadProvider, useLead } from './contexts/LeadContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { UserProvider, useUser } from './contexts/UserContext';
+import { LeadProvider } from './contexts/LeadContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
 const Onboarding = React.lazy(() => import('./pages/Onboarding'));
@@ -64,7 +66,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
 }
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { session, isLoading } = useLead();
+    const { session, isLoading } = useAuth();
     const location = useLocation();
 
     if (isLoading) {
@@ -83,7 +85,7 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 const RequireProfile: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const { userProfile, isLoading } = useLead();
+    const { userProfile, isLoading } = useUser();
 
     if (isLoading) return null;
 
@@ -95,7 +97,10 @@ const RequireProfile: React.FC<{ children: React.ReactNode }> = ({ children }) =
 };
 
 const AppRoutes: React.FC = () => {
-    const { session, userProfile, isLoading } = useLead();
+    const { session, isLoading: authLoading } = useAuth();
+    const { userProfile, isLoading: userLoading } = useUser();
+
+    const isLoading = authLoading || userLoading;
 
     if (isLoading) return null;
 
@@ -151,21 +156,25 @@ const App: React.FC = () => {
     return (
         <HelmetProvider>
             <ThemeProvider>
-                <LeadProvider>
-                    <BrowserRouter>
-                        <React.Suspense fallback={
-                            <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-                                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
-                                <p className="text-[10px] font-bold text-primary uppercase tracking-[0.4em] animate-pulse">Carregando Módulos</p>
-                            </div>
-                        }>
-                            <ErrorBoundary>
-                                <AppRoutes />
-                            </ErrorBoundary>
-                        </React.Suspense>
-                        <Toaster position="top-center" richColors />
-                    </BrowserRouter>
-                </LeadProvider>
+                <AuthProvider>
+                    <UserProvider>
+                        <LeadProvider>
+                            <BrowserRouter>
+                                <React.Suspense fallback={
+                                    <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+                                        <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
+                                        <p className="text-[10px] font-bold text-primary uppercase tracking-[0.4em] animate-pulse">Carregando Módulos</p>
+                                    </div>
+                                }>
+                                    <ErrorBoundary>
+                                        <AppRoutes />
+                                    </ErrorBoundary>
+                                </React.Suspense>
+                                <Toaster position="top-center" richColors />
+                            </BrowserRouter>
+                        </LeadProvider>
+                    </UserProvider>
+                </AuthProvider>
             </ThemeProvider>
         </HelmetProvider>
     );

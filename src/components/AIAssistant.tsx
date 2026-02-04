@@ -73,7 +73,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
 
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-neon">
+                    <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-luxury shrink-0">
                         <Sparkles className="w-5 h-5 text-primary-foreground" />
                     </div>
                     <div>
@@ -111,7 +111,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                         <Button
                             size="sm"
                             onClick={handleGenerate}
-                            className="bg-primary text-primary-foreground rounded-full px-6 text-[10px] shadow-neon-cyan hover:scale-105 transition-all w-full"
+                            className="h-12 px-8 rounded-2xl bg-primary text-primary-foreground shadow-luxury hover:scale-105 transition-all text-[10px] font-bold tracking-[0.2em] uppercase shrink-0"
                         >
                             <Sparkles className="w-3 h-3 mr-2" />
                             ANALISAR AGORA

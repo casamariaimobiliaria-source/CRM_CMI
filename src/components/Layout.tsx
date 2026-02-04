@@ -7,20 +7,20 @@ import {
     BarChart3,
     Settings as SettingsIcon,
     Inbox,
-    CheckSquare,
     KanbanSquare,
     Menu,
-    X,
     Shield
 } from 'lucide-react';
-import { useLead } from '../contexts/LeadContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useUser } from '../contexts/UserContext';
 import { cn } from '../lib/utils';
 import { Button } from './ui/Button';
 import { ThemeToggle } from './ThemeToggle';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Layout: React.FC = () => {
-    const { signOut, userProfile, systemSettings, impersonatedOrgId, setImpersonatedOrg } = useLead();
+    const { signOut } = useAuth();
+    const { userProfile, systemSettings, impersonatedOrgId, setImpersonatedOrg } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
     const [isMobileOpen, setIsMobileOpen] = React.useState(false);
@@ -43,10 +43,8 @@ const Layout: React.FC = () => {
         menuItems.push({ icon: Shield, label: 'Super Admin', path: '/admin' });
     }
 
-    // Sidebar Component
     const SidebarContent = () => (
         <div className="flex flex-col h-full">
-            {/* Logo Area */}
             <div className="h-16 flex items-center px-6 border-b border-border/50">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary font-bold overflow-hidden">
@@ -67,42 +65,37 @@ const Layout: React.FC = () => {
                 </div>
             </div>
 
-            {/* Navigation */}
             <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto custom-scrollbar">
-                {menuItems.map((item) => {
-                    const isActive = location.pathname === item.path;
-                    return (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            onClick={() => setIsMobileOpen(false)}
-                            className={({ isActive }) => cn(
-                                "flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 group relative overflow-hidden",
-                                isActive
-                                    ? "text-primary bg-primary/10 border border-primary/20 shadow-neon-cyan/10"
-                                    : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5 border border-transparent"
-                            )}
-                        >
-                            <item.icon className={cn(
-                                "w-5 h-5 transition-colors",
-                                isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                            )} />
-                            {item.label}
-                            {isActive && (
-                                <motion.div
-                                    layoutId="active-indicator"
-                                    className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                />
-                            )}
-                        </NavLink>
-                    );
-                })}
+                {menuItems.map((item) => (
+                    <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => setIsMobileOpen(false)}
+                        className={({ isActive }) => cn(
+                            "flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 group relative overflow-hidden",
+                            isActive
+                                ? "text-primary bg-primary/10 border border-primary/20 shadow-luxury"
+                                : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5 border border-transparent"
+                        )}
+                    >
+                        <item.icon className={cn(
+                            "w-5 h-5 transition-colors",
+                            location.pathname === item.path ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                        )} />
+                        {item.label}
+                        {location.pathname === item.path && (
+                            <motion.div
+                                layoutId="active-indicator"
+                                className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            />
+                        )}
+                    </NavLink>
+                ))}
             </nav>
 
-            {/* User Profile Footer */}
             <div className="p-4 border-t border-border/50 mt-auto">
                 <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/5 transition-colors cursor-pointer group">
                     <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-xs font-medium border border-border/50">
@@ -132,13 +125,11 @@ const Layout: React.FC = () => {
 
     return (
         <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans selection:bg-primary/20 selection:text-primary relative">
-            {/* Desktop Sidebar */}
             <aside className="hidden md:flex w-72 flex-col border-r border-border/50 bg-card/40 dark:bg-black/40 backdrop-blur-3xl relative">
                 <div className="absolute inset-0 subtle-dot-grid opacity-10 pointer-events-none" />
                 <SidebarContent />
             </aside>
 
-            {/* Mobile Sidebar */}
             <AnimatePresence>
                 {isMobileOpen && (
                     <>
@@ -162,9 +153,7 @@ const Layout: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* Main Content */}
             <main className="flex-1 flex flex-col min-w-0 bg-background relative">
-                {/* Mobile Header */}
                 <div className="md:hidden h-16 border-b border-border/50 flex items-center px-4 justify-between bg-card/50 backdrop-blur-xl sticky top-0 z-30">
                     <div className="flex items-center gap-3">
                         <Button variant="ghost" size="icon" onClick={() => setIsMobileOpen(true)}>
@@ -177,7 +166,6 @@ const Layout: React.FC = () => {
                     <ThemeToggle />
                 </div>
 
-                {/* Support Mode Banner */}
                 <AnimatePresence>
                     {impersonatedOrgId && (
                         <motion.div

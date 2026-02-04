@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -9,10 +10,12 @@ import { CreditCard, Rocket, CheckCircle2, ShieldCheck, Zap } from 'lucide-react
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
+import { Helmet } from 'react-helmet-async';
 
 const Settings: React.FC = () => {
     const navigate = useNavigate();
-    const { userProfile, leads, fetchUserProfile } = useLead();
+    const { leads } = useLead();
+    const { userProfile, fetchUserProfile } = useUser();
     const org = userProfile?.organization;
 
     const [isEditingBrand, setIsEditingBrand] = React.useState(false);
@@ -94,6 +97,10 @@ const Settings: React.FC = () => {
 
     return (
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <Helmet>
+                <title>Configurações Enterprise | ImobLeads</title>
+                <meta name="description" content="Gerencie sua identidade corporativa e plano de assinatura no ecossistema ImobLeads." />
+            </Helmet>
             <header className="mb-12 space-y-4">
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Configurações</h1>
                 <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
@@ -159,7 +166,7 @@ const Settings: React.FC = () => {
                                             className="text-[10px] font-bold tracking-widest h-10 px-4 rounded-xl"
                                             onClick={() => {
                                                 setIsEditingBrand(false);
-                                                setBrandName(org.name);
+                                                setBrandName(org.brand_display_name || org.name);
                                                 setBrandLogo(org.logo_url || '');
                                             }}
                                         >
@@ -212,7 +219,7 @@ const Settings: React.FC = () => {
                                         transition={{ duration: 1.5, ease: 'easeOut' }}
                                         className={cn(
                                             "h-full rounded-full transition-all duration-1000",
-                                            isOverLimit ? "bg-destructive shadow-[0_0_10px_rgba(239,68,68,0.4)]" : "bg-primary shadow-gold-glow"
+                                            isOverLimit ? "bg-destructive shadow-[0_0_10px_rgba(239,68,68,0.4)]" : "bg-primary shadow-luxury"
                                         )}
                                     />
                                 </div>
@@ -243,12 +250,12 @@ const Settings: React.FC = () => {
                                 className={cn(
                                     "flex flex-col border transition-all duration-700 rounded-[2rem] overflow-hidden relative group",
                                     plan.isCurrent
-                                        ? "bg-foreground/[0.03] border-primary/30 shadow-gold-glow/10"
+                                        ? "bg-foreground/[0.03] border-primary/30 shadow-luxury"
                                         : "bg-card/20 border-border/50 hover:border-primary/20 hover:bg-foreground/[0.02]"
                                 )}
                             >
                                 {plan.isCurrent && (
-                                    <div className="absolute top-0 inset-x-0 h-1 bg-primary shadow-gold-glow" />
+                                    <div className="absolute top-0 inset-x-0 h-1 bg-primary shadow-luxury" />
                                 )}
 
                                 <CardHeader className="text-center pt-10 pb-6 relative">

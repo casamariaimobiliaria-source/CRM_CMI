@@ -1,83 +1,109 @@
 import { useState, useMemo } from 'react';
 import { Lead, LeadTemperature, LeadStatus } from '../types';
 
+/**
+ * Custom hook to filter and sort leads based on various criteria.
+ * Adheres to Clean Code by separating filtering logic and providing a clear API.
+ */
 export function useLeads(leads: Lead[]) {
+    // Filter States
     const [searchTerm, setSearchTerm] = useState('');
-    const [filterTemp, setFilterTemp] = useState<LeadTemperature | 'Todos'>('Todos');
-    const [filterStatus, setFilterStatus] = useState<LeadStatus | 'Todos'>('Todos');
-    const [sortBy, setSortBy] = useState<'recent' | 'name' | 'overdue'>('recent');
+    const [temperatureFilter, setTemperatureFilter] = useState<LeadTemperature | 'Todos'>('Todos');
+    const [statusFilter, setStatusFilter] = useState<LeadStatus | 'Todos'>('Todos');
+    const [brokerFilter, setBrokerFilter] = useState<string>('Todos'); // user_id or 'Todos'
+
+    // Date Filter States
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
-    const [filterBroker, setFilterBroker] = useState<string>('Todos'); // user_id or 'Todos'
+
+    // Sort State
+    const [sortBy, setSortBy] = useState<'recent' | 'name' | 'overdue'>('recent');
 
     const filteredLeads = useMemo(() => {
         if (!Array.isArray(leads)) return [];
 
-        const term = String(searchTerm || '').toLowerCase().trim();
-        const numericTerm = term.replace(/\D/g, '');
+        const normalizedTerm = searchTerm.toLowerCase().trim();
+        const numericTerm = normalizedTerm.replace(/\D/g, '');
 
-        return leads.filter(l => {
-            if (!l || typeof l !== 'object') return false;
+        return leads
+            .filter(lead => {
+                if (!lead) return false;
 
-            const name = String(l.nome || '').toLowerCase();
-            const phone = String(l.telefone || '').replace(/\D/g, '');
-            const emp = String(l.empreendimento || '').toLowerCase();
+                // Search filtering (Name, Phone, Enterprise)
+                const matchesSearch = !normalizedTerm ||
+                    lead.nome?.toLowerCase().includes(normalizedTerm) ||
+                    lead.empreendimento?.toLowerCase().includes(normalizedTerm) ||
+                    (numericTerm && lead.telefone?.replace(/\D/g, '').includes(numericTerm));
 
-            const matchesSearch =
-                term === '' ||
-                name.includes(term) ||
-                emp.includes(term) ||
-                (numericTerm !== '' && phone.includes(numericTerm));
+                // Enum based filtering
+                const matchesTemperature = temperatureFilter === 'Todos' || lead.temperatura === temperatureFilter;
+                const matchesStatus = statusFilter === 'Todos' || lead.status === statusFilter;
+                const matchesBroker = brokerFilter === 'Todos' || lead.user_id === brokerFilter;
 
-            const matchesTemp = filterTemp === 'Todos' || l.temperatura === filterTemp;
-            const matchesStatus = filterStatus === 'Todos' || l.status === filterStatus;
+                // Date range filtering
+                const matchesDateRange = (() => {
+                    if (!startDate && !endDate) return true;
 
-            const matchesDate = (() => {
-                if (!startDate && !endDate) return true;
-                const leadDate = new Date(l.createdAt);
-                if (startDate && leadDate < new Date(startDate)) return false;
-                if (endDate) {
-                    const end = new Date(endDate);
-                    end.setHours(23, 59, 59, 999);
-                    if (leadDate > end) return false;
+                    const leadDate = new Date(lead.createdAt);
+                    if (isNaN(leadDate.getTime())) return false;
+
+                    if (startDate && leadDate < new Date(startDate)) return false;
+
+                    if (endDate) {
+                        const end = new Date(endDate);
+                        end.setHours(23, 59, 59, 999);
+                        if (leadDate > end) return false;
+                    }
+
+                    return true;
+                })();
+
+                return matchesSearch && matchesTemperature && matchesStatus && matchesBroker && matchesDateRange;
+            })
+            .sort((a, b) => {
+                // Sorting Logic
+                switch (sortBy) {
+                    case 'name':
+                        return (a.nome || '').localeCompare(b.nome || '');
+
+                    case 'overdue': {
+                        const now = new Date();
+                        const aOverdue = a.nextContact && new Date(a.nextContact) < now;
+                        const bOverdue = b.nextContact && new Date(b.nextContact) < now;
+                        if (aOverdue && !bOverdue) return -1;
+                        if (!aOverdue && bOverdue) return 1;
+                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                    }
+
+                    case 'recent':
+                    default:
+                        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                 }
-                return true;
-            })();
-
-            const matchesBroker = filterBroker === 'Todos' || l.user_id === filterBroker;
-
-            return matchesSearch && matchesTemp && matchesStatus && matchesDate && matchesBroker;
-        }).sort((a, b) => {
-            if (sortBy === 'name') {
-                return (a.nome || '').localeCompare(b.nome || '');
-            }
-            if (sortBy === 'overdue') {
-                const now = new Date();
-                const aOverdue = a.nextContact && new Date(a.nextContact) < now;
-                const bOverdue = b.nextContact && new Date(b.nextContact) < now;
-                if (aOverdue && !bOverdue) return -1;
-                if (!aOverdue && bOverdue) return 1;
-            }
-            // Default: recent (createdAt descending)
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        });
-    }, [leads, searchTerm, filterTemp, filterStatus, sortBy, startDate, endDate, filterBroker]);
+            });
+    }, [leads, searchTerm, temperatureFilter, statusFilter, brokerFilter, sortBy, startDate, endDate]);
 
     return {
+        // Search & Filters
         searchTerm,
         setSearchTerm,
-        filterTemp,
-        setFilterTemp,
-        filterStatus,
-        setFilterStatus,
-        sortBy,
-        setSortBy,
+        temperatureFilter,
+        setTemperatureFilter,
+        statusFilter,
+        setStatusFilter,
+        brokerFilter,
+        setBrokerFilter,
+
+        // Date Filters
         startDate,
         setStartDate,
         endDate,
         setEndDate,
-        filterBroker,
-        setFilterBroker,
+
+        // Sorting
+        sortBy,
+        setSortBy,
+
+        // Result
         filteredLeads
     };
 }

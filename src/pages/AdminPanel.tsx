@@ -5,11 +5,11 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Input } from '../components/ui/Input';
 import { toast } from 'sonner';
-import { Building2, Users, Target, ShieldAlert, RefreshCw, Plus, MoreHorizontal, PauseCircle, PlayCircle, Pencil, Trash2, X, Eye, UserPlus, Copy, Check } from 'lucide-react';
+import { Building2, Users, ShieldAlert, RefreshCw, Plus, Pencil, Trash2, X, Eye, UserPlus, Copy, Check, PlayCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
-import { Organization } from '../types';
-import { useLead } from '../contexts/LeadContext';
+import { Organization, UserProfile } from '../types';
+import { useUser } from '../contexts/UserContext';
 
 interface OrgStats extends Organization {
     lead_count: number;
@@ -18,7 +18,7 @@ interface OrgStats extends Organization {
 }
 
 const AdminPanel: React.FC = () => {
-    const { setImpersonatedOrg, impersonatedOrgId } = useLead();
+    const { setImpersonatedOrg, impersonatedOrgId } = useUser();
     const [stats, setStats] = useState<OrgStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -116,7 +116,7 @@ const AdminPanel: React.FC = () => {
 
             if (error) throw error;
             toast.success('Configurações globais salvas!');
-            window.location.reload(); // Force refresh to update Layout etc
+            window.location.reload();
         } catch (error: any) {
             console.error('Error saving settings:', error);
             toast.error('Erro ao salvar configurações.');
@@ -146,10 +146,10 @@ const AdminPanel: React.FC = () => {
             } else {
                 // Create
                 const slug = formData.name.toLowerCase()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
-                    .replace(/[^\w\s-]/g, '') // Remove special chars
-                    .replace(/\s+/g, '-') // Replace spaces with -
-                    .replace(/-+/g, '-') // Remove double --
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-')
                     .trim();
 
                 const { error } = await supabase
@@ -170,12 +170,7 @@ const AdminPanel: React.FC = () => {
             resetForm();
         } catch (error: any) {
             console.error('SERVER ERROR:', error);
-            const msg = error.message || 'Erro desconhecido';
-            const code = error.code ? ` (Code: ${error.code})` : '';
-            const detail = error.details ? ` - ${error.details}` : '';
-            toast.error(`Falha ao salvar: ${msg}${code}${detail}`, {
-                duration: 5000
-            });
+            toast.error(`Falha ao salvar: ${error.message}`);
         }
     };
 
@@ -229,7 +224,7 @@ const AdminPanel: React.FC = () => {
                     role: 'owner',
                     token: token,
                     status: 'pending',
-                    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
+                    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
                 }]);
 
             if (error) throw error;
@@ -270,7 +265,6 @@ const AdminPanel: React.FC = () => {
 
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
-            {/* Header */}
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-black text-foreground tracking-tight flex items-center gap-3">
@@ -306,7 +300,7 @@ const AdminPanel: React.FC = () => {
                     <Button
                         variant="primary"
                         onClick={() => setIsModalOpen(true)}
-                        className="gap-2 flex-1 md:flex-none bg-gradient-to-r from-cyan-600 to-blue-700 hover:from-cyan-500 hover:to-blue-600 text-white font-bold shadow-lg shadow-cyan-900/20"
+                        className="gap-2 flex-1 md:flex-none bg-primary text-primary-foreground font-bold shadow-luxury"
                     >
                         <Plus className="w-4 h-4" />
                         Nova Organização
@@ -315,7 +309,6 @@ const AdminPanel: React.FC = () => {
             </div>
 
             {activeTab === 'orgs' ? (
-                /* Orgs List Area Content */
                 <div className="grid grid-cols-1 gap-6">
                     <Card className="border-border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden">
                         <CardHeader className="bg-muted/20 border-b border-border">
@@ -350,7 +343,7 @@ const AdminPanel: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-12 w-full md:w-auto justify-between md:justify-end font-jakarta text-sm">
+                                    <div className="flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-12 w-full md:w-auto justify-between md:justify-end text-sm">
                                         <div className="w-auto md:w-24">
                                             <Badge variant={org.plan_tier === 'free' ? 'outline' : 'default'} className="capitalize font-black">
                                                 {org.plan_tier}
@@ -358,7 +351,7 @@ const AdminPanel: React.FC = () => {
                                         </div>
                                         <div className="w-auto md:w-24">
                                             <Badge
-                                                variant={org.subscription_status === 'active' ? 'success' : 'destructive'}
+                                                variant={org.subscription_status === 'active' ? 'secondary' : 'destructive'}
                                                 className="capitalize text-[10px]"
                                             >
                                                 {org.subscription_status === 'active' ? 'Ativo' :
@@ -410,7 +403,7 @@ const AdminPanel: React.FC = () => {
                                                 onClick={() => toggleStatus(org.id, org.subscription_status)}
                                                 title={org.subscription_status === 'active' ? 'Pausar' : 'Ativar'}
                                             >
-                                                {org.subscription_status === 'active' ? <PauseCircle className="w-4 h-4" /> : <PlayCircle className="w-4 h-4" />}
+                                                {org.subscription_status === 'active' ? <X className="w-4 h-4" /> : <PlayCircle className="w-4 h-4" />}
                                             </Button>
                                             <Button
                                                 size="icon"
@@ -429,7 +422,6 @@ const AdminPanel: React.FC = () => {
                     </Card>
                 </div>
             ) : (
-                /* Settings Form */
                 <div className="max-w-2xl mx-auto py-12">
                     <Card className="border-border bg-card/50 backdrop-blur-sm shadow-xl">
                         <CardHeader>
@@ -444,7 +436,6 @@ const AdminPanel: React.FC = () => {
                                         onChange={e => setGlobalSettings({ ...globalSettings, app_name: e.target.value })}
                                         placeholder="Ex: NossoCRM"
                                     />
-                                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Este nome aparecerá na barra lateral e em todos os títulos.</p>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-sm font-medium text-muted-foreground">URL do Logo (SVG ou PNG)</label>
@@ -453,10 +444,9 @@ const AdminPanel: React.FC = () => {
                                         onChange={e => setGlobalSettings({ ...globalSettings, app_logo_url: e.target.value })}
                                         placeholder="https://..."
                                     />
-                                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Deixe em branco para usar a letra inicial automática.</p>
                                 </div>
                                 <div className="pt-4">
-                                    <Button type="submit" isLoading={savingSettings} className="w-full bg-primary text-white font-bold">
+                                    <Button type="submit" isLoading={savingSettings} className="w-full bg-primary text-primary-foreground font-bold shadow-luxury">
                                         Salvar Configurações
                                     </Button>
                                 </div>
@@ -466,111 +456,104 @@ const AdminPanel: React.FC = () => {
                 </div>
             )}
 
-            {/* Modal Overlay */}
             <AnimatePresence>
-                {
-                    isModalOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                onClick={resetForm}
-                                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-                            />
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                                className="relative w-full max-w-lg bg-card border border-border rounded-xl shadow-2xl p-6 md:p-8 space-y-6"
-                            >
-                                <div className="flex justify-between items-center">
-                                    <h3 className="text-2xl font-bold text-foreground">
-                                        {editingOrg ? 'Editar Organização' : 'Nova Organização'}
-                                    </h3>
-                                    <Button size="icon" variant="ghost" onClick={resetForm}>
-                                        <X className="w-5 h-5" />
-                                    </Button>
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={resetForm}
+                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-lg bg-card border border-border rounded-xl shadow-2xl p-6 md:p-8 space-y-6"
+                        >
+                            <div className="flex justify-between items-center">
+                                <h3 className="text-2xl font-bold text-foreground">
+                                    {editingOrg ? 'Editar Organização' : 'Nova Organização'}
+                                </h3>
+                                <Button size="icon" variant="ghost" onClick={resetForm}>
+                                    <X className="w-5 h-5" />
+                                </Button>
+                            </div>
+
+                            <form onSubmit={handleSave} className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-muted-foreground">Nome da Empresa</label>
+                                    <Input
+                                        required
+                                        value={formData.name}
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                        placeholder="Ex: Imobiliária Silva"
+                                    />
                                 </div>
 
-                                <form onSubmit={handleSave} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-muted-foreground">Nome da Empresa</label>
+                                        <label className="text-sm font-medium text-muted-foreground">Plano</label>
+                                        <select
+                                            value={formData.plan_tier}
+                                            onChange={e => setFormData({ ...formData, plan_tier: e.target.value })}
+                                            className="flex h-10 w-full rounded-md border border-input bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        >
+                                            <option value="free">Free</option>
+                                            <option value="pro">Pro</option>
+                                            <option value="enterprise">Enterprise</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-muted-foreground">Status</label>
+                                        <select
+                                            value={formData.subscription_status}
+                                            onChange={e => setFormData({ ...formData, subscription_status: e.target.value })}
+                                            className="flex h-10 w-full rounded-md border border-input bg-secondary px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                        >
+                                            <option value="active">Ativo</option>
+                                            <option value="canceled">Cancelado</option>
+                                            <option value="paused">Pausado</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-muted-foreground">Máx. Leads</label>
                                         <Input
+                                            type="number"
                                             required
-                                            value={formData.name}
-                                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                            placeholder="Ex: Imobiliária Silva"
-                                            className="bg-secondary/50 border-input"
+                                            value={formData.max_leads}
+                                            onChange={e => setFormData({ ...formData, max_leads: parseInt(e.target.value) })}
                                         />
                                     </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-muted-foreground">Plano</label>
-                                            <select
-                                                value={formData.plan_tier}
-                                                onChange={e => setFormData({ ...formData, plan_tier: e.target.value })}
-                                                className="flex h-10 w-full rounded-md border border-input bg-secondary/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                            >
-                                                <option value="free">Free</option>
-                                                <option value="pro">Pro</option>
-                                                <option value="enterprise">Enterprise</option>
-                                            </select>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-muted-foreground">Status</label>
-                                            <select
-                                                value={formData.subscription_status}
-                                                onChange={e => setFormData({ ...formData, subscription_status: e.target.value })}
-                                                className="flex h-10 w-full rounded-md border border-input bg-secondary/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-                                            >
-                                                <option value="active">Ativo</option>
-                                                <option value="canceled">Cancelado</option>
-                                                <option value="paused">Pausado</option>
-                                            </select>
-                                        </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-muted-foreground">Máx. Usuários</label>
+                                        <Input
+                                            type="number"
+                                            required
+                                            value={formData.max_users}
+                                            onChange={e => setFormData({ ...formData, max_users: parseInt(e.target.value) })}
+                                        />
                                     </div>
+                                </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-muted-foreground">Máx. Leads</label>
-                                            <Input
-                                                type="number"
-                                                required
-                                                value={formData.max_leads}
-                                                onChange={e => setFormData({ ...formData, max_leads: parseInt(e.target.value) })}
-                                                className="bg-secondary/50 border-input"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-muted-foreground">Máx. Usuários</label>
-                                            <Input
-                                                type="number"
-                                                required
-                                                value={formData.max_users}
-                                                onChange={e => setFormData({ ...formData, max_users: parseInt(e.target.value) })}
-                                                className="bg-secondary/50 border-input"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 flex justify-end gap-3">
-                                        <Button type="button" variant="ghost" onClick={resetForm}>
-                                            Cancelar
-                                        </Button>
-                                        <Button type="submit" variant="primary" className="px-8 bg-gradient-to-r from-cyan-600 to-blue-700 hover:from-cyan-500 hover:to-blue-600 text-white font-bold shadow-lg shadow-cyan-900/20">
-                                            {editingOrg ? 'Salvar Alterações' : 'Criar Organização'}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </motion.div>
-                        </div>
-                    )
-                }
+                                <div className="pt-4 flex justify-end gap-3">
+                                    <Button type="button" variant="ghost" onClick={resetForm}>
+                                        Cancelar
+                                    </Button>
+                                    <Button type="submit" variant="luxury" className="px-8">
+                                        {editingOrg ? 'Salvar Alterações' : 'Criar Organização'}
+                                    </Button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
             </AnimatePresence >
 
-            {/* Invite Modal */}
             <AnimatePresence>
                 {isInviteModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -612,15 +595,14 @@ const AdminPanel: React.FC = () => {
                                             value={inviteEmail}
                                             onChange={e => setInviteEmail(e.target.value)}
                                             placeholder="exemplo@email.com"
-                                            className="bg-secondary/30"
                                         />
                                     </div>
-                                    <Button type="submit" className="w-full bg-cyan-600 hover:bg-cyan-500" isLoading={isCreatingInvite}>
+                                    <Button type="submit" variant="luxury" className="w-full" isLoading={isCreatingInvite}>
                                         Gerar Link de Convite
                                     </Button>
                                 </form>
                             ) : (
-                                <div className="space-y-4 animate-in fade-in zoom-in-95">
+                                <div className="space-y-4">
                                     <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-500 text-sm font-medium flex items-center gap-2">
                                         <Check className="w-4 h-4" />
                                         Convite gerado! Copie o link abaixo para enviar.
@@ -628,7 +610,7 @@ const AdminPanel: React.FC = () => {
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-muted-foreground px-1">Link de Acesso</label>
                                         <div className="flex gap-2">
-                                            <div className="flex-1 bg-secondary/50 p-3 rounded-lg border border-border font-mono text-[10px] break-all select-all">
+                                            <div className="flex-1 bg-secondary p-3 rounded-lg border border-border font-mono text-[10px] break-all select-all">
                                                 {generatedLink}
                                             </div>
                                             <Button
@@ -640,9 +622,6 @@ const AdminPanel: React.FC = () => {
                                             </Button>
                                         </div>
                                     </div>
-                                    <p className="text-[10px] text-muted-foreground text-center">
-                                        Este link expira em 7 dias e só pode ser usado uma vez com o e-mail convidado.
-                                    </p>
                                     <Button variant="ghost" className="w-full" onClick={closeInviteModal}>
                                         Fechar
                                     </Button>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 
 export interface Broker {
     id: string;
@@ -9,7 +9,7 @@ export interface Broker {
 }
 
 export function useBrokers() {
-    const { userProfile } = useLead();
+    const { userProfile } = useUser();
     const [brokers, setBrokers] = useState<Broker[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 

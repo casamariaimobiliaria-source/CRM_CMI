@@ -5,13 +5,9 @@ import { Skeleton } from '../components/ui/Skeleton';
 import LeadCard from '../components/LeadCard';
 import LeadTableRow from '../components/LeadTableRow';
 import LeadFilters from '../components/LeadFilters';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useLeads } from '../hooks/useLeads';
 import { cn } from '../lib/utils';
-
-
 import { useBrokers } from '../hooks/useBrokers';
-
 import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,23 +18,22 @@ const LeadList: React.FC = () => {
     const { brokers } = useBrokers();
 
     const leadsInfo = useLeads(leads);
-    console.log("LeadList Debug:", { leadsCount: leads.length, isSyncing, filteredCount: leadsInfo.filteredLeads.length });
 
     const {
         searchTerm,
         setSearchTerm,
-        filterTemp,
-        setFilterTemp,
-        filterStatus,
-        setFilterStatus,
+        temperatureFilter,
+        setTemperatureFilter,
+        statusFilter,
+        setStatusFilter,
         sortBy,
         setSortBy,
         startDate,
         setStartDate,
         endDate,
         setEndDate,
-        filterBroker,
-        setFilterBroker,
+        brokerFilter,
+        setBrokerFilter, // Corrected from setFilterBroker
         filteredLeads
     } = leadsInfo;
 
@@ -66,7 +61,7 @@ const LeadList: React.FC = () => {
 
                 <Button
                     onClick={() => navigate('/add')}
-                    className="h-12 px-8 rounded-2xl bg-primary text-primary-foreground font-bold text-[10px] tracking-widest uppercase shadow-neon-cyan hover:scale-105 transition-all group"
+                    className="flex-1 md:flex-none h-10 md:h-12 px-6 md:px-8 rounded-xl md:rounded-2xl bg-primary text-primary-foreground font-bold text-[9px] md:text-[10px] tracking-widest uppercase shadow-luxury hover:scale-105 transition-all group"
                 >
                     <Plus className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                     NOVO LEAD
@@ -78,10 +73,10 @@ const LeadList: React.FC = () => {
                 <LeadFilters
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
-                    filterTemp={filterTemp}
-                    setFilterTemp={setFilterTemp}
-                    filterStatus={filterStatus}
-                    setFilterStatus={setFilterStatus}
+                    temperatureFilter={temperatureFilter}
+                    setTemperatureFilter={setTemperatureFilter}
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
                     filteredCount={filteredLeads.length}
                     filteredLeads={filteredLeads}
                     viewMode={viewMode}
@@ -93,8 +88,8 @@ const LeadList: React.FC = () => {
                     endDate={endDate}
                     setEndDate={setEndDate}
                     brokers={brokers}
-                    filterBroker={filterBroker}
-                    setFilterBroker={setFilterBroker}
+                    brokerFilter={brokerFilter}
+                    setBrokerFilter={setBrokerFilter} // Corrected
                 />
 
                 <main className="space-y-6 pb-40 relative z-10">
@@ -103,7 +98,7 @@ const LeadList: React.FC = () => {
                             className="py-32 text-center flex flex-col items-center"
                         >
                             <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
-                                <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
                             <h3 className="text-xl font-display font-bold text-foreground italic mb-2">Nenhum Registro Encontrado</h3>
                             <p className="text-muted-foreground/40 text-[10px] font-bold uppercase tracking-[0.2em]">

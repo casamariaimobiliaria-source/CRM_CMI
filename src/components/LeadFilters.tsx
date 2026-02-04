@@ -3,16 +3,16 @@ import { LeadTemperature, LeadStatus, Lead } from '../types';
 import { Input } from './ui/Input';
 import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
-import { Download, LayoutGrid, List, SortDesc, Calendar, Users } from 'lucide-react';
+import { Download, LayoutGrid, List } from 'lucide-react';
 import { exportLeadsToExcel } from '../lib/excelUtils';
 
 interface LeadFiltersProps {
     searchTerm: string;
     setSearchTerm: (term: string) => void;
-    filterTemp: LeadTemperature | 'Todos';
-    setFilterTemp: (temp: LeadTemperature | 'Todos') => void;
-    filterStatus: LeadStatus | 'Todos';
-    setFilterStatus: (status: LeadStatus | 'Todos') => void;
+    temperatureFilter: LeadTemperature | 'Todos';
+    setTemperatureFilter: (temp: LeadTemperature | 'Todos') => void;
+    statusFilter: LeadStatus | 'Todos';
+    setStatusFilter: (status: LeadStatus | 'Todos') => void;
     filteredCount: number;
     filteredLeads: Lead[];
     viewMode: 'cards' | 'table';
@@ -24,17 +24,17 @@ interface LeadFiltersProps {
     endDate: string;
     setEndDate: (date: string) => void;
     brokers?: { id: string; name: string }[];
-    filterBroker?: string;
-    setFilterBroker?: (brokerId: string) => void;
+    brokerFilter?: string;
+    setBrokerFilter?: (brokerId: string) => void;
 }
 
 const LeadFilters: React.FC<LeadFiltersProps> = ({
     searchTerm,
     setSearchTerm,
-    filterTemp,
-    setFilterTemp,
-    filterStatus,
-    setFilterStatus,
+    temperatureFilter,
+    setTemperatureFilter,
+    statusFilter,
+    setStatusFilter,
     filteredCount,
     filteredLeads,
     viewMode,
@@ -46,8 +46,8 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
     endDate,
     setEndDate,
     brokers,
-    filterBroker,
-    setFilterBroker
+    brokerFilter,
+    setBrokerFilter
 }) => {
     return (
         <div className="bg-background sticky top-0 z-40 py-4 md:py-6 shrink-0 transition-all">
@@ -70,11 +70,11 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                             {(['Todos', ...Object.values(LeadStatus)] as string[]).map((s) => (
                                 <button
                                     key={s}
-                                    onClick={() => setFilterStatus(s as any)}
+                                    onClick={() => setStatusFilter(s as any)}
                                     className={cn(
                                         "px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap shrink-0",
-                                        filterStatus === s
-                                            ? "bg-primary text-black shadow-lg shadow-primary/20"
+                                        statusFilter === s
+                                            ? "bg-primary text-black shadow-luxury"
                                             : "text-muted-foreground hover:text-foreground"
                                     )}
                                 >
@@ -120,7 +120,7 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                                 <List className="w-4 h-4" />
                             </button>
                         </div>
-                        <p className="text-[10px] font-luxury italic text-muted-foreground/40 tracking-widest">
+                        <p className="text-[10px] font-display italic text-muted-foreground/40 tracking-widest">
                             Mostrando {filteredCount} registros de exclusividade
                         </p>
                     </div>

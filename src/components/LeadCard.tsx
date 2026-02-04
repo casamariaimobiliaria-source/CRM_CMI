@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
@@ -35,18 +35,9 @@ const getCardColor = (lead: Lead) => {
     return "hover:border-primary/20 hover:bg-foreground/[0.02]";
 }
 
-const getTempColor = (temp: string) => {
-    switch (temp) {
-        case 'Quente': return 'border-l-destructive/60';
-        case 'Morno': return 'border-l-secondary/60';
-        default: return 'border-l-accent/60';
-    }
-}
-
 const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
     const navigate = useNavigate();
-    const { userProfile } = useLead();
-    const isAdmin = userProfile?.role === 'admin' || userProfile?.role === 'owner';
+    const { userProfile } = useUser();
 
     return (
         <motion.div
