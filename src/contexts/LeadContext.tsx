@@ -21,6 +21,16 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
 
+  const mapLeadFromDB = (l: any): Lead => ({
+    ...l,
+    nome: l.name,
+    telefone: l.phone,
+    midia: l.source,
+    createdAt: l.created_at,
+    dataCompra: l.data_compra,
+    nextContact: l.next_contact
+  });
+
   const fetchLeads = useCallback(async () => {
     if (!session) return;
 
@@ -36,17 +46,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
 
-      const mappedLeads = (data || []).map(l => ({
-        ...l,
-        nome: l.name,
-        telefone: l.phone,
-        midia: l.source,
-        createdAt: l.created_at,
-        dataCompra: l.data_compra,
-        nextContact: l.next_contact
-      })) as Lead[];
-
-      setLeads(mappedLeads);
+      setLeads((data || []).map(mapLeadFromDB));
     } catch (error) {
       console.error('Error fetching leads:', error);
     } finally {
@@ -90,12 +90,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       if (error) throw error;
 
-      const newLead = {
-        ...data,
-        createdAt: data.created_at,
-        dataCompra: data.data_compra
-      } as Lead;
-
+      const newLead = mapLeadFromDB(data);
       setLeads(prev => [newLead, ...prev]);
     } catch (error) {
       console.error('Error adding lead:', error);
@@ -108,7 +103,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updateLead = async (id: string, leadData: Partial<LeadFormData>) => {
     setIsSyncing(true);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('leads')
         .update({
           name: leadData.nome,
@@ -124,11 +119,14 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           next_contact: leadData.nextContact || null,
           organization_id: userProfile?.organization_id
         })
-        .eq('id', id);
+        .eq('id', id)
+        .select()
+        .single();
 
       if (error) throw error;
 
-      setLeads(prev => prev.map(l => l.id === id ? { ...l, ...leadData } : l));
+      const updatedLead = mapLeadFromDB(data);
+      setLeads(prev => prev.map(l => l.id === id ? updatedLead : l));
     } catch (error) {
       console.error('Error updating lead:', error);
       throw error;
