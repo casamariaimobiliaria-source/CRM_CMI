@@ -23,8 +23,8 @@ const parseDate = (dateStr: any): string => {
 
   try {
     if (typeof dateStr === 'string' && dateStr.includes('/')) {
-      const parts = dateStr.split(' ')[0].split('/');
-      if (parts.length === 3) {
+      const parts = dateStr.split(' ')[0]?.split('/');
+      if (parts && parts.length === 3) {
         const d = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
         return d.toISOString();
       }

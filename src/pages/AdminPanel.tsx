@@ -338,7 +338,7 @@ const AdminPanel: React.FC = () => {
                                         <div>
                                             <h4 className="font-bold text-foreground">{org.name}</h4>
                                             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">
-                                                ID: {org.id.split('-')[0]} • {new Date(org.created_at).toLocaleDateString()}
+                                                ID: {(org.id || '').split('-')[0]} • {new Date(org.created_at).toLocaleDateString()}
                                             </p>
                                         </div>
                                     </div>

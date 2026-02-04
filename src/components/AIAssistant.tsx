@@ -106,7 +106,7 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                     <div className="py-8 text-center">
                         <BrainCircuit className="w-12 h-12 text-primary/20 mx-auto mb-4" />
                         <p className="text-xs text-muted-foreground/60 max-w-[200px] mx-auto leading-relaxed italic mb-6">
-                            Clique para analisar o perfil de {lead.nome.split(' ')[0]} e gerar abordagens de alto impacto.
+                            Clique para analisar o perfil de {(lead?.nome || 'Anônimo').split(' ')[0]} e gerar abordagens de alto impacto.
                         </p>
                         <Button
                             size="sm"
