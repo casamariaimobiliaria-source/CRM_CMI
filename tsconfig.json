@@ -24,12 +24,13 @@
     ]
   },
   "include": [
-    "./**/*.ts",
-    "./**/*.tsx"
+    "src"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "supabase"
+    "supabase",
+    "**/supabase",
+    "CRM_CMI"
   ]
 }
