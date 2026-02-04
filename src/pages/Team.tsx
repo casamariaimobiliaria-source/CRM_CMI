@@ -182,7 +182,7 @@ const Team: React.FC = () => {
                         organization_id: userProfile.organization_id
                     });
 
-                if (profileError) console.error('Profile creation warning:', profileError);
+                if (profileError) throw profileError;
 
                 // 3. Add to Organization Members
                 const { error: memberError } = await supabase
