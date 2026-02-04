@@ -54,7 +54,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
                 .select('role')
                 .eq('user_id', userId)
                 .eq('organization_id', userData.organization_id)
-                .single();
+                .maybeSingle(); // Use maybeSingle to avoid error if missing
 
             if (memberData) {
                 userData.role = memberData.role;

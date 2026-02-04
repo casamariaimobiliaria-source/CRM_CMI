@@ -66,13 +66,17 @@ const AdminPanel: React.FC = () => {
         try {
             const { data, error } = await supabase
                 .from('users')
-                .select('*, organization:organizations(name)')
+                .select('*, organization:organizations!organization_id(name)')
                 .order('created_at', { ascending: false });
-            if (error) throw error;
+
+            if (error) {
+                console.error('FETCH USERS ERROR:', error);
+                throw error;
+            }
             setUsers(data || []);
         } catch (error: any) {
-            console.error('Error fetching users:', error);
-            toast.error('Erro ao carregar usuários.');
+            console.error('Error in fetchUsers:', error);
+            toast.error(`Erro ao carregar usuários: ${error.message || 'Erro de conexão'}`);
         } finally {
             setUsersLoading(false);
         }
@@ -87,7 +91,6 @@ const AdminPanel: React.FC = () => {
                 .select('*')
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
             setStats(data || []);
             await fetchUsers();
         } catch (error: any) {
