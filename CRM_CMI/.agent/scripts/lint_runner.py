@@ -77,9 +77,6 @@ def run_linter(linter: dict, cwd: Path) -> dict:
     }
     
     try:
-        import platform
-        is_windows = platform.system() == "Windows"
-        
         proc = subprocess.run(
             linter["cmd"],
             cwd=str(cwd),
@@ -87,8 +84,7 @@ def run_linter(linter: dict, cwd: Path) -> dict:
             text=True,
             encoding='utf-8',
             errors='replace',
-            timeout=120,
-            shell=is_windows
+            timeout=120
         )
         
         result["output"] = proc.stdout[:2000] if proc.stdout else ""
