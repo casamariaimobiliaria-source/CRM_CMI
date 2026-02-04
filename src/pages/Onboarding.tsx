@@ -20,7 +20,6 @@ const authSchema = z.object({
 type AuthFormValues = z.infer<typeof authSchema>;
 
 const Onboarding: React.FC = () => {
-    const [isLogin, setIsLogin] = useState(true);
     const [loading, setLoading] = useState(false);
 
     const {
@@ -55,39 +54,12 @@ const Onboarding: React.FC = () => {
     const onSubmit = async (data: AuthFormValues) => {
         setLoading(true);
         try {
-            if (isLogin) {
-                const { error } = await supabase.auth.signInWithPassword({
-                    email: data.email,
-                    password: data.password
-                });
-                if (error) throw error;
-                toast.success('Bem-vindo de volta!');
-            } else {
-                if (!data.name) {
-                    toast.error('Por favor, informe seu nome completo');
-                    setLoading(false);
-                    return;
-                }
-                const { error } = await supabase.auth.signUp({
-                    email: data.email,
-                    password: data.password,
-                    options: {
-                        data: {
-                            name: data.name
-                        }
-                    }
-                });
-                if (error) {
-                    if (error.message.includes('already registered')) {
-                        toast.error('Este e-mail já possui uma conta. Tente fazer login.');
-                        setIsLogin(true);
-                        return;
-                    }
-                    throw error;
-                }
-                toast.success('Conta criada com sucesso! Você já pode entrar.');
-                setIsLogin(true);
-            }
+            const { error } = await supabase.auth.signInWithPassword({
+                email: data.email,
+                password: data.password
+            });
+            if (error) throw error;
+            toast.success('Bem-vindo de volta!');
         } catch (error: any) {
             toast.error(error.message || 'Erro na autenticação');
         } finally {
@@ -97,11 +69,8 @@ const Onboarding: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
-            {/* 🌫️ NEON SMOKE BACKGROUND */}
             <div className="absolute inset-0 z-0 bg-background">
                 <div className="absolute inset-0 subtle-dot-grid opacity-30" />
-
-                {/* Smoky Orbs */}
                 <div className="absolute top-[10%] left-[15%] w-[40vw] h-[40vw] bg-cyan-500/10 rounded-full blur-[120px] animate-smoke" />
                 <div className="absolute bottom-[10%] right-[15%] w-[35vw] h-[35vw] bg-purple-500/10 rounded-full blur-[120px] animate-smoke" style={{ animationDelay: '-5s' }} />
                 <div className="absolute top-[40%] right-[10%] w-[30vw] h-[30vw] bg-amber-500/5 rounded-full blur-[120px] animate-smoke" style={{ animationDelay: '-10s' }} />
@@ -125,26 +94,15 @@ const Onboarding: React.FC = () => {
                                 N
                             </motion.div>
                             <CardTitle className="text-4xl font-display italic tracking-tight mb-2">
-                                {isLogin ? 'Bem-vindo' : 'Criar Conta'}
+                                Login
                             </CardTitle>
                             <CardDescription className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground/40">
-                                {isLogin ? 'CRM de Alta Performance' : 'Sua Jornada Começa Aqui'}
+                                CRM de Alta Performance
                             </CardDescription>
                         </CardHeader>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="relative z-10">
                             <CardContent className="space-y-6 pt-8">
-                                {!isLogin && (
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest px-1">Nome Completo</label>
-                                        <Input
-                                            placeholder="Seu nome"
-                                            className="bg-white/5 border-white/10 h-12 focus:border-primary/50 transition-all"
-                                            error={errors.name?.message}
-                                            {...register('name')}
-                                        />
-                                    </div>
-                                )}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-widest px-1">E-mail Corporativo</label>
                                     <Input
@@ -172,31 +130,25 @@ const Onboarding: React.FC = () => {
                                     className="w-full h-14 text-sm font-bold tracking-[0.2em] uppercase bg-primary hover:bg-primary/80 text-primary-foreground shadow-luxury transition-all"
                                     isLoading={loading}
                                 >
-                                    {isLogin ? 'ENTRAR AGORA' : 'CADASTRAR IMOBILIÁRIA'}
+                                    ENTRAR AGORA
                                 </Button>
 
                                 <div className="flex flex-col gap-3 w-full">
-                                    {isLogin && (
-                                        <button
-                                            type="button"
-                                            onClick={onForgotPassword}
-                                            className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors"
-                                        >
-                                            Recuperar Senha
-                                        </button>
-                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={onForgotPassword}
+                                        className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 hover:text-primary transition-colors"
+                                    >
+                                        Recuperar Senha
+                                    </button>
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            if (isLogin) {
-                                                window.open('https://wa.me/5511999999999?text=Olá! Gostaria de solicitar acesso ao ImobLeads.', '_blank');
-                                            } else {
-                                                setIsLogin(true);
-                                            }
+                                            window.open('https://wa.me/5511999999999?text=Olá! Gostaria de solicitar acesso ao ImobLeads.', '_blank');
                                         }}
                                         className="text-[11px] font-bold text-foreground/60 hover:text-primary transition-all border-t border-white/5 pt-4 mt-2"
                                     >
-                                        {isLogin ? 'NÃO TEM CONTA? SOLICITAR ACESSO VIA WHATSAPP' : 'JÁ POSSUI CONTA? FAZER LOGIN'}
+                                        NÃO TEM CONTA? SOLICITAR ACESSO VIA WHATSAPP
                                     </button>
                                 </div>
                             </CardFooter>

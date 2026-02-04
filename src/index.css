@@ -73,6 +73,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* 🛠️ Fix Select Option Contrast */
+  select option {
+    background-color: white;
+    color: black;
+  }
+
+  .dark select option {
+    background-color: #0c0e14;
+    color: white;
+  }
 }
 
 @layer utilities {

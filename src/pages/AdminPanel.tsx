@@ -22,7 +22,7 @@ const AdminPanel: React.FC = () => {
     const [stats, setStats] = useState<OrgStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [activeTab, setActiveTab] = useState<'orgs' | 'settings'>('orgs');
+    const [activeTab, setActiveTab] = useState<'orgs' | 'users' | 'settings'>('orgs');
 
     // Global Settings State
     const [globalSettings, setGlobalSettings] = useState({
@@ -30,6 +30,8 @@ const AdminPanel: React.FC = () => {
         app_logo_url: ''
     });
     const [savingSettings, setSavingSettings] = useState(false);
+    const [users, setUsers] = useState<any[]>([]);
+    const [usersLoading, setUsersLoading] = useState(false);
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,6 +61,23 @@ const AdminPanel: React.FC = () => {
         if (data) setGlobalSettings({ app_name: data.app_name, app_logo_url: data.app_logo_url || '' });
     };
 
+    const fetchUsers = async () => {
+        setUsersLoading(true);
+        try {
+            const { data, error } = await supabase
+                .from('users')
+                .select('*, organization:organizations(name)')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            setUsers(data || []);
+        } catch (error: any) {
+            console.error('Error fetching users:', error);
+            toast.error('Erro ao carregar usuários.');
+        } finally {
+            setUsersLoading(false);
+        }
+    };
+
     const fetchStats = async () => {
         setRefreshing(true);
         try {
@@ -70,6 +89,7 @@ const AdminPanel: React.FC = () => {
 
             if (error) throw error;
             setStats(data || []);
+            await fetchUsers();
         } catch (error: any) {
             console.error('Error fetching admin stats:', error);
             toast.error('Erro ao carregar dados administrativos.');
@@ -207,6 +227,21 @@ const AdminPanel: React.FC = () => {
         }
     }
 
+    const deleteUser = async (userId: string) => {
+        if (!window.confirm('Tem certeza que deseja remover este usuário?')) return;
+        try {
+            const { error } = await supabase
+                .from('users')
+                .delete()
+                .eq('id', userId);
+            if (error) throw error;
+            toast.success('Usuário removido.');
+            fetchUsers();
+        } catch (error: any) {
+            toast.error('Erro ao remover usuário: ' + error.message);
+        }
+    };
+
     const generateInvite = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!invitingOrg) return;
@@ -280,6 +315,12 @@ const AdminPanel: React.FC = () => {
                             className={cn("px-4 py-2 rounded-lg text-xs font-bold transition-all", activeTab === 'orgs' ? "bg-card text-primary shadow-sm" : "hover:bg-card/50 text-muted-foreground")}
                         >
                             Organizações
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('users')}
+                            className={cn("px-4 py-2 rounded-lg text-xs font-bold transition-all", activeTab === 'users' ? "bg-card text-primary shadow-sm" : "hover:bg-card/50 text-muted-foreground")}
+                        >
+                            Usuários
                         </button>
                         <button
                             onClick={() => setActiveTab('settings')}
@@ -421,6 +462,45 @@ const AdminPanel: React.FC = () => {
                         </CardContent>
                     </Card>
                 </div>
+            ) : activeTab === 'users' ? (
+                <div className="grid grid-cols-1 gap-6">
+                    <Card className="border-border bg-card/50 backdrop-blur-sm shadow-xl overflow-hidden">
+                        <CardHeader className="bg-muted/20 border-b border-border">
+                            <div className="flex justify-between items-center text-xs font-bold text-muted-foreground uppercase tracking-widest px-6">
+                                <span>Colaborador</span>
+                                <span>Organização</span>
+                                <span>Permissão</span>
+                                <span className="text-right">Ação</span>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="p-0 divide-y divide-border">
+                            {users.map((u) => (
+                                <div key={u.id} className="p-4 px-6 hover:bg-muted/30 flex items-center justify-between transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+                                            {u.name?.[0] || 'U'}
+                                        </div>
+                                        <div>
+                                            <p className="font-bold text-sm text-foreground">{u.name}</p>
+                                            <p className="text-[10px] text-muted-foreground">{u.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-xs font-medium text-muted-foreground">
+                                        {u.organization?.name || '---'}
+                                    </div>
+                                    <div>
+                                        <Badge variant="outline" className="text-[10px] uppercase">{u.role}</Badge>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive" onClick={() => deleteUser(u.id)}>
+                                            <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </div>
             ) : (
                 <div className="max-w-2xl mx-auto py-12">
                     <Card className="border-border bg-card/50 backdrop-blur-sm shadow-xl">
@@ -435,6 +515,7 @@ const AdminPanel: React.FC = () => {
                                         value={globalSettings.app_name}
                                         onChange={e => setGlobalSettings({ ...globalSettings, app_name: e.target.value })}
                                         placeholder="Ex: NossoCRM"
+                                        className="bg-card text-foreground border-border"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -443,6 +524,7 @@ const AdminPanel: React.FC = () => {
                                         value={globalSettings.app_logo_url}
                                         onChange={e => setGlobalSettings({ ...globalSettings, app_logo_url: e.target.value })}
                                         placeholder="https://..."
+                                        className="bg-card text-foreground border-border"
                                     />
                                 </div>
                                 <div className="pt-4">
