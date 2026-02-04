@@ -38,9 +38,12 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const mappedLeads = (data || []).map(l => ({
         ...l,
+        nome: l.name,
+        telefone: l.phone,
+        midia: l.source,
         createdAt: l.created_at,
         dataCompra: l.data_compra,
-        nextContact: l.proximo_contato
+        nextContact: l.next_contact
       })) as Lead[];
 
       setLeads(mappedLeads);
@@ -68,17 +71,17 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { data, error } = await supabase
         .from('leads')
         .insert([{
-          nome: leadData.nome,
-          telefone: leadData.telefone,
+          name: leadData.nome,
+          phone: leadData.telefone,
           email: leadData.email,
-          midia: leadData.midia,
+          source: leadData.midia,
           data_compra: leadData.dataCompra || null,
           corretor: leadData.corretor || userProfile?.name,
           empreendimento: leadData.empreendimento,
           temperatura: leadData.temperatura,
           status: leadData.status,
           historico: leadData.historico,
-          proximo_contato: leadData.nextContact || null,
+          next_contact: leadData.nextContact || null,
           user_id: session?.user.id,
           organization_id: userProfile?.organization_id
         }])
@@ -108,17 +111,17 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { error } = await supabase
         .from('leads')
         .update({
-          nome: leadData.nome,
-          telefone: leadData.telefone,
+          name: leadData.nome,
+          phone: leadData.telefone,
           email: leadData.email,
-          midia: leadData.midia,
+          source: leadData.midia,
           data_compra: leadData.dataCompra || null,
           corretor: leadData.corretor,
           empreendimento: leadData.empreendimento,
           temperatura: leadData.temperatura,
           status: leadData.status,
           historico: leadData.historico,
-          proximo_contato: leadData.nextContact || null,
+          next_contact: leadData.nextContact || null,
           organization_id: userProfile?.organization_id
         })
         .eq('id', id);
