@@ -102,7 +102,20 @@ const AppRoutes: React.FC = () => {
 
     const isLoading = authLoading || userLoading;
 
-    if (isLoading) return null;
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-background p-10 text-center">
+                <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6" />
+                <h2 className="text-xl font-bold text-foreground mb-2">Iniciando Sistema...</h2>
+                <p className="text-muted-foreground text-[10px] uppercase tracking-[0.4em] animate-pulse">
+                    Verificando credenciais e carregando perfil
+                </p>
+                <div className="mt-8 text-[10px] text-muted-foreground/30 font-mono">
+                    AUTH: {authLoading ? 'CARREGANDO' : 'OK'} | USER: {userLoading ? 'CARREGANDO' : 'OK'}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <Routes>
