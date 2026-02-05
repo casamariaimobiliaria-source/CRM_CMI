@@ -6,7 +6,7 @@ import { useUser } from '../contexts/UserContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
-import { ShieldCheck, Zap, TrendingUp, Users, Target, Rocket } from 'lucide-react';
+import { ShieldCheck, Zap, TrendingUp, Users, Target, Rocket, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
@@ -175,6 +175,29 @@ const Settings: React.FC = () => {
                                 <p className="text-[9px] text-muted-foreground/40 font-bold uppercase text-center tracking-widest">
                                     Sincronização global ativa e protegida
                                 </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="glass-high-fidelity rounded-[2.5rem] overflow-hidden group">
+                        <CardHeader className="border-b border-white/5 pb-6">
+                            <CardTitle className="text-xl font-display italic flex items-center gap-3">
+                                <User className="w-5 h-5 text-primary opacity-60" />
+                                Seu Perfil
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-8 space-y-6">
+                            <div>
+                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome</label>
+                                <p className="font-display font-bold text-xl text-foreground italic">{userProfile?.name || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">E-mail</label>
+                                <p className="text-sm font-medium text-foreground/80">{userProfile?.email || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Função</label>
+                                <p className="text-xs font-bold text-primary uppercase tracking-widest">{userProfile?.role || 'Membro'}</p>
                             </div>
                         </CardContent>
                     </Card>

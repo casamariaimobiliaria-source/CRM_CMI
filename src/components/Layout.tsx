@@ -99,11 +99,11 @@ const Layout: React.FC = () => {
             <div className="p-4 border-t border-border/50 mt-auto">
                 <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/5 transition-colors cursor-pointer group">
                     <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-xs font-medium border border-border/50">
-                        {userProfile?.organization?.name?.[0] || 'U'}
+                        {userProfile?.name?.[0] || 'U'}
                     </div>
                     <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">
-                            {userProfile?.organization?.name || 'Usuário'}
+                            {userProfile?.name || 'Usuário'}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
                             {userProfile?.role || 'Membro'}
