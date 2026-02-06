@@ -9,7 +9,8 @@ import {
     Inbox,
     KanbanSquare,
     Menu,
-    Shield
+    Shield,
+    Database
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUser } from '../contexts/UserContext';
@@ -35,6 +36,7 @@ const Layout: React.FC = () => {
         { icon: KanbanSquare, label: 'Pipeline', path: '/kanban' },
         { icon: Inbox, label: 'Meus Leads', path: '/' },
         { icon: Users, label: 'Equipe', path: '/team' },
+        { icon: Database, label: 'Dados', path: '/administration', adminOnly: true },
         { icon: BarChart3, label: 'Relatórios', path: '/reports' },
         { icon: SettingsIcon, label: 'Configurações', path: '/settings' },
     ];
@@ -64,34 +66,36 @@ const Layout: React.FC = () => {
             </div>
 
             <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto custom-scrollbar">
-                {menuItems.map((item) => (
-                    <NavLink
-                        key={item.path}
-                        to={item.path}
-                        onClick={() => setIsMobileOpen(false)}
-                        className={({ isActive }) => cn(
-                            "flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 group relative overflow-hidden",
-                            isActive
-                                ? "text-primary bg-primary/10 border border-primary/20 shadow-luxury"
-                                : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5 border border-transparent"
-                        )}
-                    >
-                        <item.icon className={cn(
-                            "w-5 h-5 transition-colors",
-                            location.pathname === item.path ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
-                        )} />
-                        {item.label}
-                        {location.pathname === item.path && (
-                            <motion.div
-                                layoutId="active-indicator"
-                                className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                            />
-                        )}
-                    </NavLink>
-                ))}
+                {menuItems
+                    .filter(item => !item.adminOnly || userProfile?.role === 'admin' || userProfile?.role === 'owner')
+                    .map((item) => (
+                        <NavLink
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => setIsMobileOpen(false)}
+                            className={({ isActive }) => cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-2xl text-[10px] uppercase font-bold tracking-[0.2em] transition-all duration-500 group relative overflow-hidden",
+                                isActive
+                                    ? "text-primary bg-primary/10 border border-primary/20 shadow-luxury"
+                                    : "text-muted-foreground/70 hover:text-foreground hover:bg-foreground/5 border border-transparent"
+                            )}
+                        >
+                            <item.icon className={cn(
+                                "w-5 h-5 transition-colors",
+                                location.pathname === item.path ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+                            )} />
+                            {item.label}
+                            {location.pathname === item.path && (
+                                <motion.div
+                                    layoutId="active-indicator"
+                                    className="absolute left-0 w-1 h-6 bg-primary rounded-r-full"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                />
+                            )}
+                        </NavLink>
+                    ))}
             </nav>
 
             <div className="p-4 border-t border-border/50 mt-auto">

@@ -24,6 +24,8 @@ export const leadFormSchema = z.object({
     corretor: z.string().optional(),
 
     empreendimento: z.string().optional(),
+    enterprise_id: z.string().uuid().optional().or(z.literal('')),
+    source_id: z.string().uuid().optional().or(z.literal('')),
 
     temperatura: z.nativeEnum(LeadTemperature, {
         message: 'Selecione uma temperatura válida'

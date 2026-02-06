@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { supabase } from '../lib/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLead } from '../contexts/LeadContext';
 import { useUser } from '../contexts/UserContext';
@@ -22,6 +23,9 @@ const LeadForm: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
+    const [enterpriseOptions, setEnterpriseOptions] = React.useState<{ id: string, name: string }[]>([]);
+    const [sourceOptions, setSourceOptions] = React.useState<{ id: string, name: string }[]>([]);
+
     const {
         register,
         handleSubmit,
@@ -37,6 +41,8 @@ const LeadForm: React.FC = () => {
             telefone: '',
             email: '',
             midia: '',
+            enterprise_id: '',
+            source_id: '',
             dataCompra: '',
             corretor: '',
             empreendimento: '',
@@ -46,6 +52,19 @@ const LeadForm: React.FC = () => {
             nextContact: ''
         }
     });
+
+    useEffect(() => {
+        const fetchOptions = async () => {
+            if (!userProfile?.organization_id) return;
+            const [entRes, srcRes] = await Promise.all([
+                supabase.from('enterprises').select('id, name').eq('organization_id', userProfile.organization_id).order('name'),
+                supabase.from('lead_sources').select('id, name').eq('organization_id', userProfile.organization_id).order('name')
+            ]);
+            if (entRes.data) setEnterpriseOptions(entRes.data);
+            if (srcRes.data) setSourceOptions(srcRes.data);
+        };
+        fetchOptions();
+    }, [userProfile?.organization_id]);
 
     const watchTelefone = watch('telefone');
 
@@ -58,6 +77,8 @@ const LeadForm: React.FC = () => {
                     telefone: existingLead.telefone,
                     email: existingLead.email || '',
                     midia: existingLead.midia || '',
+                    enterprise_id: existingLead.enterprise_id || '',
+                    source_id: existingLead.source_id || '',
                     dataCompra: existingLead.dataCompra || '',
                     corretor: existingLead.corretor || '',
                     empreendimento: existingLead.empreendimento || '',
@@ -188,19 +209,39 @@ const LeadForm: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <Input
-                                            label="Empreendimento"
-                                            placeholder="Nome do Edifício / Ativo"
-                                            {...register('empreendimento')}
-                                        />
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Empreendimento</label>
+                                        <div className="relative">
+                                            <select
+                                                className="flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground"
+                                                {...register('enterprise_id')}
+                                            >
+                                                <option value="">Selecione um empreendimento...</option>
+                                                {enterpriseOptions.map(opt => (
+                                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div>
-                                        <Input
-                                            label="Origem do Lead"
-                                            placeholder="Ex: Instagram, Indicação, etc"
-                                            {...register('midia')}
-                                        />
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Origem do Lead</label>
+                                        <div className="relative">
+                                            <select
+                                                className="flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground"
+                                                {...register('source_id')}
+                                            >
+                                                <option value="">Selecione uma origem...</option>
+                                                {sourceOptions.map(opt => (
+                                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div>

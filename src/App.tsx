@@ -14,8 +14,8 @@ const SetupOrganization = React.lazy(() => import('./pages/SetupOrganization'));
 const Team = React.lazy(() => import('./pages/Team'));
 const JoinOrganization = React.lazy(() => import('./pages/JoinOrganization'));
 const Settings = React.lazy(() => import('./pages/Settings'));
-const AdminPanel = React.lazy(() => import('./pages/AdminPanel')); // [DELETE] Will be removed shortly
 const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports'));
+const AdminData = React.lazy(() => import('./pages/AdminData'));
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -146,6 +146,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="edit/:id" element={<LeadForm />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="team" element={<Team />} />
+                <Route path="administration" element={<AdminData />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="reports" element={<PerformanceReports />} />
                 <Route path="reports" element={<PerformanceReports />} />

@@ -56,6 +56,8 @@ export interface Lead {
   historico?: string;
   nextContact?: string;
   createdAt: string;
+  enterprise_id?: string;
+  source_id?: string;
   user_id?: string;
   organization_id?: string;
   synced?: boolean;
