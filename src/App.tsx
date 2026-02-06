@@ -14,7 +14,7 @@ const SetupOrganization = React.lazy(() => import('./pages/SetupOrganization'));
 const Team = React.lazy(() => import('./pages/Team'));
 const JoinOrganization = React.lazy(() => import('./pages/JoinOrganization'));
 const Settings = React.lazy(() => import('./pages/Settings'));
-const AdminPanel = React.lazy(() => import('./pages/AdminPanel'));
+const AdminPanel = React.lazy(() => import('./pages/AdminPanel')); // [DELETE] Will be removed shortly
 const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports'));
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
@@ -106,13 +106,10 @@ const AppRoutes: React.FC = () => {
         return (
             <div className="min-h-screen flex flex-col items-center justify-center bg-background p-10 text-center">
                 <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-6" />
-                <h2 className="text-xl font-bold text-foreground mb-2">Iniciando Sistema...</h2>
+                <h2 className="text-xl font-bold text-foreground mb-2 italic font-display">Iniciando Sistema</h2>
                 <p className="text-muted-foreground text-[10px] uppercase tracking-[0.4em] animate-pulse">
-                    Verificando credenciais e carregando perfil
+                    Autenticando e carregando perfil exclusivo
                 </p>
-                <div className="mt-8 text-[10px] text-muted-foreground/30 font-mono">
-                    AUTH: {authLoading ? 'CARREGANDO' : 'OK'} | USER: {userLoading ? 'CARREGANDO' : 'OK'}
-                </div>
             </div>
         );
     }
@@ -151,14 +148,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="team" element={<Team />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="reports" element={<PerformanceReports />} />
-                <Route
-                    path="admin"
-                    element={
-                        userProfile?.is_super_admin
-                            ? <AdminPanel />
-                            : <Navigate to="/" replace />
-                    }
-                />
+                <Route path="reports" element={<PerformanceReports />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -31,17 +31,15 @@ const Layout: React.FC = () => {
     };
 
     const menuItems = [
-        { icon: LayoutDashboard, label: 'Painel', path: '/dashboard' },
-        { icon: KanbanSquare, label: 'Kanban', path: '/kanban' },
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+        { icon: KanbanSquare, label: 'Pipeline', path: '/kanban' },
         { icon: Inbox, label: 'Meus Leads', path: '/' },
-        { icon: Users, label: 'Minha Equipe', path: '/team' },
+        { icon: Users, label: 'Equipe', path: '/team' },
         { icon: BarChart3, label: 'Relatórios', path: '/reports' },
         { icon: SettingsIcon, label: 'Configurações', path: '/settings' },
     ];
 
-    if (userProfile?.is_super_admin) {
-        menuItems.push({ icon: Shield, label: 'Super Admin', path: '/admin' });
-    }
+
 
     const SidebarContent = () => (
         <div className="flex flex-col h-full">
@@ -106,7 +104,9 @@ const Layout: React.FC = () => {
                             {userProfile?.name || 'Usuário'}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
-                            {userProfile?.role || 'Membro'}
+                            {userProfile?.role === 'owner' ? 'Proprietário' :
+                                userProfile?.role === 'admin' ? 'Administrador' :
+                                    'Corretor'}
                         </p>
                     </div>
                     <ThemeToggle />
@@ -166,31 +166,7 @@ const Layout: React.FC = () => {
                     <ThemeToggle />
                 </div>
 
-                <AnimatePresence>
-                    {impersonatedOrgId && (
-                        <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 flex items-center justify-between z-50 overflow-hidden"
-                        >
-                            <div className="flex items-center gap-2 text-amber-500">
-                                <Shield className="w-4 h-4 animate-pulse" />
-                                <span className="text-[10px] font-bold uppercase tracking-widest">
-                                    Modo Suporte: Visualizando como {userProfile?.organization?.name}
-                                </span>
-                            </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setImpersonatedOrg(null)}
-                                className="h-7 text-[9px] font-bold tracking-widest bg-amber-500/20 text-amber-500 hover:bg-amber-500 hover:text-black transition-all rounded-lg"
-                            >
-                                SAIR DO MODO SUPORTE
-                            </Button>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8">
                     <div className="max-w-7xl mx-auto w-full">

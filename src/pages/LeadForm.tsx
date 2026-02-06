@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 import { LeadTemperature, LeadStatus } from '../types';
 import { Input } from '../components/ui/Input';
 import { MaskedInput } from '../components/MaskedInput';
@@ -17,6 +18,7 @@ import { Lead } from '../types';
 
 const LeadForm: React.FC = () => {
     const { addLead, updateLead, deleteLead, leads } = useLead();
+    const { userProfile } = useUser();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
@@ -125,10 +127,10 @@ const LeadForm: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 md:py-16 pb-20">
             <header className="mb-8 md:mb-12 text-center">
                 <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground italic tracking-tight px-4">
-                    {id ? 'Detalhes do Registro Elite' : 'Identificar Nova Oportunidade'}
+                    {id ? 'Detalhes do Lead' : 'Identificar Novo Lead'}
                 </h1>
                 <p className="text-primary text-[10px] font-bold tracking-[0.3em] uppercase mt-4">
-                    Inteligência Exclusiva de Leads
+                    Inteligência de Leads
                 </p>
             </header>
 
@@ -140,7 +142,7 @@ const LeadForm: React.FC = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="md:col-span-2">
                                         <Input
-                                            label="Identidade Completa"
+                                            label="Nome Completo"
                                             placeholder="Digite o nome completo..."
                                             error={errors.nome?.message}
                                             {...register('nome')}
@@ -149,9 +151,9 @@ const LeadForm: React.FC = () => {
 
                                     <div>
                                         <Input
-                                            label="Endereço de E-mail"
+                                            label="E-mail"
                                             type="email"
-                                            placeholder="contato@imovelpremium.com"
+                                            placeholder="contato@exemplo.com"
                                             error={errors.email?.message}
                                             {...register('email')}
                                         />
@@ -178,7 +180,7 @@ const LeadForm: React.FC = () => {
 
                                     <div>
                                         <Input
-                                            label="Acompanhamento Estratégico"
+                                            label="Próximo Contato"
                                             type="datetime-local"
                                             error={errors.nextContact?.message}
                                             {...register('nextContact')}
@@ -187,7 +189,7 @@ const LeadForm: React.FC = () => {
 
                                     <div>
                                         <Input
-                                            label="Empreendimento Elite"
+                                            label="Empreendimento"
                                             placeholder="Nome do Edifício / Ativo"
                                             {...register('empreendimento')}
                                         />
@@ -195,14 +197,14 @@ const LeadForm: React.FC = () => {
 
                                     <div>
                                         <Input
-                                            label="Canal de Aquisição"
-                                            placeholder="Origem da exclusividade"
+                                            label="Origem do Lead"
+                                            placeholder="Ex: Instagram, Indicação, etc"
                                             {...register('midia')}
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Nível de Interesse (Calor)</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Temperatura</label>
                                         <div className="relative">
                                             <select
                                                 className={cn(
@@ -222,7 +224,7 @@ const LeadForm: React.FC = () => {
                                     </div>
 
                                     <div>
-                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Status do Funil</label>
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Estágio do Funil</label>
                                         <div className="relative">
                                             <select
                                                 className={cn(
@@ -243,14 +245,14 @@ const LeadForm: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-4">
-                                    <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Briefing Confidencial & Inteligência</label>
+                                    <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Histórico e Notas</label>
                                     <textarea
                                         rows={6}
                                         className={cn(
                                             "flex w-full rounded-[1.5rem] border border-input bg-secondary/50 px-6 py-5 text-base shadow-sm placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/10 focus-visible:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 resize-none font-medium transition-all duration-500 text-foreground",
                                             errors.historico && "border-destructive focus-visible:ring-destructive"
                                         )}
-                                        placeholder="Descreva o movimento estratégico..."
+                                        placeholder="Descreva o histórico do lead..."
                                         {...register('historico')}
                                     />
                                 </div>
@@ -268,7 +270,7 @@ const LeadForm: React.FC = () => {
                                         CANCELAR
                                     </Button>
 
-                                    {id && (
+                                    {id && (userProfile?.role === 'admin' || userProfile?.role === 'owner') && (
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -304,7 +306,7 @@ const LeadForm: React.FC = () => {
                                         className="w-full h-12 text-sm font-bold tracking-widest"
                                         isLoading={isSubmitting}
                                     >
-                                        {id ? 'SALVAR DADOS' : 'CRIAR LEAD'}
+                                        {id ? 'SALVAR ALTERAÇÕES' : 'CRIAR LEAD'}
                                     </Button>
                                 </div>
                             </CardFooter>

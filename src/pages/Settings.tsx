@@ -22,14 +22,21 @@ const Settings: React.FC = () => {
     const [isEditingBrand, setIsEditingBrand] = React.useState(false);
     const [brandName, setBrandName] = React.useState(org?.name || '');
     const [brandLogo, setBrandLogo] = React.useState(org?.logo_url || '');
+
+    const [isEditingProfile, setIsEditingProfile] = React.useState(false);
+    const [profileName, setProfileName] = React.useState(userProfile?.name || '');
     const [isSaving, setIsSaving] = React.useState(false);
+    const [isSavingProfile, setIsSavingProfile] = React.useState(false);
 
     React.useEffect(() => {
         if (org) {
             setBrandName(org.brand_display_name || org.name);
             setBrandLogo(org.logo_url || '');
         }
-    }, [org]);
+        if (userProfile) {
+            setProfileName(userProfile.name || '');
+        }
+    }, [org, userProfile]);
 
     const canEditBranding = userProfile?.role === 'owner' || userProfile?.role === 'admin' || userProfile?.is_super_admin;
 
@@ -77,6 +84,29 @@ const Settings: React.FC = () => {
             toast.error('Erro ao salvar marca.');
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleSaveProfile = async () => {
+        if (!userProfile) return;
+        setIsSavingProfile(true);
+        try {
+            const { error } = await supabase
+                .from('users')
+                .update({
+                    name: profileName
+                })
+                .eq('id', userProfile.id);
+
+            if (error) throw error;
+            toast.success('Perfil atualizado com sucesso!');
+            setIsEditingProfile(false);
+            fetchUserProfile(userProfile.id);
+        } catch (error: any) {
+            console.error('Error saving profile:', error);
+            toast.error('Erro ao atualizar perfil.');
+        } finally {
+            setIsSavingProfile(false);
         }
     };
 
@@ -180,25 +210,59 @@ const Settings: React.FC = () => {
                     </Card>
 
                     <Card className="glass-high-fidelity rounded-[2.5rem] overflow-hidden group">
-                        <CardHeader className="border-b border-white/5 pb-6">
+                        <CardHeader className="border-b border-white/5 pb-6 flex flex-row items-center justify-between">
                             <CardTitle className="text-xl font-display italic flex items-center gap-3">
                                 <User className="w-5 h-5 text-primary opacity-60" />
                                 Seu Perfil
                             </CardTitle>
+                            {!isEditingProfile && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-[10px] font-bold tracking-widest text-primary/60 hover:text-primary uppercase"
+                                    onClick={() => setIsEditingProfile(true)}
+                                >
+                                    Editar
+                                </Button>
+                            )}
                         </CardHeader>
                         <CardContent className="pt-8 space-y-6">
-                            <div>
-                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome</label>
-                                <p className="font-display font-bold text-xl text-foreground italic">{userProfile?.name || 'N/A'}</p>
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">E-mail</label>
-                                <p className="text-sm font-medium text-foreground/80">{userProfile?.email || 'N/A'}</p>
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Função</label>
-                                <p className="text-xs font-bold text-primary uppercase tracking-widest">{userProfile?.role || 'Membro'}</p>
-                            </div>
+                            {isEditingProfile ? (
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">Nome</label>
+                                        <input
+                                            type="text"
+                                            value={profileName}
+                                            onChange={(e) => setProfileName(e.target.value)}
+                                            className="w-full bg-foreground/5 border border-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground transition-all"
+                                        />
+                                    </div>
+                                    <div className="flex gap-2 pt-2">
+                                        <Button size="sm" className="grow" onClick={handleSaveProfile} isLoading={isSavingProfile}>Salvar</Button>
+                                        <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(false)}>Cancelar</Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Nome</label>
+                                        <p className="font-display font-bold text-xl text-foreground italic">{userProfile?.name || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">E-mail</label>
+                                        <p className="text-sm font-medium text-foreground/80">{userProfile?.email || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Função</label>
+                                        <p className="text-xs font-bold text-primary uppercase tracking-widest">
+                                            {userProfile?.role === 'owner' ? 'Proprietário' :
+                                                userProfile?.role === 'admin' ? 'Administrador' :
+                                                    'Corretor'}
+                                        </p>
+                                    </div>
+                                </>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
@@ -215,7 +279,7 @@ const Settings: React.FC = () => {
                                 <p className="text-4xl font-display font-bold italic text-foreground tracking-tighter">
                                     {metrics.conversion}%
                                 </p>
-                                <p className="text-[10px] text-emerald-500/60 font-bold mt-2 uppercase tracking-widest">Taxa de Conversão Real</p>
+                                <p className="text-[10px] text-emerald-500/60 font-bold mt-2 uppercase tracking-widest">Eficiência do Pipeline</p>
                             </div>
                         </Card>
 
@@ -229,7 +293,7 @@ const Settings: React.FC = () => {
                                 <p className="text-3xl font-display font-bold italic text-foreground tracking-tighter truncate">
                                     {metrics.topSource}
                                 </p>
-                                <p className="text-[10px] text-primary/60 font-bold mt-2 uppercase tracking-widest">Canal de Maior Tração</p>
+                                <p className="text-[10px] text-primary/60 font-bold mt-2 uppercase tracking-widest">Origem Principal</p>
                             </div>
                         </Card>
 
@@ -243,7 +307,7 @@ const Settings: React.FC = () => {
                                 <p className="text-4xl font-display font-bold italic text-foreground tracking-tighter">
                                     {metrics.activeBrokers}
                                 </p>
-                                <p className="text-[10px] text-amber-500/60 font-bold mt-2 uppercase tracking-widest">Corretores em Operação</p>
+                                <p className="text-[10px] text-amber-500/60 font-bold mt-2 uppercase tracking-widest">Atividade de Corretores</p>
                             </div>
                         </Card>
                     </div>

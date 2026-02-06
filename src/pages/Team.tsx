@@ -30,7 +30,7 @@ const registerSchema = z.object({
     email: z.string().email('E-mail inválido'),
     phone: z.string().min(10, 'Telefone inválido'),
     password: z.string().min(6, 'A senha deve ter pelo menos 6 caracteres').optional().or(z.literal('')),
-    role: z.enum(['admin', 'member']),
+    role: z.enum(['owner', 'admin', 'member']),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -117,7 +117,7 @@ const Team: React.FC = () => {
                 // 2. Update Org Member Role
                 const { error: memberError } = await supabase
                     .from('organization_members')
-                    .update({ role: data.role as 'admin' | 'member' })
+                    .update({ role: data.role as 'owner' | 'admin' | 'member' })
                     .match({
                         organization_id: userProfile.organization_id,
                         user_id: userId
@@ -190,7 +190,7 @@ const Team: React.FC = () => {
                     .insert({
                         organization_id: userProfile.organization_id,
                         user_id: userId,
-                        role: data.role as 'admin' | 'member'
+                        role: data.role as 'owner' | 'admin' | 'member'
                     });
 
                 if (memberError) throw memberError;
@@ -248,7 +248,7 @@ const Team: React.FC = () => {
         // Setting form values
         setValue('name', member.user?.name || '');
         setValue('email', member.user?.email || '');
-        setValue('role', member.role as 'admin' | 'member');
+        setValue('role', member.role as 'owner' | 'admin' | 'member');
     };
 
     const cancelEdit = () => {
@@ -337,11 +337,12 @@ const Team: React.FC = () => {
                                         >
                                             <option value="member" className="bg-[#0a0a0a] text-foreground">Corretor (Membro)</option>
                                             <option value="admin" className="bg-[#0a0a0a] text-foreground">Administrador</option>
+                                            <option value="owner" className="bg-[#0a0a0a] text-foreground">Proprietário</option>
                                         </select>
                                     </div>
                                     <Button type="submit" className="w-full" isLoading={registering}>
                                         {editingMember ? <Pencil className="w-4 h-4 mr-2" /> : <UserPlus className="w-4 h-4 mr-2" />}
-                                        {editingMember ? 'Salvar Alterações' : 'Cadastrar'}
+                                        {editingMember ? 'Salvar Alterações' : 'Cadastrar Membro'}
                                     </Button>
                                     {editingMember && (
                                         <Button
@@ -370,17 +371,17 @@ const Team: React.FC = () => {
                             {members.map(member => (
                                 <div key={member.user_id} className="py-4 flex items-center justify-between first:pt-0 last:pb-0">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold uppercase">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-primary font-bold uppercase border border-white/5">
                                             {member.user?.name?.charAt(0) || '?'}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-sm text-slate-900">{member.user?.name || 'Usuário'}</p>
+                                            <p className="font-semibold text-sm text-foreground">{member.user?.name || 'Usuário'}</p>
                                             <p className="text-xs text-muted-foreground">{member.user?.email}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Badge variant={member.role === 'owner' ? 'default' : member.role === 'admin' ? 'secondary' : 'outline'}>
-                                            {member.role === 'owner' ? 'Proprietário' : member.role === 'admin' ? 'Admin' : 'Corretor'}
+                                            {member.role === 'owner' ? 'Proprietário' : member.role === 'admin' ? 'Administrador' : 'Corretor'}
                                         </Badge>
                                         {isAdmin && member.role !== 'owner' && (
                                             <div className="flex items-center gap-1">

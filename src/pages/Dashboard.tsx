@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 import { useBrokers } from '../hooks/useBrokers';
 import { LeadStatus } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
@@ -16,6 +17,7 @@ import { Lead } from '../types';
 
 const Dashboard: React.FC = () => {
     const { leads } = useLead();
+    const { userProfile } = useUser();
     const { brokers } = useBrokers();
     const navigate = useNavigate();
 
@@ -109,7 +111,7 @@ const Dashboard: React.FC = () => {
             >
                 <div className="relative z-10">
                     <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tighter italic">
-                        Visão Executiva
+                        Dashboard
                     </h1>
                     <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase mt-4 flex items-center gap-3">
                         <span className="h-[1px] w-8 bg-primary/30" />
@@ -144,7 +146,7 @@ const Dashboard: React.FC = () => {
                     { label: 'Pipeline Total', value: `$${stats.total * 1250}.0k`, icon: TrendingUp, color: 'text-primary' },
                     { label: 'Negócios Ativos', value: stats.active, icon: RefreshCw, color: 'text-purple-400' },
                     { label: 'Conversão', value: `${stats.conversion}%`, icon: BarChart3, color: 'text-emerald-400' },
-                    { label: 'Receita (Ganha)', value: `$${(stats.total - stats.active) * 2500}.0k`, icon: Target, color: 'text-amber-500' }
+                    { label: 'Receita Est.', value: `$${(stats.total - stats.active) * 2500}.0k`, icon: Target, color: 'text-amber-500' }
                 ].map((stat, i) => (
                     <StatCard
                         key={stat.label}
@@ -162,10 +164,18 @@ const Dashboard: React.FC = () => {
                 <div className="lg:col-span-1 space-y-8">
                     <Card className="p-8 space-y-8">
                         <div>
-                            <div className="flex items-center gap-2 mb-6">
-                                <Users className="w-4 h-4 text-primary" />
-                                <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Saúde da Carteira</h4>
-                            </div>
+                            {userProfile?.role !== 'member' && (
+                                <div className="flex items-center gap-2 mb-6">
+                                    <Users className="w-4 h-4 text-primary" />
+                                    <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Desempenho da Equipe</h4>
+                                </div>
+                            )}
+                            {userProfile?.role === 'member' && (
+                                <div className="flex items-center gap-2 mb-6">
+                                    <Users className="w-4 h-4 text-primary" />
+                                    <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40">Saúde da Carteira</h4>
+                                </div>
+                            )}
                             <div className="space-y-6">
                                 {['Ativos', 'Inativos', 'Churn'].map((status, i) => {
                                     const percentage = i === 0 ? 85 : i === 1 ? 12 : 3;
@@ -214,8 +224,8 @@ const Dashboard: React.FC = () => {
                     <Card className="overflow-hidden">
                         <CardHeader className="flex flex-row items-center justify-between border-b border-white/5 pb-8">
                             <div>
-                                <CardTitle className="text-2xl font-display italic tracking-tight">Funil do Pipeline</CardTitle>
-                                <CardDescription className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 mt-1">Movimentação entre estágios</CardDescription>
+                                <CardTitle className="text-2xl font-display italic tracking-tight">Estágios do Pipeline</CardTitle>
+                                <CardDescription className="text-[10px] tracking-[0.2em] uppercase text-muted-foreground/40 mt-1">Movimentação de Leads</CardDescription>
                             </div>
                             <div className="flex gap-2">
                                 <div className="h-2 w-2 rounded-full bg-primary" />
