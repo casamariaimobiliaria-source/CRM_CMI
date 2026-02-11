@@ -87,10 +87,10 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
                     <div className="flex items-center gap-1.5 md:border-r border-border/50 pr-0 md:pr-4">
                         <span className="text-foreground/80">{lead.telefone}</span>
                     </div>
-                    {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && lead.corretor && (
+                    {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && (
                         <div className="flex items-center gap-1.5 md:border-r border-border/50 pr-0 md:pr-4">
                             <span className="opacity-50 italic">CADASTRO:</span>
-                            <span className="text-primary truncate max-w-[120px]">{lead.corretor}</span>
+                            <span className="text-primary truncate max-w-[120px]">{lead.corretor || 'SISTEMA'}</span>
                         </div>
                     )}
                     <div className="flex items-center gap-1.5 md:border-r border-border/50 pr-0 md:pr-4">

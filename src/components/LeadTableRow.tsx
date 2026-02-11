@@ -77,10 +77,10 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead }) => {
                         <span className="text-[11px] font-bold text-primary/80 truncate uppercase tracking-[0.1em] italic block">
                             {lead.empreendimento || 'IMÓVEL PREMIUM'}
                         </span>
-                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && lead.corretor && (
+                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && (
                             <div className="flex items-center gap-1 opacity-40">
                                 <User className="w-2.5 h-2.5" />
-                                <span className="text-[9px] font-bold truncate uppercase tracking-widest">{lead.corretor}</span>
+                                <span className="text-[9px] font-bold truncate uppercase tracking-widest">{lead.corretor || 'SISTEMA'}</span>
                             </div>
                         )}
                     </div>
