@@ -21,7 +21,8 @@ import { HelmetProvider } from 'react-helmet-async';
 
 console.log("Vite Env Check:", {
     hasOpenAI: !!import.meta.env.VITE_OPENAI_API_KEY,
-    hasSupabase: !!import.meta.env.VITE_SUPABASE_URL
+    hasSupabase: !!import.meta.env.VITE_SUPABASE_URL,
+    buildTimestamp: "2026-02-11T16:20:00Z"
 });
 
 // Error Boundary Component
