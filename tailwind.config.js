@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    darkMode: ["class"],
     content: [
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
@@ -41,30 +41,21 @@ export default {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
-                // Modern CRM Palette
-                cyan: {
-                    500: '#0DE1F8',
-                    400: '#38BDF8',
-                },
-                slate: {
-                    900: '#0F172A',
-                    800: '#1E293B',
-                }
             },
             borderRadius: {
-                lg: `var(--radius)`,
-                md: `calc(var(--radius) - 2px)`,
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                sans: ['"Inter"', 'sans-serif'],
-                display: ['"Inter"', 'sans-serif'],
+                sans: ["Inter", "sans-serif"],
+                display: ["Playfair Display", "serif"],
             },
             boxShadow: {
-                'glow': '0 0 20px rgba(13, 225, 248, 0.15)',
-                'neon': '0 0 10px rgba(13, 225, 248, 0.5)',
-            },
+                'neon-cyan': '0 0 15px hsl(var(--neon-cyan) / 0.3)',
+                'luxury': '0 10px 30px -10px hsla(var(--luxury-glow))',
+            }
         },
     },
-    plugins: [require("tailwindcss-animate")],
+    plugins: [],
 }

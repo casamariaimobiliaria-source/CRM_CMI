@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLead } from '../contexts/LeadContext';
+import { useUser } from '../contexts/UserContext';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
@@ -8,7 +9,7 @@ import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 import { Lead } from '../types';
-import { Calendar } from 'lucide-react';
+import { Calendar, User } from 'lucide-react';
 
 interface LeadTableRowProps {
     lead: Lead;
@@ -37,6 +38,7 @@ const getStatusVariant = (status: string) => {
 
 const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead }) => {
     const navigate = useNavigate();
+    const { userProfile } = useUser();
 
     return (
         <motion.div
@@ -69,12 +71,18 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead }) => {
                     </div>
                 </div>
 
-                {/* Project */}
+                {/* Project & Registrant */}
                 <div className="col-span-1 md:col-span-3 min-w-0 md:pl-0">
-                    <div className="flex items-center gap-2 pl-14 md:pl-0">
+                    <div className="flex flex-col gap-1 pl-14 md:pl-0">
                         <span className="text-[11px] font-bold text-primary/80 truncate uppercase tracking-[0.1em] italic block">
                             {lead.empreendimento || 'IMÓVEL PREMIUM'}
                         </span>
+                        {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && lead.corretor && (
+                            <div className="flex items-center gap-1 opacity-40">
+                                <User className="w-2.5 h-2.5" />
+                                <span className="text-[9px] font-bold truncate uppercase tracking-widest">{lead.corretor}</span>
+                            </div>
+                        )}
                     </div>
                 </div>
 

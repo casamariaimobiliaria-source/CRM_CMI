@@ -149,7 +149,6 @@ const AppRoutes: React.FC = () => {
                 <Route path="administration" element={<AdminData />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="reports" element={<PerformanceReports />} />
-                <Route path="reports" element={<PerformanceReports />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

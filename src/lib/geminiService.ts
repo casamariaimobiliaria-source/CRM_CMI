@@ -9,7 +9,7 @@ export const analyzeLeadHistory = async (history: string) => {
     const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: `Analise o seguinte histórico de atendimento de um lead imobiliário e retorne um JSON com um resumo curto (máximo 15 palavras) e uma sugestão de temperatura (Frio, Morno, Quente):
       
       Histórico: "${history}"`,
