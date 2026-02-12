@@ -3,10 +3,7 @@ import { LeadTemperature, LeadStatus } from '../types';
 
 // Validation schema for Lead form
 export const leadFormSchema = z.object({
-    nome: z.string()
-        .min(3, 'Nome deve ter pelo menos 3 caracteres')
-        .max(100, 'Nome muito longo'),
-
+    nome: z.string().min(1, 'Nome é obrigatório'),
     telefone: z.string()
         .min(10, 'Telefone inválido')
         .max(15, 'Telefone inválido')
@@ -24,8 +21,8 @@ export const leadFormSchema = z.object({
     corretor: z.string().optional(),
 
     empreendimento: z.string().optional(),
-    enterprise_id: z.string().uuid().optional().or(z.literal('')),
-    source_id: z.string().uuid().optional().or(z.literal('')),
+    enterprise_id: z.string().optional().or(z.literal('')),
+    source_id: z.string().optional().or(z.literal('')),
 
     temperatura: z.nativeEnum(LeadTemperature, {
         message: 'Selecione uma temperatura válida'

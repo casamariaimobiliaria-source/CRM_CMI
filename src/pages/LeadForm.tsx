@@ -53,43 +53,83 @@ const LeadForm: React.FC = () => {
         }
     });
 
+    const { impersonatedOrgId } = useUser();
+
     useEffect(() => {
         const fetchOptions = async () => {
-            if (!userProfile?.organization_id) return;
+            const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
+            if (!currentOrgId) return;
+
             const [entRes, srcRes] = await Promise.all([
-                supabase.from('enterprises').select('id, name').eq('organization_id', userProfile.organization_id).order('name'),
-                supabase.from('lead_sources').select('id, name').eq('organization_id', userProfile.organization_id).order('name')
+                supabase.from('enterprises').select('id, name').eq('organization_id', currentOrgId).order('name'),
+                supabase.from('lead_sources').select('id, name').eq('organization_id', currentOrgId).order('name')
             ]);
             if (entRes.data) setEnterpriseOptions(entRes.data);
             if (srcRes.data) setSourceOptions(srcRes.data);
         };
         fetchOptions();
-    }, [userProfile?.organization_id]);
+    }, [userProfile?.organization_id, impersonatedOrgId]);
 
     const watchTelefone = watch('telefone');
 
     useEffect(() => {
-        if (id && leads.length > 0) {
+        if (id && leads.length > 0 && enterpriseOptions.length > 0 && sourceOptions.length > 0) {
             const existingLead = leads.find(l => l.id === id);
             if (existingLead) {
+                // Try to resolve IDs if they are missing but names exist
+                let resolvedEnterpriseId = existingLead.enterprise_id || '';
+                if (!resolvedEnterpriseId && existingLead.empreendimento) {
+                    const match = enterpriseOptions.find(opt =>
+                        opt.name.toLowerCase() === existingLead.empreendimento?.toLowerCase()
+                    );
+                    if (match) resolvedEnterpriseId = match.id;
+                }
+
+                let resolvedSourceId = existingLead.source_id || '';
+                if (!resolvedSourceId && (existingLead.midia || existingLead.source)) {
+                    const sourceName = existingLead.midia || (existingLead as any).source;
+                    const match = sourceOptions.find(opt =>
+                        opt.name.toLowerCase() === sourceName?.toLowerCase()
+                    );
+                    if (match) resolvedSourceId = match.id;
+                }
+
+                // Format nextContact for datetime-local input (YYYY-MM-DDTHH:mm)
+                let formattedNextContact = '';
+                if (existingLead.nextContact) {
+                    try {
+                        const date = new Date(existingLead.nextContact);
+                        if (!isNaN(date.getTime())) {
+                            const year = date.getFullYear();
+                            const month = String(date.getMonth() + 1).padStart(2, '0');
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const hours = String(date.getHours()).padStart(2, '0');
+                            const minutes = String(date.getMinutes()).padStart(2, '0');
+                            formattedNextContact = `${year}-${month}-${day}T${hours}:${minutes}`;
+                        }
+                    } catch (e) {
+                        console.error("Error formatting date", e);
+                    }
+                }
+
                 reset({
-                    nome: existingLead.nome,
-                    telefone: existingLead.telefone,
+                    nome: existingLead.nome || (existingLead as any).name || '',
+                    telefone: existingLead.telefone || (existingLead as any).phone || '',
                     email: existingLead.email || '',
-                    midia: existingLead.midia || '',
-                    enterprise_id: existingLead.enterprise_id || '',
-                    source_id: existingLead.source_id || '',
-                    dataCompra: existingLead.dataCompra || '',
+                    midia: existingLead.midia || (existingLead as any).source || '',
+                    enterprise_id: resolvedEnterpriseId,
+                    source_id: resolvedSourceId,
+                    dataCompra: existingLead.dataCompra || (existingLead as any).data_compra || '',
                     corretor: existingLead.corretor || '',
                     empreendimento: existingLead.empreendimento || '',
                     temperatura: existingLead.temperatura,
                     status: existingLead.status,
                     historico: existingLead.historico || '',
-                    nextContact: existingLead.nextContact || ''
+                    nextContact: formattedNextContact
                 });
             }
         }
-    }, [id, leads, reset]);
+    }, [id, leads, reset, enterpriseOptions, sourceOptions]);
 
     // Duplicate Check
     const checkDuplicate = (phone: string) => {
@@ -100,30 +140,48 @@ const LeadForm: React.FC = () => {
         return leads.some(l => l.telefone.replace(/\D/g, '') === cleanPhone);
     };
 
+    useEffect(() => {
+        if (Object.keys(errors).length > 0) {
+            console.log("DEBUG - Form errors:", errors);
+        }
+        console.log("DEBUG - isSubmitting:", isSubmitting);
+    }, [errors, isSubmitting]);
+
+    useEffect(() => {
+        window.onerror = (msg, url, lineNo, columnNo, error) => {
+            const errorMsg = `Global Error: ${msg} at ${lineNo}:${columnNo}`;
+            console.error(errorMsg);
+            toast.error('Erro Crítico no Navegador', { description: errorMsg });
+            return false;
+        };
+    }, []);
+
     const onSubmit = async (data: LeadFormValues) => {
+        const loadingToast = toast.loading('Salvando alterações...');
         try {
+            // Find names for enterprise and source to keep them synced with IDs
+            const enterpriseName = enterpriseOptions.find(opt => opt.id === data.enterprise_id)?.name || '';
+            const sourceName = sourceOptions.find(opt => opt.id === data.source_id)?.name || '';
+
+            const payload: any = {
+                ...data,
+                empreendimento: enterpriseName || data.empreendimento,
+                midia: sourceName || data.midia
+            };
+
             if (id) {
-                await updateLead(id, data);
-                toast.success('Lead atualizado com sucesso!', {
-                    description: `${data.nome} foi atualizado.`
-                });
+                await updateLead(id, payload);
+                toast.success('Lead atualizado com sucesso!', { id: loadingToast });
             } else {
-                await addLead(data);
-                toast.success('Lead criado com sucesso!', {
-                    description: `${data.nome} foi adicionado à sua base.`
-                });
+                await addLead(payload);
+                toast.success('Lead criado com sucesso!', { id: loadingToast });
             }
             navigate('/');
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error saving lead", error);
-            const errorMessage = error instanceof Error
-                ? error.message
-                : (typeof error === 'object' && error !== null && 'message' in error)
-                    ? (error as any).message
-                    : JSON.stringify(error);
-
             toast.error('Erro ao salvar lead', {
-                description: errorMessage
+                id: loadingToast,
+                description: error.message || 'Erro desconhecido'
             });
         }
     };
@@ -158,7 +216,13 @@ const LeadForm: React.FC = () => {
             <div className={cn("grid grid-cols-1 gap-8", id && "lg:grid-cols-3")}>
                 <div className={cn("space-y-8", id && "lg:col-span-2")}>
                     <Card className="bg-card border border-border rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl">
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmit(onSubmit, (errs) => {
+                            console.error("Validation errors blocking submit:", errs);
+                            const errorFields = Object.keys(errs).map(field => field).join(', ');
+                            toast.error('Verifique os campos obrigatórios', {
+                                description: `Campos com erro: ${errorFields}`
+                            });
+                        })}>
                             <CardContent className="p-6 md:p-12 space-y-8 md:space-y-10">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="md:col-span-2">
@@ -212,7 +276,10 @@ const LeadForm: React.FC = () => {
                                         <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Empreendimento</label>
                                         <div className="relative">
                                             <select
-                                                className="flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground"
+                                                className={cn(
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground",
+                                                    errors.enterprise_id && "border-destructive focus-visible:ring-destructive"
+                                                )}
                                                 {...register('enterprise_id')}
                                             >
                                                 <option value="">Selecione um empreendimento...</option>
@@ -224,13 +291,17 @@ const LeadForm: React.FC = () => {
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                             </div>
                                         </div>
+                                        {errors.enterprise_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.enterprise_id.message}</p>}
                                     </div>
 
                                     <div>
                                         <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Origem do Lead</label>
                                         <div className="relative">
                                             <select
-                                                className="flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground"
+                                                className={cn(
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground",
+                                                    errors.source_id && "border-destructive focus-visible:ring-destructive"
+                                                )}
                                                 {...register('source_id')}
                                             >
                                                 <option value="">Selecione uma origem...</option>
@@ -242,6 +313,7 @@ const LeadForm: React.FC = () => {
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                             </div>
                                         </div>
+                                        {errors.source_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.source_id.message}</p>}
                                     </div>
 
                                     <div>

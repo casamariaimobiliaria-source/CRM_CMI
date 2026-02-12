@@ -61,6 +61,8 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [fetchLeads]);
 
   const addLead = async (leadData: LeadFormData) => {
+    const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
+
     if (userProfile?.organization) {
       const { max_leads, plan_tier } = userProfile.organization;
       if (leads.length >= max_leads) {
@@ -70,25 +72,27 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     setIsSyncing(true);
     try {
+      const payload = {
+        name: leadData.nome,
+        phone: leadData.telefone,
+        email: leadData.email,
+        source: leadData.midia,
+        enterprise_id: leadData.enterprise_id || null,
+        source_id: leadData.source_id || null,
+        data_compra: leadData.dataCompra || null,
+        corretor: leadData.corretor || userProfile?.name,
+        empreendimento: leadData.empreendimento,
+        temperatura: leadData.temperatura,
+        status: leadData.status,
+        historico: leadData.historico,
+        next_contact: leadData.nextContact || null,
+        user_id: session?.user.id,
+        organization_id: currentOrgId
+      };
+
       const { data, error } = await supabase
         .from('leads')
-        .insert([{
-          name: leadData.nome,
-          phone: leadData.telefone,
-          email: leadData.email,
-          source: leadData.midia,
-          enterprise_id: leadData.enterprise_id || null,
-          source_id: leadData.source_id || null,
-          data_compra: leadData.dataCompra || null,
-          corretor: leadData.corretor || userProfile?.name,
-          empreendimento: leadData.empreendimento,
-          temperatura: leadData.temperatura,
-          status: leadData.status,
-          historico: leadData.historico,
-          next_contact: leadData.nextContact || null,
-          user_id: session?.user.id,
-          organization_id: userProfile?.organization_id
-        }])
+        .insert([payload])
         .select()
         .single();
 
@@ -96,7 +100,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const newLead = mapLeadFromDB(data);
       setLeads(prev => [newLead, ...prev]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding lead:', error);
       throw error;
     } finally {
@@ -105,26 +109,29 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const updateLead = async (id: string, leadData: Partial<LeadFormData>) => {
+    const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
     setIsSyncing(true);
     try {
+      const payload = {
+        name: leadData.nome,
+        phone: leadData.telefone,
+        email: leadData.email,
+        source: leadData.midia,
+        enterprise_id: leadData.enterprise_id || null,
+        source_id: leadData.source_id || null,
+        data_compra: leadData.dataCompra || null,
+        corretor: leadData.corretor,
+        empreendimento: leadData.empreendimento,
+        temperatura: leadData.temperatura,
+        status: leadData.status,
+        historico: leadData.historico,
+        next_contact: leadData.nextContact || null,
+        organization_id: currentOrgId
+      };
+
       const { data, error } = await supabase
         .from('leads')
-        .update({
-          name: leadData.nome,
-          phone: leadData.telefone,
-          email: leadData.email,
-          source: leadData.midia,
-          enterprise_id: leadData.enterprise_id || null,
-          source_id: leadData.source_id || null,
-          data_compra: leadData.dataCompra || null,
-          corretor: leadData.corretor,
-          empreendimento: leadData.empreendimento,
-          temperatura: leadData.temperatura,
-          status: leadData.status,
-          historico: leadData.historico,
-          next_contact: leadData.nextContact || null,
-          organization_id: userProfile?.organization_id
-        })
+        .update(payload)
         .eq('id', id)
         .select()
         .single();
@@ -133,7 +140,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const updatedLead = mapLeadFromDB(data);
       setLeads(prev => prev.map(l => l.id === id ? updatedLead : l));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating lead:', error);
       throw error;
     } finally {
