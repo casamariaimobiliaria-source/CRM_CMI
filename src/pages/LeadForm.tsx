@@ -86,7 +86,7 @@ const LeadForm: React.FC = () => {
                 }
 
                 let resolvedSourceId = existingLead.source_id || '';
-                if (!resolvedSourceId && (existingLead.midia || existingLead.source)) {
+                if (!resolvedSourceId && (existingLead.midia || (existingLead as any).source)) {
                     const sourceName = existingLead.midia || (existingLead as any).source;
                     const match = sourceOptions.find(opt =>
                         opt.name.toLowerCase() === sourceName?.toLowerCase()
