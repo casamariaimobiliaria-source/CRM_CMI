@@ -8,7 +8,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 98%; /* Fundo levemente acinzentado para destacar os cards brancos */
     --foreground: 240 10% 4%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 4%;
@@ -16,21 +16,21 @@
     --popover-foreground: 240 10% 4%;
     --primary: 38 65% 48%; /* Ouro Refinado */
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 20% 96%;
+    --secondary: 0 0% 92%; /* Border mais visível no modo claro */
     --secondary-foreground: 240 10% 4%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 240 5% 45%;
-    --accent: 38 65% 96%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 240 5% 40%;
+    --accent: 38 65% 94%;
     --accent-foreground: 38 65% 20%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    --border: 0 0% 92%;
-    --input: 0 0% 92%;
+    --border: 0 0% 88%; /* Borda mais escura para contraste real */
+    --input: 0 0% 88%;
     --ring: 38 65% 48%;
-    --radius: 1rem;
+    --radius: 1.25rem;
 
     /* Custom Accents */
-    --luxury-glow: 38 65% 48% / 0.3;
+    --luxury-glow: 38 65% 48% / 0.15;
   }
 
   .dark {
@@ -40,31 +40,30 @@
     --card-foreground: 210 40% 98%;
     --popover: 230 40% 5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 190 100% 50%;
-    /* Cyan Neon */
+    --primary: 38 65% 58%; /* Ouro mais vibrante no dark */
     --primary-foreground: 230 40% 5%;
-    --secondary: 230 20% 10%;
+    --secondary: 230 20% 12%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 230 20% 8%;
+    --muted: 230 20% 10%;
     --muted-foreground: 215 20% 65%;
-    --accent: 230 20% 12%;
+    --accent: 230 20% 15%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-    --border: 230 20% 10%;
-    --input: 230 20% 10%;
-    --ring: 190 100% 50%;
+    --border: 230 25% 15%;
+    --input: 230 25% 15%;
+    --ring: 38 65% 58%;
 
     /* Neon Accents */
     --neon-cyan: 190 100% 50%;
     --neon-purple: 270 100% 60%;
     --neon-amber: 35 100% 55%;
 
-    --luxury-glow: 190 100% 50% / 0.3;
+    --luxury-glow: 38 65% 58% / 0.25;
   }
 
   * {
-    @apply border-border;
+    @apply border-border/60; /* Borda padrão mais suave mas visível */
   }
 
   body {
@@ -88,24 +87,24 @@
 
 @layer utilities {
   .shadow-premium {
-    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
   }
 
-  .shadow-neon-cyan {
-    box-shadow: 0 0 15px hsl(var(--neon-cyan) / 0.3);
+  .dark .shadow-premium {
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
   }
 
   .shadow-gold-glow {
-    box-shadow: 0 0 20px hsla(38, 65%, 48%, 0.2);
+    box-shadow: 0 0 30px -5px hsla(38, 65%, 48%, 0.3);
   }
 
   .shadow-luxury {
-    box-shadow: 0 10px 30px -10px hsla(var(--luxury-glow));
+    box-shadow: 0 20px 50px -12px hsla(var(--luxury-glow));
   }
 
   .glass-high-fidelity {
-    @apply bg-card/40 backdrop-blur-2xl border border-border/50 shadow-2xl;
-    background-image: radial-gradient(circle at top left, hsl(var(--foreground) / 0.03), transparent);
+    @apply bg-card/80 backdrop-blur-xl border border-border/80 shadow-premium;
+    background-image: radial-gradient(circle at top left, hsl(var(--primary) / 0.05), transparent);
   }
 
   .subtle-dot-grid {

@@ -68,8 +68,8 @@ const LeadList: React.FC = () => {
                 </Button>
             </div>
 
-            <div className="bg-card/95 backdrop-blur-3xl rounded-[1.5rem] md:rounded-[2.5rem] border border-white/5 p-6 md:p-8 space-y-8 max-w-7xl mx-auto w-full relative overflow-hidden shadow-2xl">
-                <div className="absolute inset-0 subtle-dot-grid opacity-5 pointer-events-none" />
+            <div className="bg-card/40 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-border/50 p-6 md:p-10 space-y-10 max-w-7xl mx-auto w-full relative overflow-hidden shadow-premium">
+                <div className="absolute inset-0 subtle-dot-grid opacity-[0.03] pointer-events-none" />
                 <LeadFilters
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -92,12 +92,12 @@ const LeadList: React.FC = () => {
                     setBrokerFilter={setBrokerFilter} // Corrected
                 />
 
-                <main className="space-y-6 pb-40 relative z-10">
+                <main className="space-y-6 pb-20 relative z-10">
                     {filteredLeads.length === 0 ? (
                         <div
                             className="py-32 text-center flex flex-col items-center"
                         >
-                            <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-8 border border-white/5">
+                            <div className="w-24 h-24 bg-background rounded-3xl flex items-center justify-center mb-8 border border-border shadow-sm">
                                 <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                             </div>
                             <h3 className="text-xl font-display font-bold text-foreground italic mb-2">Nenhum Registro Encontrado</h3>
@@ -105,18 +105,18 @@ const LeadList: React.FC = () => {
                                 {searchTerm ? `A busca por "${searchTerm}" não retornou dados` : "A base exclusiva de Leads está vazia"}
                             </p>
                             {searchTerm && (
-                                <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold">LIMPAR BUSCA</Button>
+                                <Button variant="ghost" onClick={() => setSearchTerm('')} className="mt-8 text-primary text-[10px] tracking-widest font-bold border border-primary/20 hover:bg-primary/5 rounded-xl">LIMPAR BUSCA</Button>
                             )}
                         </div>
                     ) : (
                         <div
                             className={cn(
                                 viewMode === 'table'
-                                    ? "bg-black/20 backdrop-blur-md rounded-3xl border border-white/5 divide-y divide-white/5 overflow-hidden"
+                                    ? "bg-background/50 backdrop-blur-md rounded-[2.5rem] border border-border/60 divide-y divide-border/40 overflow-hidden shadow-sm"
                                     : "grid grid-cols-1 gap-6"
                             )}
                         >
-                            {filteredLeads.map(lead => (
+                            {filteredLeads.map((lead, index) => (
                                 viewMode === 'cards'
                                     ? <LeadCard key={lead.id} lead={lead} />
                                     : <LeadTableRow key={lead.id} lead={lead} />

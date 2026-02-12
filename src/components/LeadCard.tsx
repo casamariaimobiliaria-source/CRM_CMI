@@ -42,12 +42,12 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -4, scale: 1.005 }}
+            whileHover={{ y: -6, scale: 1.01 }}
             onClick={() => navigate(`/edit/${lead.id}`)}
             className={cn(
-                "relative flex flex-col md:flex-row items-center p-6 rounded-[2.5rem] transition-all duration-700 cursor-pointer group hover:shadow-2xl overflow-hidden glass-high-fidelity",
+                "relative flex flex-col md:flex-row items-center p-6 rounded-[2rem] transition-all duration-500 cursor-pointer group shadow-premium hover:shadow-luxury border border-border/50 bg-card overflow-hidden",
                 getCardColor(lead)
             )}
         >
@@ -56,18 +56,18 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
 
             <div className="flex w-full md:w-auto items-center md:block">
                 {/* Avatar */}
-                <div className="relative w-12 h-12 md:w-14 md:h-14 bg-secondary rounded-full flex items-center justify-center overflow-hidden shrink-0 transition-all duration-300 border border-border/50 group-hover:border-primary">
-                    <span className="font-display font-bold text-lg md:text-xl text-primary">
+                <div className="relative w-12 h-12 md:w-14 md:h-14 bg-background rounded-2xl flex items-center justify-center overflow-hidden shrink-0 transition-all duration-500 border border-border group-hover:border-primary group-hover:shadow-gold-glow">
+                    <span className="font-display font-bold text-lg md:text-xl text-primary italic">
                         {String(lead?.nome || '?').charAt(0).toUpperCase()}
                     </span>
                 </div>
 
                 {/* Mobile Name & Status */}
                 <div className="md:hidden ml-4 flex-1">
-                    <h3 className="font-medium text-base text-foreground">
+                    <h3 className="font-display font-bold text-base text-foreground italic tracking-tight">
                         {lead?.nome || 'Anônimo'}
                     </h3>
-                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5 mt-1">
+                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5 mt-1 bg-background border-border shadow-sm">
                         {lead?.status}
                     </Badge>
                 </div>
@@ -75,10 +75,10 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
 
             <div className="flex-1 min-w-0 w-full mt-4 md:mt-0 md:ml-6">
                 <div className="hidden md:flex items-center gap-3 mb-1">
-                    <h3 className="font-semibold text-lg text-foreground group-hover:text-primary transition-colors duration-200">
+                    <h3 className="font-display font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-200 italic tracking-tight">
                         {lead?.nome || 'Anônimo'}
                     </h3>
-                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5">
+                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5 bg-background border-border shadow-sm">
                         {lead?.status}
                     </Badge>
                 </div>
