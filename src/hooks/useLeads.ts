@@ -68,8 +68,8 @@ export function useLeads(leads: Lead[]) {
 
                     case 'overdue': {
                         const now = new Date();
-                        const aOverdue = a.nextContact && new Date(a.nextContact) < now;
-                        const bOverdue = b.nextContact && new Date(b.nextContact) < now;
+                        const aOverdue = a.proximo_contato && new Date(a.proximo_contato) < now;
+                        const bOverdue = b.proximo_contato && new Date(b.proximo_contato) < now;
                         if (aOverdue && !bOverdue) return -1;
                         if (!aOverdue && bOverdue) return 1;
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

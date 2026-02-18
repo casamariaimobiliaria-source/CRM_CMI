@@ -106,12 +106,12 @@ const Kanban: React.FC = () => {
 
                                                             <div className="flex items-center justify-between mt-6">
                                                                 <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">{lead.telefone}</span>
-                                                                {lead.nextContact && (
+                                                                {lead.proximo_contato && (
                                                                     <div className={cn(
                                                                         "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded border border-white/5",
-                                                                        new Date(lead.nextContact) < new Date() ? "text-destructive" : "text-muted-foreground"
+                                                                        new Date(lead.proximo_contato) < new Date() ? "text-destructive" : "text-muted-foreground"
                                                                     )}>
-                                                                        {new Date(lead.nextContact).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
+                                                                        {new Date(lead.proximo_contato).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}
                                                                     </div>
                                                                 )}
                                                             </div>
