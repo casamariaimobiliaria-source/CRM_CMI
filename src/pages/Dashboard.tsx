@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useLead } from '../contexts/LeadContext';
 import { useUser } from '../contexts/UserContext';
 import { useBrokers } from '../hooks/useBrokers';
-import { LeadStatus } from '../types';
+import { LeadStatus, LeadTemperature } from '../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
     const stats = useMemo(() => {
         const total = safeLeads.length;
         const active = safeLeads.filter(l => l.status === LeadStatus.ATIVO).length;
-        const hot = safeLeads.filter(l => l.temperatura === 'Quente' || l.temperatura === '🔥 Alta').length;
+        const hot = safeLeads.filter(l => l.temperatura === LeadTemperature.QUENTE).length;
         const comprouCount = safeLeads.filter(l => l.status === LeadStatus.COMPROU).length;
         const conversion = total > 0 ? ((comprouCount / total) * 100).toFixed(1) : "0";
 
