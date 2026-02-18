@@ -21,7 +21,7 @@ const getRowColor = (lead: Lead) => {
     if (isOverdue) return "hover:bg-red-500/5 hover:border-red-500/30";
     if (lead.status === 'Agendou') return "hover:bg-amber-500/5 hover:border-amber-500/30";
     if (lead.status === 'Comprou') return "hover:bg-emerald-500/5 hover:border-emerald-500/30";
-    if (lead.status === 'Não Responde' || lead.status === 'Perdido') return "opacity-60 hover:opacity-100 transition-opacity";
+    if (lead.status === 'Não Responde' || lead.status === 'Inativo') return "opacity-60 hover:opacity-100 transition-opacity";
 
     return "";
 }
@@ -30,7 +30,7 @@ const getStatusVariant = (status: string) => {
     switch (status) {
         case 'Ativo': return 'success';
         case 'Comprou': return 'default';
-        case 'Perdido': return 'destructive';
+        case 'Inativo': return 'destructive';
         case 'Agendou': return 'secondary';
         default: return 'outline';
     }

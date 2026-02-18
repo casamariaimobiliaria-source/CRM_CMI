@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
                                 </div>
                             )}
                             <div className="space-y-6">
-                                {['Ativos', 'Inativos', 'Desperdício'].map((status, i) => {
+                                {['Ativos', 'Mornos', 'Inativos'].map((status, i) => {
                                     const percentage = i === 0 ? 85 : i === 1 ? 12 : 3;
                                     const color = i === 0 ? 'bg-emerald-500' : i === 1 ? 'bg-amber-500' : 'bg-destructive';
                                     return (

@@ -17,7 +17,7 @@ const Kanban: React.FC = () => {
         { id: LeadStatus.AGENDOU, title: 'Agendou', color: 'bg-secondary' },
         { id: LeadStatus.NAO_RESPONDE, title: 'Não Responde', color: 'bg-accent' },
         { id: LeadStatus.COMPROU, title: 'Comprou', color: 'bg-primary' },
-        { id: LeadStatus.PERDIDO, title: 'Perdido', color: 'bg-destructive' },
+        { id: LeadStatus.PERDIDO, title: 'Inativo', color: 'bg-destructive' },
     ], []);
 
     const onDragEnd = async (result: DropResult) => {

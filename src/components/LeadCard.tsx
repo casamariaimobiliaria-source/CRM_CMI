@@ -17,7 +17,7 @@ const getStatusVariant = (status: string) => {
     switch (status) {
         case 'Ativo': return 'success';
         case 'Comprou': return 'default';
-        case 'Perdido': return 'destructive';
+        case 'Inativo': return 'destructive';
         case 'Agendou': return 'secondary';
         default: return 'outline';
     }
@@ -30,7 +30,7 @@ const getCardColor = (lead: Lead) => {
     if (lead.status === 'Comprou') return "bg-blue-500/5 border-blue-500/20 hover:border-blue-500/40";
     if (lead.status === 'Agendou') return "bg-yellow-500/5 border-yellow-500/20 hover:border-yellow-500/40";
     if (lead.status === 'Não Responde') return "opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0";
-    if (lead.status === 'Perdido') return "opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700";
+    if (lead.status === 'Inativo') return "opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700";
 
     return "hover:border-primary/30 hover:bg-primary/5 bg-card/40 backdrop-blur-md shadow-premium border-border/40 hover:shadow-luxury";
 }

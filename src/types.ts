@@ -10,7 +10,7 @@ export enum LeadStatus {
   AGENDOU = 'Agendou',
   NAO_RESPONDE = 'Não Responde',
   COMPROU = 'Comprou',
-  PERDIDO = 'Perdido'
+  PERDIDO = 'Inativo'
 }
 
 export interface Organization {
