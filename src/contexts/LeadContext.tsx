@@ -23,14 +23,14 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const mapLeadFromDB = (l: any): Lead => ({
     ...l,
-    nome: l.name,
-    telefone: l.phone,
-    midia: l.source,
-    enterprise_id: l.enterprise_id,
-    source_id: l.source_id,
+    nome: l.nome || l.name || '',
+    telefone: l.telefone || l.phone || '',
+    midia: l.midia || l.source || '',
+    empreendimento_id: l.empreendimento_id || l.enterprise_id,
+    origem_id: l.origem_id || l.source_id,
     createdAt: l.created_at,
-    dataCompra: l.data_compra,
-    nextContact: l.next_contact
+    data_compra: l.data_compra,
+    proximo_contato: l.proximo_contato || l.next_contact
   });
 
   const fetchLeads = useCallback(async () => {
@@ -73,19 +73,19 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsSyncing(true);
     try {
       const payload = {
-        name: leadData.nome,
-        phone: leadData.telefone,
+        nome: leadData.nome,
+        telefone: leadData.telefone,
         email: leadData.email,
-        source: leadData.midia,
-        enterprise_id: leadData.enterprise_id || null,
-        source_id: leadData.source_id || null,
-        data_compra: leadData.dataCompra || null,
+        midia: leadData.midia,
+        empreendimento_id: leadData.empreendimento_id || null,
+        origem_id: leadData.origem_id || null,
+        data_compra: leadData.data_compra || null,
         corretor: leadData.corretor || userProfile?.name,
         empreendimento: leadData.empreendimento,
         temperatura: leadData.temperatura,
         status: leadData.status,
         historico: leadData.historico,
-        next_contact: leadData.nextContact || null,
+        proximo_contato: leadData.proximo_contato || null,
         user_id: session?.user.id,
         organization_id: currentOrgId
       };
@@ -113,19 +113,19 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsSyncing(true);
     try {
       const payload = {
-        name: leadData.nome,
-        phone: leadData.telefone,
+        nome: leadData.nome,
+        telefone: leadData.telefone,
         email: leadData.email,
-        source: leadData.midia,
-        enterprise_id: leadData.enterprise_id || null,
-        source_id: leadData.source_id || null,
-        data_compra: leadData.dataCompra || null,
+        midia: leadData.midia,
+        empreendimento_id: leadData.empreendimento_id || null,
+        origem_id: leadData.origem_id || null,
+        data_compra: leadData.data_compra || null,
         corretor: leadData.corretor,
         empreendimento: leadData.empreendimento,
         temperatura: leadData.temperatura,
         status: leadData.status,
         historico: leadData.historico,
-        next_contact: leadData.nextContact || null,
+        proximo_contato: leadData.proximo_contato || null,
         organization_id: currentOrgId
       };
 

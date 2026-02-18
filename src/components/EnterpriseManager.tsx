@@ -10,7 +10,7 @@ import { Building2, X, Plus, Pencil, Trash2 } from 'lucide-react';
 interface Enterprise {
     id: string;
     organization_id: string;
-    name: string;
+    nome: string;
     address: string;
     manager_name: string;
     manager_phone: string;
@@ -24,7 +24,7 @@ const EnterpriseManager: React.FC = () => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
-        name: '',
+        nome: '',
         address: '',
         manager_name: '',
         manager_phone: '',
@@ -35,10 +35,10 @@ const EnterpriseManager: React.FC = () => {
         if (!userProfile?.organization_id) return;
         try {
             const { data, error } = await supabase
-                .from('enterprises')
+                .from('empreendimentos')
                 .select('*')
                 .eq('organization_id', userProfile.organization_id)
-                .order('name');
+                .order('nome');
             if (error) throw error;
             setEnterprises(data || []);
         } catch (error) {
@@ -58,14 +58,14 @@ const EnterpriseManager: React.FC = () => {
         try {
             if (editingId) {
                 const { error } = await supabase
-                    .from('enterprises')
+                    .from('empreendimentos')
                     .update(formData)
                     .eq('id', editingId);
                 if (error) throw error;
                 toast.success('Empreendimento atualizado!');
             } else {
                 const { error } = await supabase
-                    .from('enterprises')
+                    .from('empreendimentos')
                     .insert({
                         ...formData,
                         organization_id: userProfile.organization_id
@@ -73,7 +73,7 @@ const EnterpriseManager: React.FC = () => {
                 if (error) throw error;
                 toast.success('Empreendimento cadastrado!');
             }
-            setFormData({ name: '', address: '', manager_name: '', manager_phone: '', developer_name: '' });
+            setFormData({ nome: '', address: '', manager_name: '', manager_phone: '', developer_name: '' });
             setIsAdding(false);
             setEditingId(null);
             fetchEnterprises();
@@ -86,7 +86,7 @@ const EnterpriseManager: React.FC = () => {
 
     const startEdit = (ent: Enterprise) => {
         setFormData({
-            name: ent.name,
+            nome: ent.nome,
             address: ent.address || '',
             manager_name: ent.manager_name || '',
             manager_phone: ent.manager_phone || '',
@@ -100,7 +100,7 @@ const EnterpriseManager: React.FC = () => {
         if (!confirm('Excluir este empreendimento?')) return;
         try {
             const { error } = await supabase
-                .from('enterprises')
+                .from('empreendimentos')
                 .delete()
                 .eq('id', id);
             if (error) throw error;
@@ -128,7 +128,7 @@ const EnterpriseManager: React.FC = () => {
                         if (isAdding || editingId) {
                             setIsAdding(false);
                             setEditingId(null);
-                            setFormData({ name: '', address: '', manager_name: '', manager_phone: '', developer_name: '' });
+                            setFormData({ nome: '', address: '', manager_name: '', manager_phone: '', developer_name: '' });
                         } else {
                             setIsAdding(true);
                         }
@@ -145,8 +145,8 @@ const EnterpriseManager: React.FC = () => {
                         </h3>
                         <Input
                             label="Nome do Empreendimento"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            value={formData.nome}
+                            onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                             required
                         />
                         <Input
@@ -182,7 +182,7 @@ const EnterpriseManager: React.FC = () => {
                                     onClick={() => {
                                         setEditingId(null);
                                         setIsAdding(false);
-                                        setFormData({ name: '', address: '', manager_name: '', manager_phone: '', developer_name: '' });
+                                        setFormData({ nome: '', address: '', manager_name: '', manager_phone: '', developer_name: '' });
                                     }}
                                 >
                                     Cancelar
@@ -198,7 +198,7 @@ const EnterpriseManager: React.FC = () => {
                             <div className="flex items-center gap-3">
                                 <Building2 className="w-5 h-5 text-primary opacity-60" />
                                 <div>
-                                    <p className="font-semibold text-sm">{ent.name}</p>
+                                    <p className="font-semibold text-sm">{ent.nome}</p>
                                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{ent.developer_name || 'Incorporadora não informada'}</p>
                                 </div>
                             </div>

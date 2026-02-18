@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
     const stats = useMemo(() => {
         const total = safeLeads.length;
         const active = safeLeads.filter(l => l.status === LeadStatus.ATIVO).length;
-        const hot = safeLeads.filter(l => l.temperatura === 'Quente').length;
+        const hot = safeLeads.filter(l => l.temperatura === 'Quente' || l.temperatura === '🔥 Alta').length;
         const comprouCount = safeLeads.filter(l => l.status === LeadStatus.COMPROU).length;
         const conversion = total > 0 ? ((comprouCount / total) * 100).toFixed(1) : "0";
 
@@ -143,10 +143,10 @@ const Dashboard: React.FC = () => {
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
-                    { label: 'Pipeline Total', value: `$${stats.total * 1250}.0k`, icon: TrendingUp, color: 'text-primary' },
+                    { label: 'Total de Leads', value: stats.total, icon: TrendingUp, color: 'text-primary' },
                     { label: 'Negócios Ativos', value: stats.active, icon: RefreshCw, color: 'text-purple-400' },
                     { label: 'Conversão', value: `${stats.conversion}%`, icon: BarChart3, color: 'text-emerald-400' },
-                    { label: 'Receita Est.', value: `$${(stats.total - stats.active) * 2500}.0k`, icon: Target, color: 'text-amber-500' }
+                    { label: 'Leads Quentes', value: stats.hot, icon: Target, color: 'text-amber-500' }
                 ].map((stat, i) => (
                     <StatCard
                         key={stat.label}
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
                                 </div>
                             )}
                             <div className="space-y-6">
-                                {['Ativos', 'Inativos', 'Churn'].map((status, i) => {
+                                {['Ativos', 'Inativos', 'Desperdício'].map((status, i) => {
                                     const percentage = i === 0 ? 85 : i === 1 ? 12 : 3;
                                     const color = i === 0 ? 'bg-emerald-500' : i === 1 ? 'bg-amber-500' : 'bg-destructive';
                                     return (
@@ -210,12 +210,12 @@ const Dashboard: React.FC = () => {
                     </Card>
 
                     <Card className="p-8 bg-gradient-to-br from-primary/5 to-transparent">
-                        <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 mb-4">LTV Médio</h4>
+                        <h4 className="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground/40 mb-4">Leads Exclusivos</h4>
                         <div className="flex items-baseline gap-2">
-                            <span className="text-4xl font-display font-bold italic text-primary">$0.0k</span>
-                            <span className="text-[10px] font-bold text-foreground/40">MÉDIO</span>
+                            <span className="text-4xl font-display font-bold italic text-primary">{stats.total}</span>
+                            <span className="text-[10px] font-bold text-foreground/40">TOTAL</span>
                         </div>
-                        <p className="text-[10px] text-muted-foreground/40 mt-2 font-medium italic">Valor médio vitalício por cliente ativo.</p>
+                        <p className="text-[10px] text-muted-foreground/40 mt-2 font-medium italic">Base total de contatos em sua carteira.</p>
                     </Card>
                 </div>
 

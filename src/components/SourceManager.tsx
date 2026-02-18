@@ -10,7 +10,7 @@ import { Share2, X, Plus, Pencil, Trash2 } from 'lucide-react';
 interface LeadSource {
     id: string;
     organization_id: string;
-    name: string;
+    nome: string;
     description: string;
 }
 
@@ -21,7 +21,7 @@ const SourceManager: React.FC = () => {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
-        name: '',
+        nome: '',
         description: ''
     });
 
@@ -29,10 +29,10 @@ const SourceManager: React.FC = () => {
         if (!userProfile?.organization_id) return;
         try {
             const { data, error } = await supabase
-                .from('lead_sources')
+                .from('origens_lead')
                 .select('*')
                 .eq('organization_id', userProfile.organization_id)
-                .order('name');
+                .order('nome');
             if (error) throw error;
             setSources(data || []);
         } catch (error) {
@@ -52,14 +52,14 @@ const SourceManager: React.FC = () => {
         try {
             if (editingId) {
                 const { error } = await supabase
-                    .from('lead_sources')
+                    .from('origens_lead')
                     .update(formData)
                     .eq('id', editingId);
                 if (error) throw error;
                 toast.success('Origem atualizada!');
             } else {
                 const { error } = await supabase
-                    .from('lead_sources')
+                    .from('origens_lead')
                     .insert({
                         ...formData,
                         organization_id: userProfile.organization_id
@@ -68,7 +68,7 @@ const SourceManager: React.FC = () => {
                 toast.success('Origem cadastrada!');
             }
 
-            setFormData({ name: '', description: '' });
+            setFormData({ nome: '', description: '' });
             setIsAdding(false);
             setEditingId(null);
             fetchSources();
@@ -80,7 +80,7 @@ const SourceManager: React.FC = () => {
     };
 
     const startEdit = (src: LeadSource) => {
-        setFormData({ name: src.name, description: src.description || '' });
+        setFormData({ nome: src.nome, description: src.description || '' });
         setEditingId(src.id);
         setIsAdding(true);
     };
@@ -89,7 +89,7 @@ const SourceManager: React.FC = () => {
         if (!confirm('Excluir esta origem?')) return;
         try {
             const { error } = await supabase
-                .from('lead_sources')
+                .from('origens_lead')
                 .delete()
                 .eq('id', id);
             if (error) throw error;
@@ -117,7 +117,7 @@ const SourceManager: React.FC = () => {
                         if (isAdding || editingId) {
                             setIsAdding(false);
                             setEditingId(null);
-                            setFormData({ name: '', description: '' });
+                            setFormData({ nome: '', description: '' });
                         } else {
                             setIsAdding(true);
                         }
@@ -134,9 +134,8 @@ const SourceManager: React.FC = () => {
                         </h3>
                         <Input
                             label="Nome da Origem"
-                            placeholder="Ex: Instagram, Indicação, Stand..."
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            value={formData.nome}
+                            onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                             required
                         />
                         <Input
@@ -155,7 +154,7 @@ const SourceManager: React.FC = () => {
                                     onClick={() => {
                                         setEditingId(null);
                                         setIsAdding(false);
-                                        setFormData({ name: '', description: '' });
+                                        setFormData({ nome: '', description: '' });
                                     }}
                                 >
                                     Cancelar
@@ -171,7 +170,7 @@ const SourceManager: React.FC = () => {
                             <div className="flex items-center gap-3">
                                 <Share2 className="w-5 h-5 text-primary opacity-60" />
                                 <div>
-                                    <p className="font-semibold text-sm">{src.name}</p>
+                                    <p className="font-semibold text-sm">{src.nome}</p>
                                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{src.description || 'Sem descrição'}</p>
                                 </div>
                             </div>

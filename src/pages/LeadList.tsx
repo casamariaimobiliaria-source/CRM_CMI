@@ -52,10 +52,10 @@ const LeadList: React.FC = () => {
         <div className="flex flex-col min-h-screen bg-background p-6 md:p-10 space-y-12">
             <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="space-y-4">
-                    <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Fluxo de Leads</h1>
-                    <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
+                    <h1 className="text-4xl md:text-5xl font-display font-medium text-foreground italic tracking-tighter leading-tight">Fluxo de <span className="text-primary font-bold">Leads</span></h1>
+                    <p className="text-primary/60 text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
                         <span className="h-[1px] w-8 bg-primary/30" />
-                        Gestão de Pipeline em Tempo Real
+                        Gestão de Pipeline Exclusiva
                     </p>
                 </div>
 
@@ -68,8 +68,7 @@ const LeadList: React.FC = () => {
                 </Button>
             </div>
 
-            <div className="bg-card/40 backdrop-blur-3xl rounded-[2rem] md:rounded-[3rem] border border-border/50 p-6 md:p-10 space-y-10 max-w-7xl mx-auto w-full relative overflow-hidden shadow-premium">
-                <div className="absolute inset-0 subtle-dot-grid opacity-[0.03] pointer-events-none" />
+            <div className="max-w-7xl mx-auto w-full space-y-12">
                 <LeadFilters
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
@@ -92,10 +91,10 @@ const LeadList: React.FC = () => {
                     setBrokerFilter={setBrokerFilter} // Corrected
                 />
 
-                <main className="space-y-6 pb-20 relative z-10">
+                <main className="space-y-8 pb-32">
                     {filteredLeads.length === 0 ? (
                         <div
-                            className="py-32 text-center flex flex-col items-center"
+                            className="py-32 text-center flex flex-col items-center bg-card/30 backdrop-blur-md rounded-[3rem] border border-border/40 shadow-premium"
                         >
                             <div className="w-24 h-24 bg-background rounded-3xl flex items-center justify-center mb-8 border border-border shadow-sm">
                                 <svg className="w-10 h-10 text-muted-foreground/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -112,7 +111,7 @@ const LeadList: React.FC = () => {
                         <div
                             className={cn(
                                 viewMode === 'table'
-                                    ? "bg-background/50 backdrop-blur-md rounded-[2.5rem] border border-border/60 divide-y divide-border/40 overflow-hidden shadow-sm"
+                                    ? "bg-card/30 backdrop-blur-xl rounded-[2.5rem] border border-border/40 divide-y divide-border/20 overflow-hidden shadow-premium"
                                     : "grid grid-cols-1 gap-6"
                             )}
                         >

@@ -41,15 +41,15 @@ const LeadForm: React.FC = () => {
             telefone: '',
             email: '',
             midia: '',
-            enterprise_id: '',
-            source_id: '',
-            dataCompra: '',
+            empreendimento_id: '',
+            origem_id: '',
+            data_compra: '',
             corretor: '',
             empreendimento: '',
             temperatura: LeadTemperature.FRIO,
             status: LeadStatus.ATIVO,
             historico: '',
-            nextContact: ''
+            proximo_contato: ''
         }
     });
 
@@ -58,14 +58,33 @@ const LeadForm: React.FC = () => {
     useEffect(() => {
         const fetchOptions = async () => {
             const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
-            if (!currentOrgId) return;
+            console.log('LeadForm: currentOrgId:', currentOrgId);
+            if (!currentOrgId) {
+                console.log('LeadForm: No organization_id found');
+                return;
+            }
 
-            const [entRes, srcRes] = await Promise.all([
-                supabase.from('enterprises').select('id, name').eq('organization_id', currentOrgId).order('name'),
-                supabase.from('lead_sources').select('id, name').eq('organization_id', currentOrgId).order('name')
-            ]);
-            if (entRes.data) setEnterpriseOptions(entRes.data);
-            if (srcRes.data) setSourceOptions(srcRes.data);
+            try {
+                const [entRes, srcRes] = await Promise.all([
+                    supabase.from('empreendimentos').select('id, nome').eq('organization_id', currentOrgId).order('nome'),
+                    supabase.from('origens_lead').select('id, nome').eq('organization_id', currentOrgId).order('nome')
+                ]);
+
+                console.log('LeadForm: entRes:', entRes);
+                console.log('LeadForm: srcRes:', srcRes);
+
+                if (entRes.data) {
+                    console.log('LeadForm: setEnterpriseOptions:', entRes.data.length);
+                    setEnterpriseOptions(entRes.data.map(e => ({ id: e.id, name: e.nome })));
+                }
+                if (srcRes.data) {
+                    console.log('LeadForm: setSourceOptions:', srcRes.data.length);
+                    setSourceOptions(srcRes.data.map(s => ({ id: s.id, name: s.nome })));
+                }
+            } catch (error) {
+                console.error('LeadForm: Error fetching options:', error);
+                toast.error('Erro ao carregar opções de empreendimento/origem');
+            }
         };
         fetchOptions();
     }, [userProfile?.organization_id, impersonatedOrgId]);
@@ -73,63 +92,72 @@ const LeadForm: React.FC = () => {
     const watchTelefone = watch('telefone');
 
     useEffect(() => {
-        if (id && leads.length > 0 && enterpriseOptions.length > 0 && sourceOptions.length > 0) {
+        if (id && leads.length > 0) {
             const existingLead = leads.find(l => l.id === id);
             if (existingLead) {
-                // Try to resolve IDs if they are missing but names exist
-                let resolvedEnterpriseId = existingLead.enterprise_id || '';
-                if (!resolvedEnterpriseId && existingLead.empreendimento) {
+                // Try to resolve IDs if they are missing but names exist, now checking even if options load later
+                let resolvedEnterpriseId = existingLead.empreendimento_id || '';
+                if (!resolvedEnterpriseId && existingLead.empreendimento && enterpriseOptions.length > 0) {
                     const match = enterpriseOptions.find(opt =>
-                        opt.name.toLowerCase() === existingLead.empreendimento?.toLowerCase()
+                        opt.name.trim().toLowerCase() === existingLead.empreendimento?.trim().toLowerCase()
                     );
                     if (match) resolvedEnterpriseId = match.id;
                 }
 
-                let resolvedSourceId = existingLead.source_id || '';
-                if (!resolvedSourceId && (existingLead.midia || (existingLead as any).source)) {
-                    const sourceName = existingLead.midia || (existingLead as any).source;
+                let resolvedSourceId = existingLead.origem_id || '';
+                const sourceName = existingLead.midia || (existingLead as any).source;
+                if (!resolvedSourceId && sourceName && sourceOptions.length > 0) {
                     const match = sourceOptions.find(opt =>
-                        opt.name.toLowerCase() === sourceName?.toLowerCase()
+                        opt.name.trim().toLowerCase() === sourceName.trim().toLowerCase()
                     );
                     if (match) resolvedSourceId = match.id;
                 }
 
-                // Format nextContact for datetime-local input (YYYY-MM-DDTHH:mm)
-                let formattedNextContact = '';
-                if (existingLead.nextContact) {
+                // Format proximo_contato for datetime-local input (YYYY-MM-DDTHH:mm)
+                let formattedProximoContato = '';
+                if (existingLead.proximo_contato) {
                     try {
-                        const date = new Date(existingLead.nextContact);
+                        const date = new Date(existingLead.proximo_contato);
                         if (!isNaN(date.getTime())) {
+                            // Ensure local time formatting for datetime-local
+                            const pad = (n: number) => String(n).padStart(2, '0');
                             const year = date.getFullYear();
-                            const month = String(date.getMonth() + 1).padStart(2, '0');
-                            const day = String(date.getDate()).padStart(2, '0');
-                            const hours = String(date.getHours()).padStart(2, '0');
-                            const minutes = String(date.getMinutes()).padStart(2, '0');
-                            formattedNextContact = `${year}-${month}-${day}T${hours}:${minutes}`;
+                            const month = pad(date.getMonth() + 1);
+                            const day = pad(date.getDate());
+                            const hours = pad(date.getHours());
+                            const minutes = pad(date.getMinutes());
+                            formattedProximoContato = `${year}-${month}-${day}T${hours}:${minutes}`;
                         }
                     } catch (e) {
                         console.error("Error formatting date", e);
                     }
                 }
 
+                const empreendimentoIdToSet = resolvedEnterpriseId || '';
+                const origemIdToSet = resolvedSourceId || '';
+
                 reset({
-                    nome: existingLead.nome || (existingLead as any).name || '',
-                    telefone: existingLead.telefone || (existingLead as any).phone || '',
+                    nome: existingLead.nome || '',
+                    telefone: existingLead.telefone || '',
                     email: existingLead.email || '',
-                    midia: existingLead.midia || (existingLead as any).source || '',
-                    enterprise_id: resolvedEnterpriseId,
-                    source_id: resolvedSourceId,
-                    dataCompra: existingLead.dataCompra || (existingLead as any).data_compra || '',
+                    midia: sourceName || '',
+                    empreendimento_id: empreendimentoIdToSet,
+                    origem_id: origemIdToSet,
+                    data_compra: existingLead.data_compra || '',
                     corretor: existingLead.corretor || '',
                     empreendimento: existingLead.empreendimento || '',
                     temperatura: existingLead.temperatura,
                     status: existingLead.status,
                     historico: existingLead.historico || '',
-                    nextContact: formattedNextContact
+                    proximo_contato: formattedProximoContato
                 });
+
+                // Force set values because sometimes reset doesn't trigger select updates correctly with dynamic options
+                if (empreendimentoIdToSet) setValue('empreendimento_id', empreendimentoIdToSet);
+                if (origemIdToSet) setValue('origem_id', origemIdToSet);
             }
         }
-    }, [id, leads, reset, enterpriseOptions, sourceOptions]);
+    }, [id, leads.length, reset, enterpriseOptions.length, sourceOptions.length, setValue]);
 
     // Duplicate Check
     const checkDuplicate = (phone: string) => {
@@ -160,11 +188,13 @@ const LeadForm: React.FC = () => {
         const loadingToast = toast.loading('Salvando alterações...');
         try {
             // Find names for enterprise and source to keep them synced with IDs
-            const enterpriseName = enterpriseOptions.find(opt => opt.id === data.enterprise_id)?.name || '';
-            const sourceName = sourceOptions.find(opt => opt.id === data.source_id)?.name || '';
+            const enterpriseName = enterpriseOptions.find(opt => opt.id === data.empreendimento_id)?.name || '';
+            const sourceName = sourceOptions.find(opt => opt.id === data.origem_id)?.name || '';
 
             const payload: any = {
                 ...data,
+                empreendimento_id: data.empreendimento_id || null,
+                origem_id: data.origem_id || null,
                 empreendimento: enterpriseName || data.empreendimento,
                 midia: sourceName || data.midia
             };
@@ -267,8 +297,8 @@ const LeadForm: React.FC = () => {
                                         <Input
                                             label="Próximo Contato"
                                             type="datetime-local"
-                                            error={errors.nextContact?.message}
-                                            {...register('nextContact')}
+                                            error={errors.proximo_contato?.message}
+                                            {...register('proximo_contato')}
                                         />
                                     </div>
 
@@ -278,9 +308,9 @@ const LeadForm: React.FC = () => {
                                             <select
                                                 className={cn(
                                                     "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground",
-                                                    errors.enterprise_id && "border-destructive focus-visible:ring-destructive"
+                                                    errors.empreendimento_id && "border-destructive focus-visible:ring-destructive"
                                                 )}
-                                                {...register('enterprise_id')}
+                                                {...register('empreendimento_id')}
                                             >
                                                 <option value="">Selecione um empreendimento...</option>
                                                 {enterpriseOptions.map(opt => (
@@ -291,7 +321,7 @@ const LeadForm: React.FC = () => {
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                             </div>
                                         </div>
-                                        {errors.enterprise_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.enterprise_id.message}</p>}
+                                        {errors.empreendimento_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.empreendimento_id.message}</p>}
                                     </div>
 
                                     <div>
@@ -300,9 +330,9 @@ const LeadForm: React.FC = () => {
                                             <select
                                                 className={cn(
                                                     "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground",
-                                                    errors.source_id && "border-destructive focus-visible:ring-destructive"
+                                                    errors.origem_id && "border-destructive focus-visible:ring-destructive"
                                                 )}
-                                                {...register('source_id')}
+                                                {...register('origem_id')}
                                             >
                                                 <option value="">Selecione uma origem...</option>
                                                 {sourceOptions.map(opt => (
@@ -313,7 +343,7 @@ const LeadForm: React.FC = () => {
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                             </div>
                                         </div>
-                                        {errors.source_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.source_id.message}</p>}
+                                        {errors.origem_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.origem_id.message}</p>}
                                     </div>
 
                                     <div>
@@ -354,6 +384,24 @@ const LeadForm: React.FC = () => {
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <Input
+                                            label="Corretor Responsável"
+                                            placeholder="Nome do corretor..."
+                                            error={errors.corretor?.message}
+                                            {...register('corretor')}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Input
+                                            label="Data da Compra"
+                                            type="date"
+                                            error={errors.data_compra?.message}
+                                            {...register('data_compra')}
+                                        />
                                     </div>
                                 </div>
 

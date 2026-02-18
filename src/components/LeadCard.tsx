@@ -24,15 +24,15 @@ const getStatusVariant = (status: string) => {
 }
 
 const getCardColor = (lead: Lead) => {
-    const isOverdue = lead.nextContact && new Date(lead.nextContact) < new Date();
+    const isOverdue = lead.proximo_contato && new Date(lead.proximo_contato) < new Date();
 
-    if (isOverdue) return "bg-red-500/10 border-red-500/50 hover:border-red-500/80";
-    if (lead.status === 'Comprou') return "bg-blue-500/10 border-blue-500/50 hover:border-blue-500/80";
-    if (lead.status === 'Agendou') return "bg-yellow-500/10 border-yellow-500/50 hover:border-yellow-500/80";
-    if (lead.status === 'Não Responde') return "bg-gray-500/10 border-gray-500/30 hover:border-gray-500/50";
-    if (lead.status === 'Perdido') return "bg-destructive/5 border-destructive/20 opacity-75 grayscale-[0.5]";
+    if (isOverdue) return "bg-red-500/5 border-red-500/20 hover:border-red-500/40";
+    if (lead.status === 'Comprou') return "bg-blue-500/5 border-blue-500/20 hover:border-blue-500/40";
+    if (lead.status === 'Agendou') return "bg-yellow-500/5 border-yellow-500/20 hover:border-yellow-500/40";
+    if (lead.status === 'Não Responde') return "opacity-60 grayscale-[0.5] hover:opacity-100 hover:grayscale-0";
+    if (lead.status === 'Perdido') return "opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700";
 
-    return "hover:border-primary/20 hover:bg-foreground/[0.02]";
+    return "hover:border-primary/30 hover:bg-primary/5 bg-card/40 backdrop-blur-md shadow-premium border-border/40 hover:shadow-luxury";
 }
 
 const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
@@ -47,7 +47,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
             whileHover={{ y: -6, scale: 1.01 }}
             onClick={() => navigate(`/edit/${lead.id}`)}
             className={cn(
-                "relative flex flex-col md:flex-row items-center p-6 rounded-[2rem] transition-all duration-500 cursor-pointer group shadow-premium hover:shadow-luxury border border-border/50 bg-card overflow-hidden",
+                "relative flex flex-col md:flex-row items-center p-6 rounded-[2rem] transition-all duration-500 cursor-pointer group overflow-hidden",
                 getCardColor(lead)
             )}
         >
@@ -56,8 +56,8 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
 
             <div className="flex w-full md:w-auto items-center md:block">
                 {/* Avatar */}
-                <div className="relative w-12 h-12 md:w-14 md:h-14 bg-background rounded-2xl flex items-center justify-center overflow-hidden shrink-0 transition-all duration-500 border border-border group-hover:border-primary group-hover:shadow-gold-glow">
-                    <span className="font-display font-bold text-lg md:text-xl text-primary italic">
+                <div className="relative w-14 h-14 md:w-16 md:h-16 bg-card rounded-[1.25rem] flex items-center justify-center overflow-hidden shrink-0 transition-all duration-700 border border-border/40 group-hover:border-primary/40 group-hover:shadow-gold-glow">
+                    <span className="font-display font-bold text-xl md:text-2xl text-primary italic">
                         {String(lead?.nome || '?').charAt(0).toUpperCase()}
                     </span>
                 </div>
@@ -75,32 +75,32 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
 
             <div className="flex-1 min-w-0 w-full mt-4 md:mt-0 md:ml-6">
                 <div className="hidden md:flex items-center gap-3 mb-1">
-                    <h3 className="font-display font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-200 italic tracking-tight">
+                    <h3 className="font-display font-bold text-xl text-foreground group-hover:text-primary transition-colors duration-200 italic tracking-tight">
                         {lead?.nome || 'Anônimo'}
                     </h3>
-                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-2 py-0.5 bg-background border-border shadow-sm">
+                    <Badge variant={getStatusVariant(lead?.status || 'Ativo') as any} className="text-[10px] px-3 py-1 bg-background/50 backdrop-blur-sm border-border/40 shadow-sm font-display italic">
                         {lead?.status}
                     </Badge>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
-                    <div className="flex items-center gap-1.5 md:border-r border-border/50 pr-0 md:pr-4">
-                        <span className="text-foreground/80">{lead.telefone}</span>
+                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 text-[10px] font-bold tracking-[0.2em] text-muted-foreground/40 uppercase">
+                    <div className="flex items-center gap-2 md:border-r border-border/20 pr-0 md:pr-6">
+                        <span className="text-foreground/60">{lead.telefone}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 md:border-r border-border/50 pr-0 md:pr-4">
-                        <span className="opacity-50 italic">CADASTRO:</span>
-                        <span className="text-primary truncate max-w-[120px]">{lead.corretor || 'SISTEMA'}</span>
+                    <div className="flex items-center gap-2 md:border-r border-border/20 pr-0 md:pr-6 italic">
+                        <span className="opacity-40">CADASTRO:</span>
+                        <span className="text-primary/70 truncate max-w-[120px] font-display">{lead.corretor || 'SISTEMA'}</span>
                     </div>
-                    <div className="flex items-center gap-1.5 md:border-r border-border/50 pr-0 md:pr-4">
-                        <span className="text-primary tracking-[0.1em] font-bold italic truncate">{lead.empreendimento || 'IMÓVEL PREMIUM'}</span>
+                    <div className="flex items-center gap-2 md:border-r border-border/20 pr-0 md:pr-6">
+                        <span className="text-primary font-display font-bold italic truncate tracking-[0.1em] text-[11px]">{lead.empreendimento || 'IMÓVEL PREMIUM'}</span>
                     </div>
-                    {lead.nextContact && (
+                    {lead.proximo_contato && (
                         <div className={cn(
-                            "flex items-center gap-1.5",
-                            new Date(lead.nextContact) < new Date() ? "text-destructive" : "text-muted-foreground"
+                            "flex items-center gap-2",
+                            new Date(lead.proximo_contato) < new Date() ? "text-destructive" : "text-muted-foreground/40"
                         )}>
-                            <span className="opacity-50 italic">PRÓXIMO:</span>
-                            <span>{format(new Date(lead.nextContact), "dd MMM HH:mm", { locale: ptBR })}</span>
+                            <span className="opacity-40 italic">PRÓXIMO:</span>
+                            <span className="font-display">{format(new Date(lead.proximo_contato), "dd MMM · HH:mm", { locale: ptBR })}</span>
                         </div>
                     )}
                 </div>

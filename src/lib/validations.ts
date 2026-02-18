@@ -16,13 +16,13 @@ export const leadFormSchema = z.object({
 
     midia: z.string().optional(),
 
-    dataCompra: z.string().optional(),
+    data_compra: z.string().optional(),
 
     corretor: z.string().optional(),
 
     empreendimento: z.string().optional(),
-    enterprise_id: z.string().optional().or(z.literal('')),
-    source_id: z.string().optional().or(z.literal('')),
+    empreendimento_id: z.string().optional().or(z.literal('')),
+    origem_id: z.string().optional().or(z.literal('')),
 
     temperatura: z.nativeEnum(LeadTemperature, {
         message: 'Selecione uma temperatura válida'
@@ -34,7 +34,7 @@ export const leadFormSchema = z.object({
 
     historico: z.string().optional(),
 
-    nextContact: z.string().optional()
+    proximo_contato: z.string().optional()
 });
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>;
