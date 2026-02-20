@@ -1,0 +1,140 @@
+[
+  {
+    "id": "c17bd0f1-d8e8-4973-b4aa-b17b1e9e9ca7",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "mssalgado1418@gmail.com",
+    "email_confirmed_at": "2026-01-30T19:01:58.171204Z",
+    "phone": "",
+    "confirmed_at": "2026-01-30T19:01:58.171204Z",
+    "last_sign_in_at": "2026-01-30T21:32:33.464644Z",
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "user_metadata": {
+      "email": "mssalgado1418@gmail.com",
+      "email_verified": true,
+      "name": "Nicholas",
+      "phone_verified": false,
+      "sub": "c17bd0f1-d8e8-4973-b4aa-b17b1e9e9ca7"
+    },
+    "identities": null,
+    "created_at": "2026-01-30T19:01:58.139652Z",
+    "updated_at": "2026-01-30T21:32:33.496377Z",
+    "is_anonymous": false
+  },
+  {
+    "id": "2eed73ae-41ea-48a4-8953-d5136c0664d4",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "yasminfonteles19@gmail.com",
+    "email_confirmed_at": "2026-01-27T18:52:35.34917Z",
+    "phone": "",
+    "confirmed_at": "2026-01-27T18:52:35.34917Z",
+    "last_sign_in_at": "2026-01-27T18:53:30.3387Z",
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "user_metadata": {
+      "email": "yasminfonteles19@gmail.com",
+      "email_verified": true,
+      "name": "SDR Yasmin",
+      "phone": "(11) 96659-9673",
+      "phone_verified": false,
+      "sub": "2eed73ae-41ea-48a4-8953-d5136c0664d4"
+    },
+    "identities": null,
+    "created_at": "2026-01-27T18:52:35.323813Z",
+    "updated_at": "2026-01-28T13:44:28.998905Z",
+    "is_anonymous": false
+  },
+  {
+    "id": "07fd0307-4c29-4c70-a61b-0ebfdc9a1ca1",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "ori@gmail.com.br",
+    "email_confirmed_at": "2026-01-16T19:35:29.445637Z",
+    "phone": "",
+    "confirmed_at": "2026-01-16T19:35:29.445637Z",
+    "last_sign_in_at": "2026-01-16T19:48:15.938703Z",
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "user_metadata": {
+      "email": "ori@gmail.com.br",
+      "email_verified": true,
+      "name": "Orivaldo Garcia",
+      "phone": "(11) 93232-6655",
+      "phone_verified": false,
+      "sub": "07fd0307-4c29-4c70-a61b-0ebfdc9a1ca1"
+    },
+    "identities": null,
+    "created_at": "2026-01-16T19:35:29.420839Z",
+    "updated_at": "2026-01-16T19:48:15.940925Z",
+    "is_anonymous": false
+  },
+  {
+    "id": "9a59b320-d07f-446f-927b-225d604debfb",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "nubiatelesimoveis@gmail.com",
+    "email_confirmed_at": "2026-01-16T19:02:24.616212Z",
+    "phone": "",
+    "confirmed_at": "2026-01-16T19:02:24.616212Z",
+    "last_sign_in_at": "2026-01-21T15:33:23.151137Z",
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "user_metadata": {
+      "email": "nubiatelesimoveis@gmail.com",
+      "email_verified": true,
+      "name": "Núbia de Jesus Teles",
+      "phone": "(11) 97877-7584",
+      "phone_verified": false,
+      "sub": "9a59b320-d07f-446f-927b-225d604debfb"
+    },
+    "identities": null,
+    "created_at": "2026-01-16T19:02:24.555361Z",
+    "updated_at": "2026-01-21T15:33:23.171967Z",
+    "is_anonymous": false
+  },
+  {
+    "id": "56d73b1e-2345-4344-a6f1-4a870a7592d5",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "casamariaimobiliaria@gmail.com",
+    "email_confirmed_at": "2026-01-13T16:55:34.044116Z",
+    "phone": "",
+    "confirmed_at": "2026-01-13T16:55:34.044116Z",
+    "last_sign_in_at": "2026-02-20T13:09:57.950759Z",
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "user_metadata": {
+      "email": "casamariaimobiliaria@gmail.com",
+      "email_verified": true,
+      "name": "Maurício",
+      "phone_verified": false,
+      "sub": "56d73b1e-2345-4344-a6f1-4a870a7592d5"
+    },
+    "identities": null,
+    "created_at": "2026-01-13T16:55:34.031414Z",
+    "updated_at": "2026-02-20T14:08:12.114519Z",
+    "is_anonymous": false
+  }
+]

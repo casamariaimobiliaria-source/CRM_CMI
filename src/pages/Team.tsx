@@ -66,7 +66,7 @@ const Team: React.FC = () => {
             if (userIds.length > 0) {
                 const { data: usersData, error: usersError } = await supabase
                     .from('users')
-                    .select('id, name, email')
+                    .select('id, name, email, phone')
                     .in('id', userIds);
 
                 if (usersError) throw usersError;
@@ -109,6 +109,7 @@ const Team: React.FC = () => {
                     .update({
                         name: data.name,
                         role: data.role,
+                        phone: data.phone
                     })
                     .eq('id', userId);
 
@@ -179,6 +180,7 @@ const Team: React.FC = () => {
                         name: data.name,
                         email: data.email,
                         role: data.role,
+                        phone: data.phone,
                         organization_id: userProfile.organization_id
                     });
 
@@ -248,6 +250,7 @@ const Team: React.FC = () => {
         // Setting form values
         setValue('name', member.user?.name || '');
         setValue('email', member.user?.email || '');
+        setValue('phone', member.user?.phone || '');
         setValue('role', member.role as 'owner' | 'admin' | 'member');
     };
 
@@ -376,7 +379,15 @@ const Team: React.FC = () => {
                                         </div>
                                         <div>
                                             <p className="font-semibold text-sm text-foreground">{member.user?.name || 'Usuário'}</p>
-                                            <p className="text-xs text-muted-foreground">{member.user?.email}</p>
+                                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                                                <p className="text-xs text-muted-foreground">{member.user?.email}</p>
+                                                {member.user?.phone && (
+                                                    <>
+                                                        <span className="hidden sm:inline text-muted-foreground/30">•</span>
+                                                        <p className="text-xs text-primary font-medium">{member.user.phone}</p>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">

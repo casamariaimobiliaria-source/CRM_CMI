@@ -1,0 +1,622 @@
+{
+  "profiles": [
+    {
+      "id": "55a425f0-7239-4902-bb4d-368a8c52517a",
+      "email": "nubiajteles@gmail.com",
+      "name": "Núbia de Jesus Teles",
+      "role": "admin",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-04T17:55:41.25511+00:00",
+      "phone": null
+    },
+    {
+      "id": "da9a1924-8e2f-4284-954d-f4b312e0816a",
+      "email": "mssalgado1418@gmail.com",
+      "name": "Mauricio Salgado",
+      "role": "admin",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-04T18:09:56.942842+00:00",
+      "phone": null
+    },
+    {
+      "id": "02c3a452-27ae-459a-b814-fc95b9b9fb9b",
+      "email": "vivijtelles@hotmail.com",
+      "name": "Viviane de Jesus Teles",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-04T18:15:02.829055+00:00",
+      "phone": null
+    },
+    {
+      "id": "d0f0fc53-468c-41b2-a0b0-b1b70099df8e",
+      "email": "yasminsdrcmi@gmail.com",
+      "name": "Yasmin",
+      "role": "admin",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-04T20:03:23.320116+00:00",
+      "phone": null
+    },
+    {
+      "id": "abab523a-000c-48d6-ae6e-3cffb44a87be",
+      "email": "tabatatelescorretora@gmail.com",
+      "name": "Tabata Teles",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-05T20:34:38.319227+00:00",
+      "phone": null
+    },
+    {
+      "id": "d897c6a6-933d-496f-b49a-89dec4e2eb0e",
+      "email": "casamariaimobiliaria@gmail.com",
+      "name": "Mauricio",
+      "role": "admin",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": true,
+      "created_at": "2026-01-23T20:38:00.1191+00:00",
+      "phone": "(11) 94144-4445"
+    },
+    {
+      "id": "a495f7b2-082b-4e27-9ac8-72d5556b60f3",
+      "email": "nubiatelesimoveis@gmail.com",
+      "name": "Núbia de Jesus teles",
+      "role": "owner",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-04T17:56:23.375851+00:00",
+      "phone": null
+    },
+    {
+      "id": "7a55e23a-1377-4934-91da-444097096976",
+      "email": "silvianigerentecmi@gmail.com",
+      "name": "Silviani Gerente",
+      "role": "admin",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-11T17:40:00.770512+00:00",
+      "phone": null
+    },
+    {
+      "id": "acf2fb0d-f93b-40f1-a5c8-d3480df5e0ec",
+      "email": "luana.pereira.rivavendas@gmail.com",
+      "name": "Luana Pereira",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T18:14:42.25065+00:00",
+      "phone": null
+    },
+    {
+      "id": "8fbaa145-90c4-402e-8eb5-830fc377f9ba",
+      "email": "susanajteles@hotmail.com",
+      "name": "Susana",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T18:20:21.125364+00:00",
+      "phone": null
+    },
+    {
+      "id": "0fd7d90b-22eb-47a6-8981-54febc305c9e",
+      "email": "andre_frankc@yahoo.com.br",
+      "name": "André",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T18:21:56.023224+00:00",
+      "phone": null
+    },
+    {
+      "id": "0760b71c-7d49-411f-b020-5f1b75673927",
+      "email": "graziani.consultoria@gmail.com",
+      "name": "Mônica",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T18:31:14.663223+00:00",
+      "phone": null
+    },
+    {
+      "id": "1074f209-cd60-4cd8-b51a-db3dcb6f4cca",
+      "email": "graziani.consultoria@gmail.com",
+      "name": "Flávia",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T18:36:11.428783+00:00",
+      "phone": null
+    },
+    {
+      "id": "dfe6d755-d035-40ee-953c-9c0d88122931",
+      "email": "flaviasilva.fffa@gmail.com",
+      "name": "Flávia",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T19:08:01.745183+00:00",
+      "phone": null
+    },
+    {
+      "id": "8b8bd6b7-bf60-4bd2-a3f9-e281d8828d67",
+      "email": "Karen32campos@gmail.com",
+      "name": "Karen",
+      "role": "member",
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "is_super_admin": false,
+      "created_at": "2026-02-12T18:16:55.179741+00:00",
+      "phone": null
+    }
+  ],
+  "members": [
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "d897c6a6-933d-496f-b49a-89dec4e2eb0e",
+      "role": "owner",
+      "created_at": "2026-01-23T20:38:00.1191+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "02c3a452-27ae-459a-b814-fc95b9b9fb9b",
+      "role": "member",
+      "created_at": "2026-02-04T18:15:02.974721+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "d0f0fc53-468c-41b2-a0b0-b1b70099df8e",
+      "role": "admin",
+      "created_at": "2026-02-04T20:03:23.436627+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "abab523a-000c-48d6-ae6e-3cffb44a87be",
+      "role": "member",
+      "created_at": "2026-02-05T20:34:38.451251+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "a495f7b2-082b-4e27-9ac8-72d5556b60f3",
+      "role": "owner",
+      "created_at": "2026-02-04T17:56:23.449174+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "7a55e23a-1377-4934-91da-444097096976",
+      "role": "admin",
+      "created_at": "2026-02-11T17:40:00.958433+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "acf2fb0d-f93b-40f1-a5c8-d3480df5e0ec",
+      "role": "member",
+      "created_at": "2026-02-12T18:14:42.486542+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "8fbaa145-90c4-402e-8eb5-830fc377f9ba",
+      "role": "member",
+      "created_at": "2026-02-12T18:20:21.249589+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "0fd7d90b-22eb-47a6-8981-54febc305c9e",
+      "role": "member",
+      "created_at": "2026-02-12T18:21:56.104306+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "0760b71c-7d49-411f-b020-5f1b75673927",
+      "role": "member",
+      "created_at": "2026-02-12T18:31:14.751451+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "dfe6d755-d035-40ee-953c-9c0d88122931",
+      "role": "member",
+      "created_at": "2026-02-12T19:08:01.8882+00:00"
+    },
+    {
+      "organization_id": "60246bae-58d7-4294-987d-184600b7342e",
+      "user_id": "8b8bd6b7-bf60-4bd2-a3f9-e281d8828d67",
+      "role": "member",
+      "created_at": "2026-02-12T18:16:55.315501+00:00"
+    }
+  ],
+  "auth": [
+    {
+      "id": "dfe6d755-d035-40ee-953c-9c0d88122931",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "flaviasilva.fffa@gmail.com",
+      "email_confirmed_at": "2026-02-12T19:08:01.448538Z",
+      "phone": "",
+      "confirmed_at": "2026-02-12T19:08:01.448538Z",
+      "last_sign_in_at": "2026-02-12T19:11:23.429586Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "flaviasilva.fffa@gmail.com",
+        "email_verified": false,
+        "name": "Flávia",
+        "phone": "(11) 97295-5321",
+        "phone_verified": false,
+        "sub": "dfe6d755-d035-40ee-953c-9c0d88122931"
+      },
+      "identities": null,
+      "created_at": "2026-02-12T19:08:01.448883Z",
+      "updated_at": "2026-02-13T03:11:24.971257Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "0760b71c-7d49-411f-b020-5f1b75673927",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "graziani.consultoria@gmail.com",
+      "email_confirmed_at": "2026-02-12T18:31:14.506759Z",
+      "phone": "",
+      "confirmed_at": "2026-02-12T18:31:14.506759Z",
+      "last_sign_in_at": "2026-02-12T18:34:50.420796Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "graziani.consultoria@gmail.com",
+        "email_verified": false,
+        "name": "Mônica",
+        "phone": "(11) 93756-2826",
+        "phone_verified": false,
+        "sub": "0760b71c-7d49-411f-b020-5f1b75673927"
+      },
+      "identities": null,
+      "created_at": "2026-02-12T18:31:14.507093Z",
+      "updated_at": "2026-02-12T18:34:50.460656Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "0fd7d90b-22eb-47a6-8981-54febc305c9e",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "andre_frankc@yahoo.com.br",
+      "email_confirmed_at": "2026-02-12T18:21:55.934963Z",
+      "phone": "",
+      "confirmed_at": "2026-02-12T18:21:55.934963Z",
+      "last_sign_in_at": "2026-02-12T18:21:55.949038Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "andre_frankc@yahoo.com.br",
+        "email_verified": false,
+        "name": "André",
+        "phone": "(11) 98038-1403",
+        "phone_verified": false,
+        "sub": "0fd7d90b-22eb-47a6-8981-54febc305c9e"
+      },
+      "identities": null,
+      "created_at": "2026-02-12T18:21:55.935309Z",
+      "updated_at": "2026-02-12T18:21:55.958374Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "8fbaa145-90c4-402e-8eb5-830fc377f9ba",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "susanajteles@hotmail.com",
+      "email_confirmed_at": "2026-02-12T18:20:20.920453Z",
+      "phone": "",
+      "confirmed_at": "2026-02-12T18:20:20.920453Z",
+      "last_sign_in_at": "2026-02-12T18:21:35.998766Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "susanajteles@hotmail.com",
+        "email_verified": false,
+        "name": "Susana",
+        "phone": "(11) 99395-2639",
+        "phone_verified": false,
+        "sub": "8fbaa145-90c4-402e-8eb5-830fc377f9ba"
+      },
+      "identities": null,
+      "created_at": "2026-02-12T18:20:20.921448Z",
+      "updated_at": "2026-02-12T21:26:16.742797Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "8b8bd6b7-bf60-4bd2-a3f9-e281d8828d67",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "karen32campos@gmail.com",
+      "email_confirmed_at": "2026-02-12T18:16:55.06666Z",
+      "phone": "",
+      "confirmed_at": "2026-02-12T18:16:55.06666Z",
+      "last_sign_in_at": "2026-02-19T20:03:18.00002Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "karen32campos@gmail.com",
+        "email_verified": false,
+        "name": "Karen",
+        "phone": "(11) 94914-2190",
+        "phone_verified": false,
+        "sub": "8b8bd6b7-bf60-4bd2-a3f9-e281d8828d67"
+      },
+      "identities": null,
+      "created_at": "2026-02-12T18:16:55.067644Z",
+      "updated_at": "2026-02-19T20:03:18.01343Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "acf2fb0d-f93b-40f1-a5c8-d3480df5e0ec",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "luana.pereira.rivavendas@gmail.com",
+      "email_confirmed_at": "2026-02-12T18:14:41.745764Z",
+      "phone": "",
+      "confirmed_at": "2026-02-12T18:14:41.745764Z",
+      "last_sign_in_at": "2026-02-12T18:17:41.22366Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "luana.pereira.rivavendas@gmail.com",
+        "email_verified": false,
+        "name": "Luana Pereira",
+        "phone": "(11) 98746-3029",
+        "phone_verified": false,
+        "sub": "acf2fb0d-f93b-40f1-a5c8-d3480df5e0ec"
+      },
+      "identities": null,
+      "created_at": "2026-02-12T18:14:41.746726Z",
+      "updated_at": "2026-02-17T19:34:50.128961Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "7a55e23a-1377-4934-91da-444097096976",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "silvianigerentecmi@gmail.com",
+      "email_confirmed_at": "2026-02-11T17:40:00.543554Z",
+      "phone": "",
+      "confirmed_at": "2026-02-11T17:40:00.543554Z",
+      "last_sign_in_at": "2026-02-11T17:41:55.214918Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "silvianigerentecmi@gmail.com",
+        "email_verified": false,
+        "name": "Silviani",
+        "phone": "(11) 97046-7318",
+        "phone_verified": false,
+        "sub": "7a55e23a-1377-4934-91da-444097096976"
+      },
+      "identities": null,
+      "created_at": "2026-02-11T17:40:00.544499Z",
+      "updated_at": "2026-02-13T19:58:27.700823Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "abab523a-000c-48d6-ae6e-3cffb44a87be",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "tabatatelescorretora@gmail.com",
+      "email_confirmed_at": "2026-02-05T20:34:38.145508Z",
+      "phone": "",
+      "confirmed_at": "2026-02-05T20:34:38.145508Z",
+      "last_sign_in_at": "2026-02-05T20:35:27.609136Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "tabatatelescorretora@gmail.com",
+        "email_verified": false,
+        "name": "Tabata Teles",
+        "phone": "(11) 91376-0952",
+        "phone_verified": false,
+        "sub": "abab523a-000c-48d6-ae6e-3cffb44a87be"
+      },
+      "identities": null,
+      "created_at": "2026-02-05T20:34:38.150482Z",
+      "updated_at": "2026-02-05T20:35:27.612855Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "d0f0fc53-468c-41b2-a0b0-b1b70099df8e",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "yasminsdrcmi@gmail.com",
+      "email_confirmed_at": "2026-02-04T20:03:23.093495Z",
+      "phone": "",
+      "confirmed_at": "2026-02-04T20:03:23.093495Z",
+      "last_sign_in_at": "2026-02-18T19:36:56.201571Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "yasminsdrcmi@gmail.com",
+        "email_verified": false,
+        "name": "Yasmin",
+        "phone": "(11) 96659-9673",
+        "phone_verified": false,
+        "sub": "d0f0fc53-468c-41b2-a0b0-b1b70099df8e"
+      },
+      "identities": null,
+      "created_at": "2026-02-04T20:03:23.095134Z",
+      "updated_at": "2026-02-18T19:36:56.243732Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "02c3a452-27ae-459a-b814-fc95b9b9fb9b",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "vivijtelles@hotmail.com",
+      "email_confirmed_at": "2026-02-04T18:15:02.630352Z",
+      "phone": "",
+      "confirmed_at": "2026-02-04T18:15:02.630352Z",
+      "last_sign_in_at": "2026-02-19T22:26:04.15552Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "vivijtelles@hotmail.com",
+        "email_verified": false,
+        "name": "Viviane Teles de Jesus",
+        "phone": "(11) 98768-9734",
+        "phone_verified": false,
+        "sub": "02c3a452-27ae-459a-b814-fc95b9b9fb9b"
+      },
+      "identities": null,
+      "created_at": "2026-02-04T18:15:02.632993Z",
+      "updated_at": "2026-02-19T22:26:04.166025Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "da9a1924-8e2f-4284-954d-f4b312e0816a",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "mssalgado1418@gmail.com",
+      "email_confirmed_at": "2026-02-04T18:09:56.718735Z",
+      "phone": "",
+      "confirmed_at": "2026-02-04T18:09:56.718735Z",
+      "last_sign_in_at": "2026-02-04T19:08:26.144104Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "mssalgado1418@gmail.com",
+        "email_verified": false,
+        "name": "Mauricio Salgado",
+        "phone": "(11) 97877-7584",
+        "phone_verified": false,
+        "sub": "da9a1924-8e2f-4284-954d-f4b312e0816a"
+      },
+      "identities": null,
+      "created_at": "2026-02-04T18:09:56.719112Z",
+      "updated_at": "2026-02-04T19:08:26.167695Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "a495f7b2-082b-4e27-9ac8-72d5556b60f3",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "nubiatelesimoveis@gmail.com",
+      "email_confirmed_at": "2026-02-04T18:04:16.99021Z",
+      "phone": "",
+      "confirmation_sent_at": "2026-02-04T17:56:21.529406Z",
+      "confirmed_at": "2026-02-04T18:04:16.99021Z",
+      "last_sign_in_at": "2026-02-05T21:31:15.705694Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "nubiatelesimoveis@gmail.com",
+        "email_verified": false,
+        "name": "Núbia de Jesus Teles",
+        "phone": "(11) 97877-7584",
+        "phone_verified": false,
+        "sub": "a495f7b2-082b-4e27-9ac8-72d5556b60f3"
+      },
+      "identities": null,
+      "created_at": "2026-02-04T17:56:21.525083Z",
+      "updated_at": "2026-02-07T01:07:10.357553Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "55a425f0-7239-4902-bb4d-368a8c52517a",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "nubiajteles@gmail.com",
+      "email_confirmed_at": "2026-02-04T18:04:16.99021Z",
+      "phone": "",
+      "confirmation_sent_at": "2026-02-04T17:55:39.032175Z",
+      "confirmed_at": "2026-02-04T18:04:16.99021Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "nubiajteles@gmail.com",
+        "email_verified": false,
+        "name": "Núbia de Jesus Teles",
+        "phone": "(11) 97877-7584",
+        "phone_verified": false,
+        "sub": "55a425f0-7239-4902-bb4d-368a8c52517a"
+      },
+      "identities": null,
+      "created_at": "2026-02-04T17:55:38.997758Z",
+      "updated_at": "2026-02-04T17:55:41.075319Z",
+      "is_anonymous": false
+    },
+    {
+      "id": "d897c6a6-933d-496f-b49a-89dec4e2eb0e",
+      "aud": "authenticated",
+      "role": "authenticated",
+      "email": "casamariaimobiliaria@gmail.com",
+      "email_confirmed_at": "2026-01-23T20:35:42.57872Z",
+      "phone": "",
+      "confirmation_sent_at": "2026-01-23T20:35:24.80622Z",
+      "confirmed_at": "2026-01-23T20:35:42.57872Z",
+      "last_sign_in_at": "2026-02-19T20:03:37.600912Z",
+      "app_metadata": {
+        "provider": "email",
+        "providers": [
+          "email"
+        ]
+      },
+      "user_metadata": {
+        "email": "casamariaimobiliaria@gmail.com",
+        "email_verified": true,
+        "phone_verified": false,
+        "sub": "d897c6a6-933d-496f-b49a-89dec4e2eb0e"
+      },
+      "identities": null,
+      "created_at": "2026-01-23T20:35:24.761163Z",
+      "updated_at": "2026-02-19T20:03:37.603784Z",
+      "is_anonymous": false
+    }
+  ]
+}

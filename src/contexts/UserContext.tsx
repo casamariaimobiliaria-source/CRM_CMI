@@ -48,16 +48,23 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             if (userError) throw userError;
 
-            // Role from organization_members
-            const { data: memberData } = await supabase
+            // Role from organization_members - be more robust: check if user belongs to ANY org
+            const { data: memberships } = await supabase
                 .from('organization_members')
-                .select('role')
-                .eq('user_id', userId)
-                .eq('organization_id', userData.organization_id)
-                .maybeSingle(); // Use maybeSingle to avoid error if missing
+                .select('organization_id, role')
+                .eq('user_id', userId);
 
-            if (memberData) {
-                userData.role = memberData.role;
+            if (memberships && memberships.length > 0) {
+                // If current organization_id from 'users' table is not in memberships or is null, 
+                // use the first organization they are a member of
+                const currentOrgId = userData.organization_id;
+                const activeMembership = memberships.find(m => m.organization_id === currentOrgId) || memberships[0];
+
+                if (activeMembership.organization_id !== currentOrgId) {
+                    console.warn(`UserContext: Organization mismatch. Switching user ${userId} context to ${activeMembership.organization_id}`);
+                    userData.organization_id = activeMembership.organization_id;
+                }
+                userData.role = activeMembership.role;
             }
 
             const orgIdToFetch = impersonatedOrgId || userData.organization_id;

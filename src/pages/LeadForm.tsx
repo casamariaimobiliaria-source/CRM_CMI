@@ -58,7 +58,6 @@ const LeadForm: React.FC = () => {
     useEffect(() => {
         const fetchOptions = async () => {
             const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
-            console.log('LeadForm: currentOrgId:', currentOrgId);
             if (!currentOrgId) {
                 console.log('LeadForm: No organization_id found');
                 return;
@@ -70,17 +69,18 @@ const LeadForm: React.FC = () => {
                     supabase.from('origens_lead').select('id, nome').eq('organization_id', currentOrgId).order('nome')
                 ]);
 
-                console.log('LeadForm: entRes:', entRes);
-                console.log('LeadForm: srcRes:', srcRes);
+
 
                 if (entRes.data) {
-                    console.log('LeadForm: setEnterpriseOptions:', entRes.data.length);
+
                     setEnterpriseOptions(entRes.data.map(e => ({ id: e.id, name: e.nome })));
                 }
                 if (srcRes.data) {
-                    console.log('LeadForm: setSourceOptions:', srcRes.data.length);
+
                     setSourceOptions(srcRes.data.map(s => ({ id: s.id, name: s.nome })));
                 }
+
+
             } catch (error) {
                 console.error('LeadForm: Error fetching options:', error);
                 toast.error('Erro ao carregar opções de empreendimento/origem');
@@ -169,10 +169,7 @@ const LeadForm: React.FC = () => {
     };
 
     useEffect(() => {
-        if (Object.keys(errors).length > 0) {
-            console.log("DEBUG - Form errors:", errors);
-        }
-        console.log("DEBUG - isSubmitting:", isSubmitting);
+
     }, [errors, isSubmitting]);
 
     useEffect(() => {
@@ -306,20 +303,18 @@ const LeadForm: React.FC = () => {
                                         <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Empreendimento</label>
                                         <div className="relative">
                                             <select
+                                                key={`ent-select-${enterpriseOptions.length}`}
                                                 className={cn(
-                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground",
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-background/50 px-5 py-2 text-base ring-offset-background font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-300 text-foreground",
                                                     errors.empreendimento_id && "border-destructive focus-visible:ring-destructive"
                                                 )}
                                                 {...register('empreendimento_id')}
                                             >
-                                                <option value="">Selecione um empreendimento...</option>
+                                                <option value="" className="bg-card text-foreground">Selecione um empreendimento...</option>
                                                 {enterpriseOptions.map(opt => (
-                                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                                    <option key={opt.id} value={opt.id} className="bg-card text-foreground">{opt.name}</option>
                                                 ))}
                                             </select>
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                            </div>
                                         </div>
                                         {errors.empreendimento_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.empreendimento_id.message}</p>}
                                     </div>
@@ -328,20 +323,18 @@ const LeadForm: React.FC = () => {
                                         <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Origem do Lead</label>
                                         <div className="relative">
                                             <select
+                                                key={`src-select-${sourceOptions.length}`}
                                                 className={cn(
-                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background appearance-none font-medium transition-all duration-500 text-foreground",
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-background/50 px-5 py-2 text-base ring-offset-background font-medium focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-300 text-foreground",
                                                     errors.origem_id && "border-destructive focus-visible:ring-destructive"
                                                 )}
                                                 {...register('origem_id')}
                                             >
-                                                <option value="">Selecione uma origem...</option>
+                                                <option value="" className="bg-card text-foreground">Selecione uma origem...</option>
                                                 {sourceOptions.map(opt => (
-                                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                                    <option key={opt.id} value={opt.id} className="bg-card text-foreground">{opt.name}</option>
                                                 ))}
                                             </select>
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                            </div>
                                         </div>
                                         {errors.origem_id && <p className="text-[10px] font-bold text-destructive mt-1 ml-1 uppercase tracking-wider">{errors.origem_id.message}</p>}
                                     </div>

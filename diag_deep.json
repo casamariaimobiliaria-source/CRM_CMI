@@ -1,0 +1,119 @@
+{
+  "users": [
+    {
+      "id": "56d73b1e-2345-4344-a6f1-4a870a7592d5",
+      "name": "Casa Maria Imobiliária",
+      "email": "casamariaimobiliaria@gmail.com",
+      "role": "admin",
+      "created_at": "2026-01-30T18:52:35.668887+00:00",
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "is_super_admin": true,
+      "phone": "(11) 98768-9734"
+    },
+    {
+      "id": "9a59b320-d07f-446f-927b-225d604debfb",
+      "name": "Núbia de Jesus Teles",
+      "email": "nubiatelesimoveis@gmail.com",
+      "role": "agent",
+      "created_at": "2026-01-16T19:25:14.186687+00:00",
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "is_super_admin": false,
+      "phone": null
+    },
+    {
+      "id": "c17bd0f1-d8e8-4973-b4aa-b17b1e9e9ca7",
+      "name": "Nicholas",
+      "email": "mssalgado1418@gmail.com",
+      "role": "member",
+      "created_at": "2026-02-20T14:26:20.893972+00:00",
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "is_super_admin": false,
+      "phone": null
+    },
+    {
+      "id": "2eed73ae-41ea-48a4-8953-d5136c0664d4",
+      "name": "SDR Yasmin",
+      "email": "yasminfonteles19@gmail.com",
+      "role": "member",
+      "created_at": "2026-02-20T14:26:21.917269+00:00",
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "is_super_admin": false,
+      "phone": null
+    },
+    {
+      "id": "07fd0307-4c29-4c70-a61b-0ebfdc9a1ca1",
+      "name": "Orivaldo Garcia",
+      "email": "ori@gmail.com.br",
+      "role": "member",
+      "created_at": "2026-01-16T19:37:42.117011+00:00",
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "is_super_admin": false,
+      "phone": null
+    }
+  ],
+  "members": [
+    {
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "user_id": "56d73b1e-2345-4344-a6f1-4a870a7592d5",
+      "role": "owner",
+      "created_at": "2026-01-14T17:59:22.311936+00:00"
+    },
+    {
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "user_id": "9a59b320-d07f-446f-927b-225d604debfb",
+      "role": "member",
+      "created_at": "2026-01-16T19:50:10.194052+00:00"
+    },
+    {
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "user_id": "c17bd0f1-d8e8-4973-b4aa-b17b1e9e9ca7",
+      "role": "member",
+      "created_at": "2026-02-20T14:26:21.677002+00:00"
+    },
+    {
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "user_id": "2eed73ae-41ea-48a4-8953-d5136c0664d4",
+      "role": "member",
+      "created_at": "2026-02-20T14:26:22.148851+00:00"
+    },
+    {
+      "organization_id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "user_id": "07fd0307-4c29-4c70-a61b-0ebfdc9a1ca1",
+      "role": "member",
+      "created_at": "2026-02-20T14:26:22.628893+00:00"
+    }
+  ],
+  "orgs": [
+    {
+      "id": "47603a8e-557d-4ca3-9c9d-4f00e5e99d16",
+      "name": "Casa Maria Imóveis",
+      "slug": "casa-maria-im-veis",
+      "owner_id": null,
+      "created_at": "2026-01-14T17:59:22.311936+00:00",
+      "updated_at": "2026-01-14T17:59:22.311936+00:00",
+      "plan_tier": "enterprise",
+      "max_leads": 5000,
+      "max_users": 10,
+      "subscription_status": "active",
+      "stripe_customer_id": null,
+      "logo_url": null,
+      "brand_display_name": "Casa Maria Imóveis"
+    },
+    {
+      "id": "60246bae-58d7-4294-987d-184600b7342e",
+      "name": "Imobiliária Principal",
+      "slug": "imobiliaria-principal",
+      "owner_id": null,
+      "created_at": "2026-02-13T21:16:33.873594+00:00",
+      "updated_at": "2026-02-13T21:16:33.873594+00:00",
+      "plan_tier": "free",
+      "max_leads": 50,
+      "max_users": 1,
+      "subscription_status": "active",
+      "stripe_customer_id": null,
+      "logo_url": null,
+      "brand_display_name": null
+    }
+  ],
+  "invites": []
+}

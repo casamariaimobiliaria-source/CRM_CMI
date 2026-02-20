@@ -5,6 +5,7 @@ import { UserProvider, useUser } from './contexts/UserContext';
 import { LeadProvider } from './contexts/LeadContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/Layout';
+import { validateDatabaseInstance } from './lib/supabase';
 const Onboarding = React.lazy(() => import('./pages/Onboarding'));
 const LeadList = React.lazy(() => import('./pages/LeadList'));
 const LeadForm = React.lazy(() => import('./pages/LeadForm'));
@@ -26,6 +27,48 @@ console.log("Vite Env Check:", {
 });
 
 // Error Boundary Component
+const InstanceGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [isVerified, setIsVerified] = React.useState<boolean | null>(null);
+
+    React.useEffect(() => {
+        validateDatabaseInstance().then(valid => {
+            setIsVerified(valid);
+        });
+    }, []);
+
+    if (isVerified === null) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    if (!isVerified) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-[#0a0a0a] p-10 text-center">
+                <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mb-8 border border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
+                    <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m11 3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 0h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h1 className="text-3xl font-bold text-white mb-4 tracking-tight">Bloqueio de Segurança</h1>
+                <p className="text-gray-400 max-w-md mb-8 leading-relaxed">
+                    Detectamos uma inconsistência entre esta instalação do sistema e o Banco de Dados conectado.
+                    <br /><br />
+                    <span className="text-red-400/80 text-sm font-mono">Erro: DATABASE_INSTANCE_MISMATCH</span>
+                </p>
+                <div className="p-4 bg-white/5 rounded-2xl border border-white/10 text-xs text-gray-500 max-w-lg text-left">
+                    <p>Este sistema está configurado para um banco de dados específico. O acesso foi bloqueado para prevenir o cruzamento de dados de clientes diferentes.</p>
+                </div>
+            </div>
+        );
+    }
+
+    return <>{children}</>;
+};
+
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
     constructor(props: { children: React.ReactNode }) {
         super(props);
@@ -171,7 +214,9 @@ const App: React.FC = () => {
                                     </div>
                                 }>
                                     <ErrorBoundary>
-                                        <AppRoutes />
+                                        <InstanceGuard>
+                                            <AppRoutes />
+                                        </InstanceGuard>
                                     </ErrorBoundary>
                                 </React.Suspense>
                                 <Toaster position="top-center" richColors />
