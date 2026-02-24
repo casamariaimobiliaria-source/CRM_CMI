@@ -65,10 +65,25 @@ const Team: React.FC = () => {
             let fullMembers: Member[] = [];
 
             if (userIds.length > 0) {
-                const { data: usersData, error: usersError } = await supabase
+                let usersData: any[] | null = null;
+                let usersError: any = null;
+
+                const res1 = await supabase
                     .from('users')
                     .select('id, name, email, phone, is_active')
                     .in('id', userIds);
+
+                if (res1.error?.message?.includes('does not exist')) {
+                    const res2 = await supabase
+                        .from('users')
+                        .select('id, name, email, phone')
+                        .in('id', userIds);
+                    usersData = res2.data;
+                    usersError = res2.error;
+                } else {
+                    usersData = res1.data;
+                    usersError = res1.error;
+                }
 
                 if (usersError) throw usersError;
 
