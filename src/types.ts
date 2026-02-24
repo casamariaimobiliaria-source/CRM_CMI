@@ -40,6 +40,7 @@ export interface UserProfile {
   organization_id: string;
   organization?: Organization;
   is_super_admin?: boolean;
+  is_active?: boolean;
 }
 
 export interface Lead {

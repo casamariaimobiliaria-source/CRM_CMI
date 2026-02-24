@@ -48,6 +48,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
             if (userError) throw userError;
 
+            // Enforce active status
+            if (userData.is_active === false) {
+                console.warn(`User ${userId} is inactive. Blocking access.`);
+                await supabase.auth.signOut();
+                setUserProfile(null);
+                window.location.href = '/login?msg=inactive';
+                return;
+            }
+
             // Role from organization_members - be more robust: check if user belongs to ANY org
             const { data: memberships } = await supabase
                 .from('organization_members')

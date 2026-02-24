@@ -11,7 +11,7 @@ import { MaskedInput } from '../components/MaskedInput';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { toast } from 'sonner';
-import { UserPlus, Trash2, Pencil, X } from 'lucide-react';
+import { UserPlus, Trash2, Pencil, X, Lock, Unlock } from 'lucide-react';
 
 interface Member {
     organization_id: string;
@@ -22,6 +22,7 @@ interface Member {
         email: string;
         name: string;
         phone?: string;
+        is_active?: boolean;
     } | null;
 }
 
@@ -66,7 +67,7 @@ const Team: React.FC = () => {
             if (userIds.length > 0) {
                 const { data: usersData, error: usersError } = await supabase
                     .from('users')
-                    .select('id, name, email, phone')
+                    .select('id, name, email, phone, is_active')
                     .in('id', userIds);
 
                 if (usersError) throw usersError;
@@ -217,30 +218,33 @@ const Team: React.FC = () => {
         }
     };
 
-    const removeMember = async (userId: string) => {
-        if (!confirm('Tem certeza que deseja remover este membro da equipe?')) return;
-
+    const toggleUserStatus = async (userId: string, currentStatus: boolean | undefined) => {
         if (userId === userProfile?.id) {
-            toast.error('Você não pode remover a si mesmo.');
+            toast.error('Você não pode alterar seu próprio status de acesso.');
             return;
         }
 
+        const newStatus = currentStatus === false ? true : false;
+        const actionText = newStatus ? 'desbloquear' : 'bloquear';
+
+        if (!confirm(`Tem certeza que deseja ${actionText} o acesso deste membro?`)) return;
+
         try {
             const { error } = await supabase
-                .from('organization_members')
-                .delete()
-                .match({
-                    organization_id: userProfile!.organization_id,
-                    user_id: userId
-                });
+                .from('users')
+                .update({ is_active: newStatus })
+                .eq('id', userId);
 
             if (error) throw error;
 
-            toast.success('Membro removido.');
-            setMembers(prev => prev.filter(m => m.user_id !== userId));
+            toast.success(`Membro ${newStatus ? 'desbloqueado' : 'bloqueado'} com sucesso.`);
+            setMembers(prev => prev.map(m => m.user_id === userId ? {
+                ...m,
+                user: m.user ? { ...m.user, is_active: newStatus } : null
+            } : m));
         } catch (error) {
-            console.error('Error removing member:', error);
-            toast.error('Erro ao remover membro.');
+            console.error('Error toggling member access:', error);
+            toast.error(`Erro ao ${actionText} membro.`);
         }
     };
 
@@ -407,10 +411,11 @@ const Team: React.FC = () => {
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
-                                                    onClick={() => removeMember(member.user_id)}
-                                                    className="h-8 w-8 text-destructive hover:bg-destructive/10"
+                                                    onClick={() => toggleUserStatus(member.user_id, member.user?.is_active)}
+                                                    className={`h-8 w-8 ${member.user?.is_active === false ? 'text-amber-500 hover:bg-amber-500/10' : 'text-red-500 hover:bg-red-500/10'}`}
+                                                    title={member.user?.is_active === false ? "Desbloquear Acesso" : "Bloquear Acesso"}
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    {member.user?.is_active === false ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                                                 </Button>
                                             </div>
                                         )}
