@@ -14,6 +14,7 @@ const Kanban = React.lazy(() => import('./pages/Kanban'));
 const SetupOrganization = React.lazy(() => import('./pages/SetupOrganization'));
 const Team = React.lazy(() => import('./pages/Team'));
 const JoinOrganization = React.lazy(() => import('./pages/JoinOrganization'));
+const UpdatePassword = React.lazy(() => import('./pages/UpdatePassword'));
 const Settings = React.lazy(() => import('./pages/Settings'));
 const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports'));
 const AdminData = React.lazy(() => import('./pages/AdminData'));
@@ -169,6 +170,7 @@ const AppRoutes: React.FC = () => {
                 }
             />
             <Route path="/join" element={<JoinOrganization />} />
+            <Route path="/update-password" element={<UpdatePassword />} />
             <Route
                 path="/login"
                 element={

@@ -40,7 +40,7 @@ const Onboarding: React.FC = () => {
         setLoading(true);
         try {
             const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                redirectTo: `${window.location.origin}/login`,
+                redirectTo: `${window.location.origin}/update-password`,
             });
             if (error) throw error;
             toast.success('E-mail de recuperação enviado!');
