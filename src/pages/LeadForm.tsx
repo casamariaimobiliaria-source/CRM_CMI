@@ -15,6 +15,7 @@ import { leadFormSchema, type LeadFormValues } from '../lib/validations';
 import { cn } from '../lib/utils';
 import { Trash2, Sparkles } from 'lucide-react';
 import { AIAssistant } from '../components/AIAssistant';
+import { LeadHistoryTimeline } from '../components/LeadHistoryTimeline';
 import { Lead } from '../types';
 
 const LeadForm: React.FC = () => {
@@ -33,7 +34,8 @@ const LeadForm: React.FC = () => {
         reset,
         setValue,
         getValues,
-        watch
+        watch,
+        clearErrors
     } = useForm<LeadFormValues>({
         resolver: zodResolver(leadFormSchema),
         defaultValues: {
@@ -89,8 +91,14 @@ const LeadForm: React.FC = () => {
         fetchOptions();
     }, [userProfile?.organization_id, impersonatedOrgId]);
 
-    const watchTelefone = watch('telefone');
     const watchStatus = watch('status');
+
+    useEffect(() => {
+        if (watchStatus !== LeadStatus.COMPROU) {
+            clearErrors('valor');
+            setValue('valor', undefined);
+        }
+    }, [watchStatus, clearErrors, setValue]);
 
     useEffect(() => {
         if (id && leads.length > 0) {
@@ -299,6 +307,7 @@ const LeadForm: React.FC = () => {
                                             type="datetime-local"
                                             error={errors.proximo_contato?.message}
                                             {...register('proximo_contato')}
+                                            className="[color-scheme:dark]"
                                         />
                                     </div>
 
@@ -397,6 +406,7 @@ const LeadForm: React.FC = () => {
                                             type="date"
                                             error={errors.data_compra?.message}
                                             {...register('data_compra')}
+                                            className="[color-scheme:dark]"
                                         />
                                     </div>
 
@@ -485,8 +495,9 @@ const LeadForm: React.FC = () => {
                 </div>
 
                 {id && currentLead && (
-                    <div className="space-y-6">
-                        <AIAssistant lead={currentLead as Lead} className="lg:sticky lg:top-8" />
+                    <div className="space-y-6 lg:sticky lg:top-8 h-fit">
+                        <AIAssistant lead={currentLead as Lead} />
+                        <LeadHistoryTimeline leadId={id} />
                     </div>
                 )}
             </div>

@@ -59,7 +59,7 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead }) => {
                         <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-card border border-border/50 shadow-sm text-primary font-display font-bold italic text-xl group-hover:border-primary/50 group-hover:shadow-gold-glow transition-all duration-500">
                             {String(lead?.nome || '?').charAt(0)}
                         </div>
-                        {lead.temperatura === 'Quente' && (
+                        {lead.temperatura?.toLowerCase() === 'quente' && (
                             <div className="absolute -top-1 -right-1 w-3 h-3 bg-destructive rounded-full border-2 border-background animate-pulse" />
                         )}
                     </div>

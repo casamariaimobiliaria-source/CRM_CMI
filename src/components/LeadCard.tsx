@@ -111,18 +111,25 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
                 <div className="hidden sm:flex flex-col items-end">
                     <span className="text-[9px] font-bold text-muted-foreground/40 uppercase tracking-widest block mb-2">Temperatura</span>
                     <div className="flex gap-1">
-                        {[1, 2, 3].map((i) => (
-                            <div
-                                key={i}
-                                className={cn(
-                                    "w-3 h-0.5 rounded-full transition-all duration-700",
-                                    i === 1 && lead.temperatura === 'Frio' && "bg-accent",
-                                    i <= 2 && lead.temperatura === 'Morno' && "bg-secondary",
-                                    i <= 3 && lead.temperatura === 'Quente' && "bg-destructive",
-                                    (i > 1 && lead.temperatura === 'Frio') || (i > 2 && lead.temperatura === 'Morno') ? "bg-foreground/10" : ""
-                                )}
-                            />
-                        ))}
+                        {[1, 2, 3].map((i) => {
+                            const isFrio = lead.temperatura?.toLowerCase() === 'frio';
+                            const isMorno = lead.temperatura?.toLowerCase() === 'morno';
+                            const isQuente = lead.temperatura?.toLowerCase() === 'quente';
+                            const noTemp = !isFrio && !isMorno && !isQuente;
+
+                            return (
+                                <div
+                                    key={i}
+                                    className={cn(
+                                        "w-3 h-0.5 rounded-full transition-all duration-700",
+                                        i === 1 && isFrio && "bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.6)]",
+                                        i <= 2 && isMorno && "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+                                        i <= 3 && isQuente && "bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.6)]",
+                                        ((i > 1 && isFrio) || (i > 2 && isMorno) || noTemp) ? "bg-foreground/10" : ""
+                                    )}
+                                />
+                            );
+                        })}
                     </div>
                 </div>
 

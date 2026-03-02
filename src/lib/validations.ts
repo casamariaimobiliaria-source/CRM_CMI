@@ -36,7 +36,11 @@ export const leadFormSchema = z.object({
 
     proximo_contato: z.string().optional(),
 
-    valor: z.union([z.string(), z.number()]).optional(),
+    valor: z.preprocess((val) => {
+        if (val === '' || val === null || val === undefined) return undefined;
+        const parsed = Number(val);
+        return isNaN(parsed) ? undefined : parsed;
+    }, z.number().optional()),
 });
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>;
