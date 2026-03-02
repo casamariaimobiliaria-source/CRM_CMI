@@ -17,7 +17,7 @@ const LeadList: React.FC = () => {
     const [viewMode, setViewMode] = React.useState<'cards' | 'table'>('cards');
     const { brokers } = useBrokers();
 
-    const leadsInfo = useLeads(leads);
+    const leadsInfo = useLeads(leads, brokers || []);
 
     const {
         searchTerm,

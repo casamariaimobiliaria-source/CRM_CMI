@@ -34,7 +34,9 @@ export const leadFormSchema = z.object({
 
     historico: z.string().optional(),
 
-    proximo_contato: z.string().optional()
+    proximo_contato: z.string().optional(),
+
+    valor: z.union([z.string(), z.number()]).optional(),
 });
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>;

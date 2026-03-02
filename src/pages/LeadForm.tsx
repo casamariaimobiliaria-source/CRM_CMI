@@ -90,6 +90,7 @@ const LeadForm: React.FC = () => {
     }, [userProfile?.organization_id, impersonatedOrgId]);
 
     const watchTelefone = watch('telefone');
+    const watchStatus = watch('status');
 
     useEffect(() => {
         if (id && leads.length > 0) {
@@ -149,7 +150,8 @@ const LeadForm: React.FC = () => {
                     temperatura: existingLead.temperatura,
                     status: existingLead.status,
                     historico: existingLead.historico || '',
-                    proximo_contato: formattedProximoContato
+                    proximo_contato: formattedProximoContato,
+                    valor: existingLead.valor
                 });
 
                 // Force set values because sometimes reset doesn't trigger select updates correctly with dynamic options
@@ -193,7 +195,8 @@ const LeadForm: React.FC = () => {
                 empreendimento_id: data.empreendimento_id || null,
                 origem_id: data.origem_id || null,
                 empreendimento: enterpriseName || data.empreendimento,
-                midia: sourceName || data.midia
+                midia: sourceName || data.midia,
+                valor: data.status === LeadStatus.COMPROU ? data.valor : null
             };
 
             if (id) {
@@ -396,6 +399,19 @@ const LeadForm: React.FC = () => {
                                             {...register('data_compra')}
                                         />
                                     </div>
+
+                                    {watchStatus === LeadStatus.COMPROU && (
+                                        <div className="md:col-span-2 mt-2 animate-in fade-in slide-in-from-top-4 duration-500">
+                                            <Input
+                                                label="Valor Efetivo da Venda (R$)"
+                                                type="number"
+                                                step="0.01"
+                                                placeholder="Ex: 350000.00"
+                                                error={errors.valor?.message as string}
+                                                {...register('valor', { valueAsNumber: true, required: watchStatus === LeadStatus.COMPROU ? 'Campo obrigatório para vendas' : false })}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-4">

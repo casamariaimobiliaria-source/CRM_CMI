@@ -62,6 +62,9 @@ export interface Lead {
   user_id?: string;
   organization_id?: string;
   synced?: boolean;
+  valor?: number;
+  updated_at?: string;
+  updated_by?: string;
 }
 
 export type LeadFormData = Omit<Lead, 'id' | 'createdAt' | 'synced'>;

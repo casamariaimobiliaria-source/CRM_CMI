@@ -67,7 +67,7 @@ const Dashboard: React.FC = () => {
         if (!brokers || brokers.length === 0) return [];
 
         return brokers.map(broker => {
-            const brokerLeads = safeLeads.filter(l => l.user_id === broker.id);
+            const brokerLeads = safeLeads.filter(l => l.user_id === broker.id || (l.corretor && l.corretor.toLowerCase() === broker.name.toLowerCase()));
             const total = brokerLeads.length;
             const comprou = brokerLeads.filter(l => l.status === LeadStatus.COMPROU).length;
             const conversion = total > 0 ? ((comprou / total) * 100).toFixed(1) : "0";

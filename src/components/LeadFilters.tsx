@@ -5,6 +5,7 @@ import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 import { Download, LayoutGrid, List } from 'lucide-react';
 import { exportLeadsToExcel } from '../lib/excelUtils';
+import { useUser } from '../contexts/UserContext';
 
 interface LeadFiltersProps {
     searchTerm: string;
@@ -49,6 +50,8 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
     brokerFilter,
     setBrokerFilter
 }) => {
+    const { userProfile } = useUser();
+
     return (
         <div className="bg-transparent py-4 md:py-6 shrink-0 transition-all relative">
             <div className="max-w-7xl mx-auto space-y-6 md:space-y-10 px-4 md:px-0">
@@ -102,6 +105,49 @@ const LeadFilters: React.FC<LeadFiltersProps> = ({
                             </div>
                         </div>
                     </div>
+                </div>
+
+                {/* Advanced Filters: Date and Broker */}
+                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 pt-2">
+                    <div className="flex items-center gap-4 w-full md:w-auto justify-center">
+                        <span className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground/40 uppercase italic">DATA:</span>
+                        <div className="flex items-center gap-2">
+                            <Input
+                                type="date"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="h-10 text-[11px] bg-card/40 border-border/40 min-w-[130px]"
+                            />
+                            <span className="text-muted-foreground/40 text-[10px]">ATÉ</span>
+                            <Input
+                                type="date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="h-10 text-[11px] bg-card/40 border-border/40 min-w-[130px]"
+                            />
+                        </div>
+                    </div>
+
+                    {(userProfile?.role === 'admin' || userProfile?.role === 'owner') && brokers && brokers.length > 0 && setBrokerFilter && (
+                        <div className="flex items-center gap-4 md:border-l border-border/20 md:pl-8 w-full md:w-auto justify-center">
+                            <span className="text-[10px] font-bold tracking-[0.3em] text-muted-foreground/40 uppercase italic">CORRETOR:</span>
+                            <div className="relative">
+                                <select
+                                    className="bg-card/40 hover:bg-card/60 backdrop-blur-md border border-border/40 rounded-2xl px-6 py-2 h-10 focus:ring-4 focus:ring-primary/10 text-[11px] font-bold text-foreground uppercase tracking-[0.1em] cursor-pointer outline-none transition-all appearance-none pr-10 shadow-sm min-w-[180px]"
+                                    value={brokerFilter || 'Todos'}
+                                    onChange={(e) => setBrokerFilter(e.target.value)}
+                                >
+                                    <option value="Todos" className="bg-background">TODOS OS CORRETORES</option>
+                                    {brokers.map(b => (
+                                        <option key={b.id} value={b.id} className="bg-background">{b.name}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center justify-between pt-6 border-t border-border/20 gap-6">

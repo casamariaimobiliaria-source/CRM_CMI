@@ -30,22 +30,30 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     origem_id: l.origem_id || l.source_id,
     createdAt: l.created_at,
     data_compra: l.data_compra,
-    proximo_contato: l.proximo_contato || l.next_contact
+    proximo_contato: l.proximo_contato || l.next_contact,
+    valor: l.valor,
+    updated_at: l.updated_at,
+    updated_by: l.updated_by
   });
 
   const fetchLeads = useCallback(async () => {
     if (!session) return;
 
+    // Guard: wait for the organization_id before fetching to avoid RLS bypass
+    const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
+    if (!currentOrgId) {
+      console.warn('LeadContext: skipping fetchLeads — organization_id not yet available.');
+      return;
+    }
+
     setIsSyncing(true);
     try {
-      let query = supabase.from('leads').select('*');
+      const { data, error } = await supabase
+        .from('leads')
+        .select('*')
+        .eq('organization_id', currentOrgId)
+        .order('created_at', { ascending: false });
 
-      const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
-      if (currentOrgId) {
-        query = query.eq('organization_id', currentOrgId);
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
       if (error) throw error;
 
       setLeads((data || []).map(mapLeadFromDB));
@@ -87,7 +95,9 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         historico: leadData.historico,
         proximo_contato: leadData.proximo_contato || null,
         user_id: session?.user.id,
-        organization_id: currentOrgId
+        organization_id: currentOrgId,
+        valor: leadData.valor,
+        updated_by: userProfile?.id || session?.user.id
       };
 
       const { data, error } = await supabase
@@ -112,6 +122,13 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
     setIsSyncing(true);
     try {
+      let updatedHistorico = leadData.historico;
+      if (userProfile?.role === 'member') {
+        const timestamp = new Date().toLocaleString('pt-BR');
+        const auditNote = `\n[${timestamp}] Editado por ${userProfile.name}`;
+        updatedHistorico = (updatedHistorico || '') + auditNote;
+      }
+
       const payload = {
         nome: leadData.nome,
         telefone: leadData.telefone,
@@ -124,9 +141,12 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         empreendimento: leadData.empreendimento,
         temperatura: leadData.temperatura,
         status: leadData.status,
-        historico: leadData.historico,
+        historico: updatedHistorico,
         proximo_contato: leadData.proximo_contato || null,
-        organization_id: currentOrgId
+        organization_id: currentOrgId,
+        valor: leadData.valor,
+        updated_at: new Date().toISOString(),
+        updated_by: userProfile?.id || session?.user?.id
       };
 
       const { data, error } = await supabase

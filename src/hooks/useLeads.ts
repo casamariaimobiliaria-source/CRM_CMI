@@ -5,7 +5,7 @@ import { Lead, LeadTemperature, LeadStatus } from '../types';
  * Custom hook to filter and sort leads based on various criteria.
  * Adheres to Clean Code by separating filtering logic and providing a clear API.
  */
-export function useLeads(leads: Lead[]) {
+export function useLeads(leads: Lead[], brokers: { id: string; name: string }[] = []) {
     // Filter States
     const [searchTerm, setSearchTerm] = useState('');
     const [temperatureFilter, setTemperatureFilter] = useState<LeadTemperature | 'Todos'>('Todos');
@@ -38,7 +38,10 @@ export function useLeads(leads: Lead[]) {
                 // Enum based filtering
                 const matchesTemperature = temperatureFilter === 'Todos' || lead.temperatura === temperatureFilter;
                 const matchesStatus = statusFilter === 'Todos' || lead.status === statusFilter;
-                const matchesBroker = brokerFilter === 'Todos' || lead.user_id === brokerFilter;
+                const matchesBroker = brokerFilter === 'Todos' || (() => {
+                    const broker = brokers.find(b => b.id === brokerFilter);
+                    return lead.user_id === brokerFilter || (broker && lead.corretor && lead.corretor.toLowerCase() === broker.name.toLowerCase());
+                })();
 
                 // Date range filtering
                 const matchesDateRange = (() => {

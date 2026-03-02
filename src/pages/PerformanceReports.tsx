@@ -45,7 +45,11 @@ const PerformanceReports: React.FC = () => {
 
         // Broker Filter
         if (filterBroker !== 'Todos') {
-            result = result.filter(l => l.user_id === filterBroker);
+            const selectedBroker = brokers.find(b => b.id === filterBroker);
+            result = result.filter(l =>
+                l.user_id === filterBroker ||
+                (selectedBroker && l.corretor && l.corretor.toLowerCase() === selectedBroker.name.toLowerCase())
+            );
         }
 
         // Temperature Filter
