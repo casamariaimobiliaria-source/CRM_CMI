@@ -94,8 +94,8 @@ const Dashboard: React.FC = () => {
         return new Intl.NumberFormat('pt-BR', {
             style: 'currency',
             currency: 'BRL',
-            maximumFractionDigits: 1,
-            notation: value > 1000000 ? 'compact' : 'standard'
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         }).format(value);
     };
 

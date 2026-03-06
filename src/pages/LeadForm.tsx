@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { toast } from 'sonner';
 import { leadFormSchema, type LeadFormValues } from '../lib/validations';
 import { cn } from '../lib/utils';
+import { CurrencyInput } from '../components/CurrencyInput';
 import { Trash2, Sparkles } from 'lucide-react';
 import { AIAssistant } from '../components/AIAssistant';
 import { LeadHistoryTimeline } from '../components/LeadHistoryTimeline';
@@ -412,13 +413,11 @@ const LeadForm: React.FC = () => {
 
                                     {watchStatus === LeadStatus.COMPROU && (
                                         <div className="md:col-span-2 mt-2 animate-in fade-in slide-in-from-top-4 duration-500">
-                                            <Input
+                                            <CurrencyInput
                                                 label="Valor Efetivo da Venda (R$)"
-                                                type="number"
-                                                step="0.01"
-                                                placeholder="Ex: 350000.00"
+                                                placeholder="R$ 0,00"
                                                 error={errors.valor?.message as string}
-                                                {...register('valor', { valueAsNumber: true, required: watchStatus === LeadStatus.COMPROU ? 'Campo obrigatório para vendas' : false })}
+                                                {...register('valor', { required: watchStatus === LeadStatus.COMPROU ? 'Campo obrigatório para vendas' : false })}
                                             />
                                         </div>
                                     )}

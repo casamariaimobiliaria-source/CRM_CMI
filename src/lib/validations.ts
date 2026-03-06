@@ -38,6 +38,12 @@ export const leadFormSchema = z.object({
 
     valor: z.preprocess((val) => {
         if (val === '' || val === null || val === undefined) return undefined;
+        if (typeof val === 'string') {
+            // Remove R$, spaces, dots and change comma to dot
+            const cleaned = val.replace(/[R$\s.]/g, '').replace(',', '.');
+            const parsed = parseFloat(cleaned);
+            return isNaN(parsed) ? undefined : parsed;
+        }
         const parsed = Number(val);
         return isNaN(parsed) ? undefined : parsed;
     }, z.number().optional()),
