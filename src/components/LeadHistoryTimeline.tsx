@@ -121,7 +121,7 @@ export const LeadHistoryTimeline: React.FC<LeadHistoryTimelineProps> = ({ leadId
                         <History className="w-5 h-5 text-primary" />
                     </div>
                     <div>
-                        <CardTitle className="text-lg font-display italic">Auditoria & Histórico</CardTitle>
+                        <CardTitle className="text-lg font-display italic">Histórico</CardTitle>
                         <CardDescription className="text-[10px] uppercase tracking-widest mt-1">Timeline inalterável do Lead</CardDescription>
                     </div>
                 </div>

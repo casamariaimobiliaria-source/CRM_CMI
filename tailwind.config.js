@@ -32,7 +32,11 @@ export default {
                 accent: {
                     DEFAULT: "hsl(var(--accent))",
                     foreground: "hsl(var(--accent-foreground))",
+                    pink: "hsl(var(--accent-pink))",
+                    yellow: "hsl(var(--accent-yellow))",
+                    purple: "hsl(var(--accent-purple))",
                 },
+                success: "hsl(var(--success))",
                 popover: {
                     DEFAULT: "hsl(var(--popover))",
                     foreground: "hsl(var(--popover-foreground))",
@@ -48,12 +52,12 @@ export default {
                 sm: "calc(var(--radius) - 4px)",
             },
             fontFamily: {
-                sans: ["Inter", "sans-serif"],
-                display: ["Playfair Display", "serif"],
+                sans: ["Inter", "system-ui", "sans-serif"],
+                display: ["Inter", "system-ui", "sans-serif"],
             },
             boxShadow: {
-                'neon-cyan': '0 0 15px hsl(var(--neon-cyan) / 0.3)',
-                'luxury': '0 10px 30px -10px hsla(var(--luxury-glow))',
+                'modern': '0 8px 30px rgba(0, 0, 0, 0.3)',
+                'modern-lg': '0 20px 40px rgba(0, 0, 0, 0.4)',
             }
         },
     },
