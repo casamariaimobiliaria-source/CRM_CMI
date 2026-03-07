@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Badge } from '../components/ui/Badge';
 import { toast } from 'sonner';
 import { UserPlus, Trash2, Pencil, X, Lock, Unlock } from 'lucide-react';
+import { cn, formatPhone } from '../lib/utils';
 
 interface Member {
     organization_id: string;
@@ -108,6 +109,7 @@ const Team: React.FC = () => {
 
     useEffect(() => {
         fetchData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userProfile?.organization_id]);
 
     const onRegister = async (data: RegisterFormValues) => {
@@ -403,7 +405,14 @@ const Team: React.FC = () => {
                                                 {member.user?.phone && (
                                                     <>
                                                         <span className="hidden sm:inline text-muted-foreground/30">•</span>
-                                                        <p className="text-xs text-primary font-medium">{member.user.phone}</p>
+                                                        <a
+                                                            href={`https://wa.me/55${member.user.phone.replace(/\D/g, '')}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-xs text-[#60a5fa] font-bold tracking-wider hover:underline transition-all"
+                                                        >
+                                                            {formatPhone(member.user.phone)}
+                                                        </a>
                                                     </>
                                                 )}
                                             </div>

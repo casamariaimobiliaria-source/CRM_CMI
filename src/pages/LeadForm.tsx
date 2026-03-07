@@ -168,6 +168,7 @@ const LeadForm: React.FC = () => {
                 if (origemIdToSet) setValue('origem_id', origemIdToSet);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, leads.length, reset, enterpriseOptions.length, sourceOptions.length, setValue]);
 
     // Duplicate Check

@@ -9,7 +9,8 @@ import { Input } from '../components/ui/Input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/Card';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { Building2 } from 'lucide-react';
+import { Building2, CheckCircle2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 
 const setupSchema = z.object({
     companyName: z.string().min(3, 'Nome da imobiliária deve ter pelo menos 3 caracteres'),
@@ -21,7 +22,9 @@ type SetupFormValues = z.infer<typeof setupSchema>;
 const SetupOrganization: React.FC = () => {
     const { session, signOut } = useAuth();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
+    const orgSlug = searchParams.get('org');
 
     const {
         register,
@@ -39,19 +42,31 @@ const SetupOrganization: React.FC = () => {
 
         setLoading(true);
         try {
-            const { error: rpcError } = await supabase.rpc('create_new_organization', {
-                company_name: data.companyName,
-                user_name: data.userName,
-                user_email: session.user.email
-            });
-
-            if (rpcError) throw rpcError;
+            if (orgSlug) {
+                // Claim existing organization
+                const { error: rpcError } = await supabase.rpc('claim_organization', {
+                    org_slug: orgSlug,
+                    user_name: data.userName,
+                    user_email: session.user.email
+                });
+                if (rpcError) throw rpcError;
+                toast.success('Organização vinculada com sucesso!');
+            } else {
+                // Create new organization
+                const { error: rpcError } = await supabase.rpc('create_new_organization', {
+                    company_name: data.companyName,
+                    user_name: data.userName,
+                    user_email: session.user.email
+                });
+                if (rpcError) throw rpcError;
+                toast.success('Organização criada com sucesso!');
+            }
 
             // Refresh page to trigger context re-fetch and redirection
             window.location.reload();
         } catch (error: any) {
-            console.error('Error creating organization:', error);
-            toast.error(error.message || 'Erro ao criar organização.');
+            console.error('Error setting up organization:', error);
+            toast.error(error.message || 'Erro ao configurar organização.');
             setLoading(false);
         }
     };
@@ -78,13 +93,26 @@ const SetupOrganization: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <CardContent className="space-y-6 pt-6">
                         <div className="space-y-1">
-                            <Input
-                                label="Nome da Imobiliária"
-                                placeholder="Ex: Imobiliária Silva"
-                                error={errors.companyName?.message}
-                                {...register('companyName')}
-                            />
-                            <p className="text-[10px] text-muted-foreground px-1">O nome da sua empresa (ex: Casa Maria Imóveis).</p>
+                            {orgSlug ? (
+                                <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex items-center gap-3">
+                                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                                    <div>
+                                        <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Imobiliária Selecionada</p>
+                                        <p className="text-white font-bold">{orgSlug.toUpperCase()}</p>
+                                    </div>
+                                    <input type="hidden" value={orgSlug} {...register('companyName', { value: orgSlug })} />
+                                </div>
+                            ) : (
+                                <>
+                                    <Input
+                                        label="Nome da Imobiliária"
+                                        placeholder="Ex: Imobiliária Silva"
+                                        error={errors.companyName?.message}
+                                        {...register('companyName')}
+                                    />
+                                    <p className="text-[10px] text-muted-foreground px-1">O nome da sua empresa.</p>
+                                </>
+                            )}
                         </div>
 
                         <div className="space-y-1">

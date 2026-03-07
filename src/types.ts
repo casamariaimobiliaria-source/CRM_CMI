@@ -17,9 +17,10 @@ export interface Organization {
   id: string;
   name: string;
   plan_tier: 'free' | 'pro' | 'enterprise';
-  subscription_status: 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete' | 'paused';
+  subscription_status: 'active' | 'past_due' | 'canceled' | 'trialing' | 'incomplete' | 'paused' | 'inactive';
   max_leads: number;
   max_users: number;
+  leads_limit: number;
   stripe_customer_id?: string;
   logo_url?: string;
   brand_display_name?: string;
@@ -36,6 +37,7 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: 'admin' | 'owner' | 'member';
   organization_id: string;
   organization?: Organization;

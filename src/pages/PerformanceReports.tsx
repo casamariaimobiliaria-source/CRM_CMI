@@ -63,6 +63,7 @@ const PerformanceReports: React.FC = () => {
         }
 
         return result;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leads, filterBroker, dateRange, tempFilter, sourceFilter]);
 
     // Unique Sources for Filter

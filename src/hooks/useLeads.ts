@@ -83,6 +83,7 @@ export function useLeads(leads: Lead[], brokers: { id: string; name: string }[] 
                         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
                 }
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [leads, searchTerm, temperatureFilter, statusFilter, brokerFilter, sortBy, startDate, endDate]);
 
     return {

@@ -19,6 +19,7 @@ import {
     Database,
     ChevronLeft,
     ChevronRight,
+    ShieldCheck,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUser } from '../contexts/UserContext';
@@ -51,6 +52,10 @@ const Layout: React.FC = () => {
         { icon: Settings, label: 'CONFIGURAÇÕES', path: '/settings' },
     ];
 
+    const adminMenuItems = [
+        { icon: ShieldCheck, label: 'SUPER ADMIN', path: '/admin-master' },
+    ];
+
     const SidebarContent = ({ isDesktop = false }: { isDesktop?: boolean }) => (
         <div className={cn(
             "flex flex-col h-full bg-[#161926] transition-all duration-300",
@@ -61,8 +66,12 @@ const Layout: React.FC = () => {
                 isDesktop && isCollapsed ? "justify-center px-0" : "px-8"
             )}>
                 <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 min-w-[3rem] rounded-full bg-[#1a1d2e] border border-[#60a5fa]/20 flex items-center justify-center text-[#60a5fa] font-bold text-xl shadow-[0_0_20px_rgba(96,165,250,0.1)]">
-                        C
+                    <div className="w-12 h-12 min-w-[3rem] rounded-full bg-[#1a1d2e] border border-[#60a5fa]/20 flex items-center justify-center text-[#60a5fa] font-bold text-xl shadow-[0_0_20px_rgba(96,165,250,0.1)] overflow-hidden">
+                        {(userProfile?.organization?.logo_url) ? (
+                            <img src={userProfile.organization.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                        ) : (
+                            (userProfile?.organization?.brand_display_name || userProfile?.organization?.name || systemSettings?.app_name || 'I')[0].toUpperCase()
+                        )}
                     </div>
                     {(!isDesktop || !isCollapsed) && (
                         <motion.div
@@ -70,7 +79,9 @@ const Layout: React.FC = () => {
                             animate={{ opacity: 1, x: 0 }}
                             className="flex flex-col"
                         >
-                            <span className="font-bold text-white text-lg tracking-tight italic whitespace-nowrap">Casa Maria Imóveis</span>
+                            <span className="font-bold text-white text-lg tracking-tight italic whitespace-nowrap">
+                                {userProfile?.organization?.brand_display_name || userProfile?.organization?.name || systemSettings?.app_name || 'ImobCRM'}
+                            </span>
                         </motion.div>
                     )}
                 </div>
@@ -112,6 +123,40 @@ const Layout: React.FC = () => {
                         )}
                     </NavLink>
                 ))}
+
+                {userProfile?.is_super_admin && (
+                    <div className="mt-8 pt-6 border-t border-white/5 space-y-1">
+                        {adminMenuItems.map((item) => (
+                            <NavLink
+                                key={item.path}
+                                to={item.path}
+                                onClick={() => setIsMobileOpen(false)}
+                                className={({ isActive }) => cn(
+                                    "flex items-center rounded-xl text-[11px] font-bold tracking-[0.2em] transition-all duration-200 group relative uppercase",
+                                    isDesktop && isCollapsed ? "justify-center p-4" : "gap-4 px-4 py-4",
+                                    isActive
+                                        ? "text-primary bg-primary/5 border border-primary/10"
+                                        : "text-[#8b8fa3] hover:text-white hover:bg-white/5"
+                                )}
+                                title={isDesktop && isCollapsed ? item.label : undefined}
+                            >
+                                <item.icon className={cn(
+                                    "w-5 h-5 transition-colors shrink-0",
+                                    location.pathname === item.path ? "text-primary" : "text-[#8b8fa3] group-hover:text-white"
+                                )} />
+                                {(!isDesktop || !isCollapsed) && (
+                                    <motion.span
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        className="whitespace-nowrap"
+                                    >
+                                        {item.label}
+                                    </motion.span>
+                                )}
+                            </NavLink>
+                        ))}
+                    </div>
+                )}
             </nav>
 
             <div className={cn(

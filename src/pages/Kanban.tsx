@@ -2,8 +2,7 @@ import React, { useMemo } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DroppableStateSnapshot, DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
 import { useLead } from '../contexts/LeadContext';
 import { LeadStatus } from '../types';
-import { motion } from 'framer-motion';
-import { cn } from '../lib/utils';
+import { cn, formatPhone } from '../lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Helmet } from 'react-helmet-async';
@@ -105,7 +104,7 @@ const Kanban: React.FC = () => {
                                                             </div>
 
                                                             <div className="flex items-center justify-between mt-6">
-                                                                <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">{lead.telefone}</span>
+                                                                <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">{formatPhone(lead.telefone)}</span>
                                                                 {lead.proximo_contato && (
                                                                     <div className={cn(
                                                                         "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded border border-white/5",

@@ -91,8 +91,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             }
 
             setUserProfile(userData as UserProfile);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching user profile:', error);
+            // PGRST116 is "No rows found" - normal for new users
+            if (error?.code !== 'PGRST116') {
+                //   toast.error('Erro ao carregar perfil. Tente novamente.');
+            }
             setUserProfile(null);
         } finally {
             setIsLoading(false);

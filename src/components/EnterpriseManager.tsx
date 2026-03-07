@@ -49,6 +49,7 @@ const EnterpriseManager: React.FC = () => {
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => { fetchEnterprises(); }, [userProfile?.organization_id]);
 
     const handleSave = async (e: React.FormEvent) => {

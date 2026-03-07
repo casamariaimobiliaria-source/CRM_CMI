@@ -72,9 +72,9 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const currentOrgId = impersonatedOrgId || userProfile?.organization_id;
 
     if (userProfile?.organization) {
-      const { max_leads, plan_tier } = userProfile.organization;
-      if (leads.length >= max_leads) {
-        throw new Error(`Seu plano ${plan_tier.toUpperCase()} atingiu o limite de ${max_leads} leads. Atualize sua assinatura.`);
+      const { leads_limit, plan_tier } = userProfile.organization;
+      if (leads.length >= leads_limit) {
+        throw new Error(`Seu plano ${plan_tier.toUpperCase()} atingiu o limite de ${leads_limit} leads. Atualize sua assinatura.`);
       }
     }
 

@@ -43,6 +43,7 @@ const SourceManager: React.FC = () => {
         }
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => { fetchSources(); }, [userProfile?.organization_id]);
 
     const handleSave = async (e: React.FormEvent) => {

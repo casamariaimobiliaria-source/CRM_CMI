@@ -6,7 +6,7 @@ import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
-import { cn } from '../lib/utils';
+import { cn, formatPhone } from '../lib/utils';
 import { Lead } from '../types';
 
 interface LeadCardProps {
@@ -85,7 +85,7 @@ const LeadCard: React.FC<LeadCardProps> = ({ lead }) => {
 
                 <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 text-[10px] font-bold tracking-[0.2em] text-muted-foreground/40 uppercase">
                     <div className="flex items-center gap-2 md:border-r border-border/20 pr-0 md:pr-6">
-                        <span className="text-foreground/60">{lead.telefone}</span>
+                        <span className="text-foreground/60">{formatPhone(lead.telefone)}</span>
                     </div>
                     <div className="flex items-center gap-2 md:border-r border-border/20 pr-0 md:pr-6 italic">
                         <span className="opacity-40">CADASTRO:</span>

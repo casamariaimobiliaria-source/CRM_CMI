@@ -7,7 +7,7 @@ import { ptBR } from 'date-fns/locale';
 import { motion } from 'framer-motion';
 import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
-import { cn } from '../lib/utils';
+import { cn, formatPhone } from '../lib/utils';
 import { Lead } from '../types';
 import { Calendar, User } from 'lucide-react';
 
@@ -69,7 +69,7 @@ const LeadTableRow: React.FC<LeadTableRowProps> = ({ lead }) => {
                                 {lead?.nome || 'Anônimo'}
                             </h3>
                         </div>
-                        <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-[0.2em] mt-1.5">{lead.telefone}</span>
+                        <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-[0.2em] mt-1.5">{formatPhone(lead.telefone)}</span>
                     </div>
                 </div>
 

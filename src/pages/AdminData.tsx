@@ -94,10 +94,20 @@ const AdminData: React.FC = () => {
                 // Fetch existing leads for duplicate check
                 const { data: existingLeads } = await supabase
                     .from('leads')
-                    .select('phone')
+                    .select('telefone')
                     .eq('organization_id', currentOrgId);
 
-                const existingPhones = new Set(existingLeads?.map(l => l.phone.replace(/\D/g, '')) || []);
+                const existingPhones = new Set(existingLeads?.map(l => (l.telefone || '').replace(/\D/g, '')) || []);
+
+                // Checks Limit
+                const currentCount = (existingLeads?.length || 0);
+                const limit = userProfile?.organization?.leads_limit || 100;
+
+                if (currentCount + toImport.length > limit) {
+                    toast.error(`Importação abortada: Esta carga (${toImport.length}) excederá o limite de ${limit} leads do seu plano.`);
+                    setIsImporting(false);
+                    return;
+                }
 
                 let successCount = 0;
                 let skipCount = 0;
@@ -110,12 +120,13 @@ const AdminData: React.FC = () => {
                     }
 
                     const { error } = await supabase.from('leads').insert({
-                        name: row.Nome,
-                        phone: String(row.Telefone),
+                        nome: row.Nome,
+                        telefone: String(row.Telefone),
                         email: row.Email || null,
-                        source: row.Origem || null,
+                        midia: row.Origem || null,
                         empreendimento: row.Empreendimento || null,
                         status: 'Ativo',
+                        temperatura: 'Frio',
                         organization_id: currentOrgId,
                         user_id: userProfile?.id // Assigned to the importer by default
                     });

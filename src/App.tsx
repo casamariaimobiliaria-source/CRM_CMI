@@ -18,6 +18,7 @@ const UpdatePassword = React.lazy(() => import('./pages/UpdatePassword'));
 const Settings = React.lazy(() => import('./pages/Settings'));
 const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports'));
 const AdminData = React.lazy(() => import('./pages/AdminData'));
+const SuperAdmin = React.lazy(() => import('./pages/SuperAdmin'));
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -179,6 +180,7 @@ const AppRoutes: React.FC = () => {
                         : <Onboarding />
                 }
             />
+            <Route path="/register" element={<Onboarding isRegisteringOverride={true} />} />
             <Route path="/" element={
                 <RequireAuth>
                     <RequireProfile>
@@ -193,6 +195,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="team" element={<Team />} />
                 <Route path="administration" element={<AdminData />} />
+                <Route path="admin-master" element={<SuperAdmin />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="reports" element={<PerformanceReports />} />
             </Route>

@@ -9,7 +9,7 @@ import { Badge } from '../components/ui/Badge';
 import { ShieldCheck, Zap, TrendingUp, Users, Target, Rocket, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
-import { cn } from '../lib/utils';
+import { cn, formatPhone } from '../lib/utils';
 import { Helmet } from 'react-helmet-async';
 import { LeadStatus } from '../types';
 
@@ -25,6 +25,8 @@ const Settings: React.FC = () => {
 
     const [isEditingProfile, setIsEditingProfile] = React.useState(false);
     const [profileName, setProfileName] = React.useState(userProfile?.name || '');
+    const [profileEmail, setProfileEmail] = React.useState(userProfile?.email || '');
+    const [profilePhone, setProfilePhone] = React.useState(userProfile?.phone || '');
     const [isSaving, setIsSaving] = React.useState(false);
     const [isSavingProfile, setIsSavingProfile] = React.useState(false);
 
@@ -35,6 +37,8 @@ const Settings: React.FC = () => {
         }
         if (userProfile) {
             setProfileName(userProfile.name || '');
+            setProfileEmail(userProfile.email || '');
+            setProfilePhone(userProfile.phone || '');
         }
     }, [org, userProfile]);
 
@@ -91,10 +95,21 @@ const Settings: React.FC = () => {
         if (!userProfile) return;
         setIsSavingProfile(true);
         try {
+            // Update Auth email if changed
+            if (profileEmail !== userProfile.email) {
+                const { error: authError } = await supabase.auth.updateUser({
+                    email: profileEmail
+                });
+                if (authError) throw authError;
+                toast.info('E-mail de verificação enviado para o novo endereço!');
+            }
+
             const { error } = await supabase
                 .from('users')
                 .update({
-                    name: profileName
+                    name: profileName,
+                    email: profileEmail,
+                    phone: profilePhone
                 })
                 .eq('id', userProfile.id);
 
@@ -104,7 +119,7 @@ const Settings: React.FC = () => {
             fetchUserProfile(userProfile.id);
         } catch (error: any) {
             console.error('Error saving profile:', error);
-            toast.error('Erro ao atualizar perfil.');
+            toast.error(error.message || 'Erro ao atualizar perfil.');
         } finally {
             setIsSavingProfile(false);
         }
@@ -114,7 +129,7 @@ const Settings: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-16 pb-40 space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
             <Helmet>
                 <title>Inteligência da Agência | ImobLeads</title>
-                <meta name="description" content="Gestão de marca e inteligência operacional da Casa Maria Imobiliária." />
+                <meta name="description" content={`Gestão de marca e inteligência operacional da ${org.brand_display_name || org.name}.`} />
             </Helmet>
             <header className="mb-12 space-y-4">
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Configurações</h1>
@@ -238,6 +253,25 @@ const Settings: React.FC = () => {
                                             className="w-full bg-foreground/5 border border-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground transition-all"
                                         />
                                     </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">E-mail</label>
+                                        <input
+                                            type="email"
+                                            value={profileEmail}
+                                            onChange={(e) => setProfileEmail(e.target.value)}
+                                            className="w-full bg-foreground/5 border border-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block">Telefone</label>
+                                        <input
+                                            type="tel"
+                                            value={profilePhone}
+                                            onChange={(e) => setProfilePhone(e.target.value)}
+                                            className="w-full bg-foreground/5 border border-border/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-primary/50 text-foreground transition-all"
+                                            placeholder="(00) 00000-0000"
+                                        />
+                                    </div>
                                     <div className="flex gap-2 pt-2">
                                         <Button size="sm" className="grow" onClick={handleSaveProfile} isLoading={isSavingProfile}>Salvar</Button>
                                         <Button variant="ghost" size="sm" onClick={() => setIsEditingProfile(false)}>Cancelar</Button>
@@ -252,6 +286,10 @@ const Settings: React.FC = () => {
                                     <div>
                                         <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">E-mail</label>
                                         <p className="text-sm font-medium text-foreground/80">{userProfile?.email || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Telefone</label>
+                                        <p className="text-sm font-medium text-foreground/80">{userProfile?.phone ? formatPhone(userProfile.phone) : 'Não informado'}</p>
                                     </div>
                                     <div>
                                         <label className="text-[10px] font-bold text-muted-foreground/40 uppercase tracking-[0.2em] block mb-2">Função</label>

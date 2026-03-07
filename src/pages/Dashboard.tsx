@@ -16,9 +16,12 @@ import {
 } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { cn } from '../lib/utils';
+import { useUser } from '../contexts/UserContext';
 
 const Dashboard: React.FC = () => {
     const { leads } = useLead();
+    const { userProfile } = useUser();
+    const org = userProfile?.organization;
     const navigate = useNavigate();
 
     const safeLeads = useMemo(() => Array.isArray(leads) ? leads : [], [leads]);
@@ -102,7 +105,7 @@ const Dashboard: React.FC = () => {
     return (
         <div className="space-y-8 pb-20">
             <Helmet>
-                <title>Dashboard | Casa Maria Imóveis</title>
+                <title>Dashboard | {org?.brand_display_name || org?.name || 'ImobCRM'}</title>
             </Helmet>
 
             {/* Top Row: 3 Columns */}

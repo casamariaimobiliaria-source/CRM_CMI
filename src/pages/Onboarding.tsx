@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { motion } from 'framer-motion';
+import { useUser } from '../contexts/UserContext';
 
 const authSchema = z.object({
     email: z.string().email('E-mail inválido'),
@@ -16,8 +17,17 @@ const authSchema = z.object({
 
 type AuthFormValues = z.infer<typeof authSchema>;
 
-const Onboarding: React.FC = () => {
+interface OnboardingProps {
+    isRegisteringOverride?: boolean;
+}
+
+const Onboarding: React.FC<OnboardingProps> = ({ isRegisteringOverride }) => {
+    const { systemSettings } = useUser();
     const [loading, setLoading] = useState(false);
+    const orgSlug = new URLSearchParams(window.location.search).get('org');
+    const [isRegistering, setIsRegistering] = useState(
+        isRegisteringOverride || !!orgSlug || new URLSearchParams(window.location.search).get('mode') === 'register'
+    );
 
     const {
         register,
@@ -51,12 +61,36 @@ const Onboarding: React.FC = () => {
     const onSubmit = async (data: AuthFormValues) => {
         setLoading(true);
         try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email: data.email,
-                password: data.password
-            });
-            if (error) throw error;
-            toast.success('Bem-vindo de volta!');
+            if (isRegistering) {
+                const { error, data: signUpData } = await supabase.auth.signUp({
+                    email: data.email,
+                    password: data.password
+                });
+                if (error) throw error;
+
+                // Redireciona para setup com o slug da org se houver
+                toast.success('Conta criada com sucesso!');
+                const setupUrl = orgSlug ? `/setup?org=${orgSlug}` : '/setup';
+
+                // Se o Supabase não auto-logar (depende da config de confirmação de e-mail),
+                // tentamos logar agora
+                if (!signUpData.session) {
+                    const { error: signInError } = await supabase.auth.signInWithPassword({
+                        email: data.email,
+                        password: data.password
+                    });
+                    if (signInError) throw signInError;
+                }
+
+                window.location.href = setupUrl;
+            } else {
+                const { error } = await supabase.auth.signInWithPassword({
+                    email: data.email,
+                    password: data.password
+                });
+                if (error) throw error;
+                toast.success('Bem-vindo de volta!');
+            }
         } catch (error: any) {
             toast.error(error.message || 'Erro na autenticação');
         } finally {
@@ -81,25 +115,29 @@ const Onboarding: React.FC = () => {
                     <motion.div
                         initial={{ scale: 0.8 }}
                         animate={{ scale: 1 }}
-                        className="w-20 h-20 bg-primary rounded-[20px] flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6 shadow-modern-lg"
+                        className="w-20 h-20 bg-primary rounded-[20px] flex items-center justify-center text-white text-3xl font-bold mx-auto mb-6 shadow-modern-lg overflow-hidden border border-white/10"
                     >
-                        M
+                        {systemSettings?.app_logo_url ? (
+                            <img src={systemSettings.app_logo_url} alt="Logo" className="w-full h-full object-cover" />
+                        ) : (
+                            systemSettings?.app_name?.charAt(0) || 'M'
+                        )}
                     </motion.div>
                     <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-                        Casa Maria
+                        {systemSettings?.app_name || 'ImobCRM'}
                     </h1>
                     <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-muted-foreground/80">
-                        Imobiliária de Alta Performance
+                        {orgSlug ? `Cadastro para ${orgSlug.toUpperCase()}` : 'Imobiliária de Alta Performance'}
                     </p>
                 </div>
 
                 <Card className="w-full border-white/5 bg-[#252836]/80 backdrop-blur-xl shadow-modern-lg overflow-hidden rounded-[12px]">
                     <CardHeader className="pb-0 pt-10 text-center">
                         <CardTitle className="text-xl font-bold text-white tracking-tight">
-                            Acesso Restrito
+                            {isRegistering ? 'Criar Nova Conta' : 'Acesso Restrito'}
                         </CardTitle>
                         <CardDescription className="text-muted-foreground text-sm mt-2">
-                            Entre com suas credenciais corporativas
+                            {isRegistering ? 'Comece a gerenciar seus leads hoje' : 'Entre com suas credenciais corporativas'}
                         </CardDescription>
                     </CardHeader>
 
@@ -132,26 +170,26 @@ const Onboarding: React.FC = () => {
                                 className="w-full h-12 text-sm font-bold tracking-wide bg-primary hover:bg-primary/90 text-white transition-all rounded-[10px] shadow-lg shadow-primary/20"
                                 isLoading={loading}
                             >
-                                ACESSAR DASHBOARD
+                                {isRegistering ? 'CRIAR MINHA CONTA' : 'ACESSAR DASHBOARD'}
                             </Button>
 
                             <div className="flex flex-col gap-4 w-full text-center">
-                                <button
-                                    type="button"
-                                    onClick={onForgotPassword}
-                                    className="text-[11px] font-medium text-muted-foreground hover:text-white transition-colors"
-                                >
-                                    Esqueceu sua senha?
-                                </button>
+                                {!isRegistering && (
+                                    <button
+                                        type="button"
+                                        onClick={onForgotPassword}
+                                        className="text-[11px] font-medium text-muted-foreground hover:text-white transition-colors"
+                                    >
+                                        Esqueceu sua senha?
+                                    </button>
+                                )}
                                 <div className="h-[1px] w-full bg-white/5 my-1" />
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        window.open('https://wa.me/5511999999999?text=Olá! Gostaria de solicitar acesso à plataforma Casa Maria Imóveis.', '_blank');
-                                    }}
+                                    onClick={() => setIsRegistering(!isRegistering)}
                                     className="text-[11px] font-bold text-primary hover:text-primary/80 transition-all uppercase tracking-widest"
                                 >
-                                    Solicitar Acesso via WhatsApp
+                                    {isRegistering ? 'Já tenho conta: Fazer Login' : 'Novo por aqui? Cadastre-se'}
                                 </button>
                             </div>
                         </CardFooter>
