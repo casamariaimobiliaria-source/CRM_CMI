@@ -108,6 +108,8 @@ const SourceManager: React.FC = () => {
 
     if (loading) return <div>Carregando...</div>;
 
+    const isCorretor = userProfile?.role === 'member';
+
     return (
         <Card className="glass-high-fidelity rounded-[2rem]">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -115,21 +117,23 @@ const SourceManager: React.FC = () => {
                     <CardTitle className="text-xl">Origens de Leads</CardTitle>
                     <CardDescription>Canais de onde vêm seus clientes</CardDescription>
                 </div>
-                <Button
-                    size="icon"
-                    variant={(isAdding || editingId) ? 'ghost' : 'primary'}
-                    onClick={() => {
-                        if (isAdding || editingId) {
-                            setIsAdding(false);
-                            setEditingId(null);
-                            setFormData({ nome: '', description: '' });
-                        } else {
-                            setIsAdding(true);
-                        }
-                    }}
-                >
-                    {(isAdding || editingId) ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                </Button>
+                {!isCorretor && (
+                    <Button
+                        size="icon"
+                        variant={(isAdding || editingId) ? 'ghost' : 'primary'}
+                        onClick={() => {
+                            if (isAdding || editingId) {
+                                setIsAdding(false);
+                                setEditingId(null);
+                                setFormData({ nome: '', description: '' });
+                            } else {
+                                setIsAdding(true);
+                            }
+                        }}
+                    >
+                        {(isAdding || editingId) ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                    </Button>
+                )}
             </CardHeader>
             <CardContent className="space-y-6">
                 {(isAdding || editingId) && (
@@ -179,24 +183,26 @@ const SourceManager: React.FC = () => {
                                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{src.description || 'Sem descrição'}</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => startEdit(src)}
-                                    className="h-8 w-8"
-                                >
-                                    <Pencil className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => setDeleteModal({ isOpen: true, id: src.id })}
-                                    className="h-8 w-8"
-                                >
-                                    <Trash2 className="w-4 h-4 text-destructive" />
-                                </Button>
-                            </div>
+                            {!isCorretor && (
+                                <div className="flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => startEdit(src)}
+                                        className="h-8 w-8"
+                                    >
+                                        <Pencil className="w-4 h-4" />
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => setDeleteModal({ isOpen: true, id: src.id })}
+                                        className="h-8 w-8"
+                                    >
+                                        <Trash2 className="w-4 h-4 text-destructive" />
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     ))}
                     {sources.length === 0 && !isAdding && (

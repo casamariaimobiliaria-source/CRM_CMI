@@ -193,6 +193,8 @@ const EnterpriseManager: React.FC = () => {
         </div>
     );
 
+    const isCorretor = userProfile?.role === 'member';
+
     return (
         <>
             <Card className="glass-high-fidelity rounded-[2rem] overflow-hidden border-white/10">
@@ -204,14 +206,16 @@ const EnterpriseManager: React.FC = () => {
                         </CardTitle>
                         <CardDescription>Gestão centralizada de projetos e localizações</CardDescription>
                     </div>
-                    <Button
-                        size="icon"
-                        variant={(isAdding || editingId) ? 'ghost' : 'primary'}
-                        onClick={() => (isAdding || editingId) ? resetForm() : setIsAdding(true)}
-                        className="rounded-full h-10 w-10"
-                    >
-                        {(isAdding || editingId) ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                    </Button>
+                    {!isCorretor && (
+                        <Button
+                            size="icon"
+                            variant={(isAdding || editingId) ? 'ghost' : 'primary'}
+                            onClick={() => (isAdding || editingId) ? resetForm() : setIsAdding(true)}
+                            className="rounded-full h-10 w-10"
+                        >
+                            {(isAdding || editingId) ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                        </Button>
+                    )}
                 </CardHeader>
 
                 <CardContent className="space-y-6 p-6">
@@ -371,14 +375,16 @@ const EnterpriseManager: React.FC = () => {
                                         </div>
 
                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => startEdit(ent)}
-                                                className="h-9 w-9 rounded-xl hover:bg-primary/20 hover:text-primary"
-                                            >
-                                                <Pencil className="w-4 h-4" />
-                                            </Button>
+                                            {!isCorretor && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => startEdit(ent)}
+                                                    className="h-9 w-9 rounded-xl hover:bg-primary/20 hover:text-primary"
+                                                >
+                                                    <Pencil className="w-4 h-4" />
+                                                </Button>
+                                            )}
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
@@ -388,14 +394,16 @@ const EnterpriseManager: React.FC = () => {
                                             >
                                                 <Sparkles className="w-4 h-4" />
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => setDeleteModal({ isOpen: true, id: ent.id })}
-                                                className="h-9 w-9 rounded-xl hover:bg-destructive/20 hover:text-destructive"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </Button>
+                                            {!isCorretor && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => setDeleteModal({ isOpen: true, id: ent.id })}
+                                                    className="h-9 w-9 rounded-xl hover:bg-destructive/20 hover:text-destructive"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
 

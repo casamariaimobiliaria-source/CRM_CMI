@@ -149,8 +149,9 @@ const AdminData: React.FC = () => {
     };
 
     const isAdmin = userProfile?.role === 'admin' || userProfile?.role === 'owner';
+    const isCorretor = userProfile?.role === 'member';
 
-    if (!isAdmin) return <div className="p-8 text-center text-muted-foreground">Acesso negado.</div>;
+    if (!isAdmin && !isCorretor) return <div className="p-8 text-center text-muted-foreground">Acesso negado.</div>;
 
     return (
         <div className="max-w-6xl mx-auto p-6 pb-32 space-y-8 animate-in fade-in duration-500">
@@ -158,90 +159,92 @@ const AdminData: React.FC = () => {
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground italic tracking-tighter">Administração de Dados</h1>
                 <p className="text-primary text-[10px] font-bold tracking-[0.4em] uppercase flex items-center gap-3">
                     <span className="h-[1px] w-8 bg-primary/30" />
-                    Governança & Infraestrutura
+                    {isAdmin ? 'Governança & Infraestrutura' : 'Consulta de Dados Institucionais'}
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Backup Card */}
-                <Card className="glass-high-fidelity rounded-[2rem] overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <Database className="w-24 h-24" />
-                    </div>
-                    <CardHeader>
-                        <CardTitle className="text-xl flex items-center gap-2">
-                            <Download className="w-5 h-5 text-primary" />
-                            Backup Completo
-                        </CardTitle>
-                        <CardDescription>Exporte todos os dados da imobiliária para Excel</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground mb-6">
-                            Gera um arquivo .xlsx contendo todos os leads, histórico, equipe e configurações da conta.
-                            Ideal para segurança externa ou auditoria física.
-                        </p>
-                        <Button
-                            className="w-full h-14 rounded-2xl gap-3"
-                            onClick={handleBackup}
-                            isLoading={isBackingUp}
-                        >
-                            <FileSpreadsheet className="w-5 h-5" />
-                            Baixar Backup (.xlsx)
-                        </Button>
-                    </CardContent>
-                </Card>
-
-                {/* Import Card */}
-                <Card className="glass-high-fidelity rounded-[2rem] overflow-hidden relative group">
-                    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                        <Upload className="w-24 h-24" />
-                    </div>
-                    <CardHeader>
-                        <CardTitle className="text-xl flex items-center gap-2">
-                            <Upload className="w-5 h-5 text-emerald-400" />
-                            Importar Leads
-                        </CardTitle>
-                        <CardDescription>Carga em massa via planilha</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 text-xs space-y-2">
-                            <p className="font-bold uppercase tracking-wider text-primary">Modelo de Planilha:</p>
-                            <p className="text-muted-foreground">Colunas obrigatórias: <strong>Nome, Telefone</strong></p>
-                            <p className="text-muted-foreground">Opcionais: <strong>Email, Origem, Empreendimento</strong></p>
+            {isAdmin && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Backup Card */}
+                    <Card className="glass-high-fidelity rounded-[2rem] overflow-hidden relative group">
+                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Database className="w-24 h-24" />
                         </div>
-                        <div className="relative">
-                            <input
-                                type="file"
-                                accept=".xlsx, .csv"
-                                onChange={handleImport}
-                                disabled={isImporting}
-                                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
-                            />
+                        <CardHeader>
+                            <CardTitle className="text-xl flex items-center gap-2">
+                                <Download className="w-5 h-5 text-primary" />
+                                Backup Completo
+                            </CardTitle>
+                            <CardDescription>Exporte todos os dados da imobiliária para Excel</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-muted-foreground mb-6">
+                                Gera um arquivo .xlsx contendo todos os leads, histórico, equipe e configurações da conta.
+                                Ideal para segurança externa ou auditoria física.
+                            </p>
                             <Button
-                                variant="outline"
-                                className="w-full h-14 rounded-2xl border-dashed gap-3 border-white/20 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all"
-                                isLoading={isImporting}
+                                className="w-full h-14 rounded-2xl gap-3"
+                                onClick={handleBackup}
+                                isLoading={isBackingUp}
                             >
                                 <FileSpreadsheet className="w-5 h-5" />
-                                Escolher Arquivo (.xlsx / .csv)
+                                Baixar Backup (.xlsx)
                             </Button>
-                        </div>
+                        </CardContent>
+                    </Card>
 
-                        {importReport && (
-                            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 animate-in slide-in-from-top-2 duration-500">
-                                <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
-                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                                    Resultado da Importação
-                                </h4>
-                                <div className="grid grid-cols-2 gap-4 text-xs">
-                                    <div className="text-muted-foreground">Importados: <span className="text-foreground font-bold">{importReport.success}</span></div>
-                                    <div className="text-muted-foreground">Duplicados: <span className="text-amber-400 font-bold">{importReport.skipped}</span></div>
-                                </div>
+                    {/* Import Card */}
+                    <Card className="glass-high-fidelity rounded-[2rem] overflow-hidden relative group">
+                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Upload className="w-24 h-24" />
+                        </div>
+                        <CardHeader>
+                            <CardTitle className="text-xl flex items-center gap-2">
+                                <Upload className="w-5 h-5 text-emerald-400" />
+                                Importar Leads
+                            </CardTitle>
+                            <CardDescription>Carga em massa via planilha</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 text-xs space-y-2">
+                                <p className="font-bold uppercase tracking-wider text-primary">Modelo de Planilha:</p>
+                                <p className="text-muted-foreground">Colunas obrigatórias: <strong>Nome, Telefone</strong></p>
+                                <p className="text-muted-foreground">Opcionais: <strong>Email, Origem, Empreendimento</strong></p>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
-            </div>
+                            <div className="relative">
+                                <input
+                                    type="file"
+                                    accept=".xlsx, .csv"
+                                    onChange={handleImport}
+                                    disabled={isImporting}
+                                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+                                />
+                                <Button
+                                    variant="outline"
+                                    className="w-full h-14 rounded-2xl border-dashed gap-3 border-white/20 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all"
+                                    isLoading={isImporting}
+                                >
+                                    <FileSpreadsheet className="w-5 h-5" />
+                                    Escolher Arquivo (.xlsx / .csv)
+                                </Button>
+                            </div>
+
+                            {importReport && (
+                                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 animate-in slide-in-from-top-2 duration-500">
+                                    <h4 className="text-sm font-bold mb-2 flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                        Resultado da Importação
+                                    </h4>
+                                    <div className="grid grid-cols-2 gap-4 text-xs">
+                                        <div className="text-muted-foreground">Importados: <span className="text-foreground font-bold">{importReport.success}</span></div>
+                                        <div className="text-muted-foreground">Duplicados: <span className="text-amber-400 font-bold">{importReport.skipped}</span></div>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <EnterpriseManager />
