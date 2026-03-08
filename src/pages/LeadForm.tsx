@@ -171,6 +171,13 @@ const LeadForm: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, leads.length, reset, enterpriseOptions.length, sourceOptions.length, setValue]);
 
+    // Auto-fill broker name for new leads
+    useEffect(() => {
+        if (!id && userProfile?.name && !watch('corretor')) {
+            setValue('corretor', userProfile.name);
+        }
+    }, [id, userProfile?.name, setValue, watch]);
+
     // Duplicate Check
     const checkDuplicate = (phone: string) => {
         if (!phone || id) return false; // Don't check if editing
@@ -399,6 +406,8 @@ const LeadForm: React.FC = () => {
                                             placeholder="Nome do corretor..."
                                             error={errors.corretor?.message}
                                             {...register('corretor')}
+                                            readOnly={userProfile?.role === 'member'}
+                                            className={cn(userProfile?.role === 'member' && "opacity-70 bg-secondary/30")}
                                         />
                                     </div>
 
