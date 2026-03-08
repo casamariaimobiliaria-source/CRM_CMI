@@ -164,9 +164,9 @@ const PerformanceReports: React.FC = () => {
                             value={filterBroker}
                             onChange={(e) => setFilterBroker(e.target.value)}
                         >
-                            <option value="Todos">Todos os Corretores</option>
+                            <option value="Todos" className="bg-[#0a0a0a] text-white">Todos os Corretores</option>
                             {brokers.map(b => (
-                                <option key={b.id} value={b.id}>{b.name}</option>
+                                <option key={b.id} value={b.id} className="bg-[#0a0a0a] text-white">{b.name}</option>
                             ))}
                         </select>
                         <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
@@ -205,9 +205,9 @@ const PerformanceReports: React.FC = () => {
                                         value={filterBroker}
                                         onChange={(e) => setFilterBroker(e.target.value)}
                                     >
-                                        <option value="Todos">Todos os Corretores</option>
+                                        <option value="Todos" className="bg-[#0a0a0a] text-white">Todos os Corretores</option>
                                         {brokers.map(b => (
-                                            <option key={b.id} value={b.id}>{b.name}</option>
+                                            <option key={b.id} value={b.id} className="bg-[#0a0a0a] text-white">{b.name}</option>
                                         ))}
                                     </select>
                                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
@@ -245,9 +245,9 @@ const PerformanceReports: React.FC = () => {
                                         value={sourceFilter}
                                         onChange={(e) => setSourceFilter(e.target.value)}
                                     >
-                                        <option value="Todos">Todos os Canais</option>
+                                        <option value="Todos" className="bg-[#0a0a0a] text-white">Todos os Canais</option>
                                         {uniqueSources.map(s => (
-                                            <option key={s} value={s}>{s}</option>
+                                            <option key={s} value={s} className="bg-[#0a0a0a] text-white">{s}</option>
                                         ))}
                                     </select>
                                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground pointer-events-none" />
