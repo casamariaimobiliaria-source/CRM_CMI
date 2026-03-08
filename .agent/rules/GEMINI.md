@@ -236,6 +236,16 @@ When user's prompt is NOT in English:
 
 ---
 
+## 🛠️ DEPLOYMENT & GIT PROTOCOL
+
+**MANDATORY: You MUST NOT update GitHub (git push/deploy) unless explicitly instructed by the USER.**
+
+- **Commit & Push**: forbidden by default.
+- **Exception**: Only perform `git push` if the user says something like "atualize o github", "suba para o git", or "push code".
+- **Internal Commits**: You may perform local `git add` or `git commit` for organization, but never `git push` without consent.
+
+---
+
 ## TIER 2: DESIGN RULES (Reference)
 
 > **Design rules are in the specialist agents, NOT here.**

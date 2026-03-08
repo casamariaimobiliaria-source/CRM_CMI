@@ -6,6 +6,7 @@ import { Input } from './ui/Input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/Card';
 import { toast } from 'sonner';
 import { Share2, X, Plus, Pencil, Trash2 } from 'lucide-react';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface LeadSource {
     id: string;
@@ -20,6 +21,7 @@ const SourceManager: React.FC = () => {
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean, id: string | null }>({ isOpen: false, id: null });
     const [formData, setFormData] = useState({
         nome: '',
         description: ''
@@ -86,19 +88,21 @@ const SourceManager: React.FC = () => {
         setIsAdding(true);
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Excluir esta origem?')) return;
+    const confirmDelete = async () => {
+        if (!deleteModal.id) return;
         try {
             const { error } = await supabase
                 .from('origens_lead')
                 .delete()
-                .eq('id', id);
+                .eq('id', deleteModal.id);
             if (error) throw error;
             toast.success('Origem excluída.');
             fetchSources();
         } catch (error) {
             console.error('Error deleting source:', error);
             toast.error('Erro ao excluir origem.');
+        } finally {
+            setDeleteModal({ isOpen: false, id: null });
         }
     };
 
@@ -187,7 +191,7 @@ const SourceManager: React.FC = () => {
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => handleDelete(src.id)}
+                                    onClick={() => setDeleteModal({ isOpen: true, id: src.id })}
                                     className="h-8 w-8"
                                 >
                                     <Trash2 className="w-4 h-4 text-destructive" />
@@ -200,6 +204,15 @@ const SourceManager: React.FC = () => {
                     )}
                 </div>
             </CardContent>
+
+            <ConfirmDialog
+                isOpen={deleteModal.isOpen}
+                title="Excluir Origem"
+                description="Tem certeza que deseja excluir esta origem? Esta ação não pode ser desfeita."
+                confirmText="Excluir"
+                onConfirm={confirmDelete}
+                onCancel={() => setDeleteModal({ isOpen: false, id: null })}
+            />
         </Card>
     );
 };

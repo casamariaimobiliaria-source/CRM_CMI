@@ -4,6 +4,7 @@ export interface AIAnalysisResult {
     status: 'quente' | 'morno' | 'frio';
     insights: string[];
     suggestao: string;
+    copy_local?: string;
     error?: string;
 }
 

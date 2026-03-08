@@ -13,6 +13,7 @@ import { Badge } from '../components/ui/Badge';
 import { toast } from 'sonner';
 import { UserPlus, Trash2, Pencil, X, Lock, Unlock } from 'lucide-react';
 import { cn, formatPhone } from '../lib/utils';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 
 interface Member {
     organization_id: string;
@@ -43,6 +44,7 @@ const Team: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [registering, setRegistering] = useState(false);
     const [editingMember, setEditingMember] = useState<Member | null>(null);
+    const [actionModal, setActionModal] = useState<{ isOpen: boolean, userId: string | null, currentStatus: boolean | undefined }>({ isOpen: false, userId: null, currentStatus: undefined });
 
     const { register, handleSubmit, reset, control, setValue, formState: { errors } } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -235,16 +237,20 @@ const Team: React.FC = () => {
         }
     };
 
-    const toggleUserStatus = async (userId: string, currentStatus: boolean | undefined) => {
+    const handleToggleUserStatusClick = (userId: string, currentStatus: boolean | undefined) => {
         if (userId === userProfile?.id) {
             toast.error('Você não pode alterar seu próprio status de acesso.');
             return;
         }
+        setActionModal({ isOpen: true, userId, currentStatus });
+    };
+
+    const toggleUserStatus = async () => {
+        const { userId, currentStatus } = actionModal;
+        if (!userId) return;
 
         const newStatus = currentStatus === false ? true : false;
         const actionText = newStatus ? 'desbloquear' : 'bloquear';
-
-        if (!confirm(`Tem certeza que deseja ${actionText} o acesso deste membro?`)) return;
 
         try {
             const { error } = await supabase
@@ -262,6 +268,8 @@ const Team: React.FC = () => {
         } catch (error) {
             console.error('Error toggling member access:', error);
             toast.error(`Erro ao ${actionText} membro.`);
+        } finally {
+            setActionModal({ isOpen: false, userId: null, currentStatus: undefined });
         }
     };
 
@@ -439,7 +447,7 @@ const Team: React.FC = () => {
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
-                                                    onClick={() => toggleUserStatus(member.user_id, member.user?.is_active)}
+                                                    onClick={() => handleToggleUserStatusClick(member.user_id, member.user?.is_active)}
                                                     className={`h-8 w-8 ${member.user?.is_active === false ? 'text-amber-500 hover:bg-amber-500/10' : 'text-red-500 hover:bg-red-500/10'}`}
                                                     title={member.user?.is_active === false ? "Desbloquear Acesso" : "Bloquear Acesso"}
                                                 >
@@ -454,6 +462,16 @@ const Team: React.FC = () => {
                     </Card>
                 </div>
             </div>
+
+            <ConfirmDialog
+                isOpen={actionModal.isOpen}
+                title={actionModal.currentStatus === false ? "Desbloquear Membro" : "Bloquear Membro"}
+                description={`Tem certeza que deseja ${actionModal.currentStatus === false ? 'desbloquear' : 'bloquear'} o acesso deste membro?`}
+                confirmText={actionModal.currentStatus === false ? "Desbloquear" : "Bloquear"}
+                variant={actionModal.currentStatus === false ? "info" : "danger"}
+                onConfirm={toggleUserStatus}
+                onCancel={() => setActionModal({ isOpen: false, userId: null, currentStatus: undefined })}
+            />
         </div>
     );
 };

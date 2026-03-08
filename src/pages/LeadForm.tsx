@@ -18,12 +18,15 @@ import { Trash2, Sparkles } from 'lucide-react';
 import { AIAssistant } from '../components/AIAssistant';
 import { LeadHistoryTimeline } from '../components/LeadHistoryTimeline';
 import { Lead } from '../types';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 
 const LeadForm: React.FC = () => {
     const { addLead, updateLead, deleteLead, leads } = useLead();
     const { userProfile } = useUser();
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
 
     const [enterpriseOptions, setEnterpriseOptions] = React.useState<{ id: string, name: string }[]>([]);
     const [sourceOptions, setSourceOptions] = React.useState<{ id: string, name: string }[]>([]);
@@ -233,17 +236,20 @@ const LeadForm: React.FC = () => {
         }
     };
 
-    const handleDelete = async () => {
-        if (window.confirm('Tem certeza que deseja excluir este lead? Esta ação não pode ser desfeita.')) {
-            try {
-                if (id) {
-                    await deleteLead(id);
-                    toast.success('Lead excluído com sucesso');
-                    navigate('/');
-                }
-            } catch (error) {
-                toast.error('Erro ao excluir lead');
+    const handleDeleteClick = () => {
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        try {
+            if (id) {
+                await deleteLead(id);
+                toast.success('Lead excluído com sucesso');
+                setIsDeleteModalOpen(false);
+                navigate('/');
             }
+        } catch (error) {
+            toast.error('Erro ao excluir lead');
         }
     };
 
@@ -463,7 +469,7 @@ const LeadForm: React.FC = () => {
                                         <Button
                                             type="button"
                                             variant="ghost"
-                                            onClick={handleDelete}
+                                            onClick={handleDeleteClick}
                                             className="h-14 px-6 text-[10px] font-bold tracking-widest text-destructive hover:text-destructive hover:bg-destructive/10 rounded-2xl w-full md:w-auto"
                                             disabled={isSubmitting}
                                         >
@@ -510,6 +516,15 @@ const LeadForm: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            <ConfirmDialog
+                isOpen={isDeleteModalOpen}
+                title="Excluir Lead"
+                description="Tem certeza que deseja excluir este lead? Esta ação não pode ser desfeita."
+                confirmText="Excluir"
+                onConfirm={confirmDelete}
+                onCancel={() => setIsDeleteModalOpen(false)}
+            />
         </div>
     );
 };

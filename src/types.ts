@@ -70,3 +70,21 @@ export interface Lead {
 }
 
 export type LeadFormData = Omit<Lead, 'id' | 'createdAt' | 'synced'>;
+
+export interface Enterprise {
+  id: string;
+  organization_id: string;
+  nome: string;
+  address: string;
+  manager_name: string;
+  manager_phone: string;
+  developer_name: string;
+  latitude?: number;
+  longitude?: number;
+  city?: string;
+  state?: string;
+  zip_code?: string;
+  place_id?: string;
+  neighborhood_stats?: Record<string, any>;
+  created_at?: string;
+}

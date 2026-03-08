@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, MessageSquare, Copy, Check, RefreshCw, BrainCircuit, Lightbulb } from 'lucide-react';
+import { Sparkles, MessageSquare, Copy, Check, RefreshCw, BrainCircuit, Lightbulb, MapPin } from 'lucide-react';
 import { Lead } from '../types';
-import { generateWhatsAppSuggestions, analyzeLeadProfile } from '../lib/openai';
 import { Button } from './ui/Button';
 import { Badge } from './ui/Badge';
 import { toast } from 'sonner';
 import { cn } from '../lib/utils';
+import { supabase } from '../lib/supabase';
 
 interface AIAssistantProps {
     lead: Lead;
@@ -23,9 +23,20 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
         setLoading(true);
         try {
             const { getAIAnalysis } = await import('../services/aiService');
-            console.log('AIAssistant: Iniciando análise via Supabase para:', lead.nome);
+            let enterpriseData = null;
+            if (lead.empreendimento_id) {
+                const { data: ent } = await supabase
+                    .from('empreendimentos')
+                    .select('*')
+                    .eq('id', lead.empreendimento_id)
+                    .single();
+                enterpriseData = ent;
+            }
 
-            const result = await getAIAnalysis(lead);
+            const result = await getAIAnalysis({
+                lead,
+                enterprise: enterpriseData
+            });
 
             if (result.error) {
                 toast.error(result.error);
@@ -35,7 +46,8 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
             // Adaptando o resultado para o estado interno do componente
             setAnalysis({
                 resumo: `Lead classificado como ${result.status.toUpperCase()}.`,
-                dica: result.suggestao
+                dica: result.suggestao,
+                copyLocal: result.copy_local
             });
 
             setSuggestions({
@@ -132,6 +144,26 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ lead, className }) => 
                                     <Lightbulb className="w-4 h-4 text-amber-500 mt-1 shrink-0" />
                                     <p className="text-[11px] text-muted-foreground"><span className="font-bold text-amber-600 dark:text-amber-500 uppercase tracking-tighter mr-1">Tática:</span> {analysis.dica}</p>
                                 </div>
+                                {analysis.copyLocal && (
+                                    <div className="flex flex-col gap-2 pt-3 border-t border-primary/10 group/copy">
+                                        <div className="flex items-center gap-2">
+                                            <MapPin className="w-3 h-3 text-emerald-500" />
+                                            <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-500 uppercase tracking-wider">Argumento de Localização</span>
+                                        </div>
+                                        <p className="text-[11px] text-foreground font-semibold leading-relaxed bg-emerald-500/5 p-3 rounded-xl border border-emerald-500/10 italic">
+                                            "{analysis.copyLocal}"
+                                        </p>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 text-[9px] font-bold text-emerald-600 hover:bg-emerald-500/10 self-end"
+                                            onClick={() => copyToClipboard(analysis.copyLocal, 999)}
+                                        >
+                                            <Copy className="w-3 h-3 mr-2" />
+                                            COPIAR ARGUMENTO
+                                        </Button>
+                                    </div>
+                                )}
                             </div>
                         )}
 
