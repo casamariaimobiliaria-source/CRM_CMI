@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 import { useUser } from '../contexts/UserContext';
 import { Button } from './ui/Button';
@@ -58,7 +58,7 @@ const EnterpriseManager: React.FC = () => {
 
     const [formData, setFormData] = useState(initialFormState);
 
-    const fetchEnterprises = async () => {
+    const fetchEnterprises = useCallback(async () => {
         if (!userProfile?.organization_id) return;
         try {
             const { data, error } = await supabase
@@ -74,11 +74,11 @@ const EnterpriseManager: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [userProfile?.organization_id]);
 
     useEffect(() => {
         fetchEnterprises();
-    }, [userProfile?.organization_id]);
+    }, [fetchEnterprises]);
 
     const handleAddressSearch = async () => {
         if (!formData.address) {
