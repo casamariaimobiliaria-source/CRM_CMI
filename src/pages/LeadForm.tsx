@@ -250,8 +250,10 @@ const LeadForm: React.FC = () => {
                 setIsDeleteModalOpen(false);
                 navigate('/');
             }
-        } catch (error) {
-            toast.error('Erro ao excluir lead');
+        } catch (error: any) {
+            console.error('Erro detalhado ao excluir:', error);
+            toast.error(`Erro ao excluir: ${error.message || JSON.stringify(error)}`);
+            setIsDeleteModalOpen(false);
         }
     };
 

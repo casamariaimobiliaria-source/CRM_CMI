@@ -134,8 +134,8 @@ const Agenda: React.FC = () => {
         let borderColor = '#334155';
 
         if (past) {
-            backgroundColor = '#3f3f46'; // Grayish
-            borderColor = '#52525b';
+            backgroundColor = '#7f1d1d'; // Dark Red (Tailwind red-900)
+            borderColor = '#b91c1c';     // Red (Tailwind red-700)
         } else {
             // Check Interaction Type for coloring
             const interactionType = event.resource?.tipo_proximo_contato;

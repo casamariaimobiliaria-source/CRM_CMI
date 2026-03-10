@@ -3,6 +3,7 @@ import { Lead, LeadFormData } from '../types';
 import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 import { useUser } from './UserContext';
+import { toast } from 'sonner';
 
 interface LeadContextType {
   leads: Lead[];
@@ -172,8 +173,24 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const deleteLead = async (id: string) => {
+    // Security check: Only admins and owners can delete
+    if (userProfile?.role !== 'admin' && userProfile?.role !== 'owner') {
+      toast.error('Acesso negado: Apenas administradores podem excluir leads.');
+      return;
+    }
+
     setIsSyncing(true);
     try {
+      // Ensure we delete audit logs first to avoid foreign key constraints
+      const { error: logsError } = await supabase
+        .from('lead_audit_logs')
+        .delete()
+        .eq('lead_id', id);
+
+      if (logsError) {
+        console.warn('Notice: Issue deleting lead_audit_logs:', logsError);
+      }
+
       const { error } = await supabase
         .from('leads')
         .delete()
