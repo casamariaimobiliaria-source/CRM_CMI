@@ -1,0 +1,215 @@
+/* 
+ * react-big-calendar Dark Theme Overrides
+ * This file styles the generic calendar to match the ImobCRM dark aesthetic.
+ */
+
+/* Main Layout */
+.agenda-calendar-override .rbc-calendar {
+    font-family: inherit;
+    color: #f8fafc;
+}
+
+/* Toolbar buttons and title */
+.agenda-calendar-override .rbc-toolbar button {
+    color: #94a3b8;
+    border-color: rgba(255, 255, 255, 0.1);
+    background: #1a1d2e;
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.agenda-calendar-override .rbc-toolbar button:hover,
+.agenda-calendar-override .rbc-toolbar button:active,
+.agenda-calendar-override .rbc-toolbar button.rbc-active {
+    color: #fff;
+    background: rgba(96, 165, 250, 0.1);
+    /* Primary tinted */
+    border-color: rgba(96, 165, 250, 0.3);
+    box-shadow: none;
+}
+
+.agenda-calendar-override .rbc-toolbar .rbc-toolbar-label {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+/* Grid lines and Borders */
+.agenda-calendar-override .rbc-month-view,
+.agenda-calendar-override .rbc-time-view,
+.agenda-calendar-override .rbc-agenda-view,
+.agenda-calendar-override .rbc-header {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-header {
+    padding: 10px 0;
+    font-weight: 600;
+    color: #94a3b8;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-day-bg+.rbc-day-bg,
+.agenda-calendar-override .rbc-month-row+.rbc-month-row,
+.agenda-calendar-override .rbc-time-content>*+*>*,
+.agenda-calendar-override .rbc-time-header-content {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-timeslot-group {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-time-content {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-time-header.rbc-overflowing {
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-month-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Today highlight */
+.agenda-calendar-override .rbc-today {
+    background-color: rgba(96, 165, 250, 0.06) !important;
+    /* Subtle primary highlight, forcibly overriding react-big-calendar default */
+}
+
+.agenda-calendar-override .rbc-day-slot .rbc-today {
+    background-color: rgba(96, 165, 250, 0.06) !important;
+}
+
+/* Days not in the current month */
+.agenda-calendar-override .rbc-off-range-bg {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.agenda-calendar-override .rbc-off-range .rbc-date-cell {
+    color: #475569;
+}
+
+/* Date Numbers */
+.agenda-calendar-override .rbc-date-cell {
+    font-weight: 500;
+    padding-right: 8px;
+    padding-top: 4px;
+    color: #cbd5e1;
+}
+
+.agenda-calendar-override .rbc-date-cell.rbc-now {
+    font-weight: 800;
+    color: #60a5fa;
+    /* Primary color */
+}
+
+/* Event Base Overrides */
+.agenda-calendar-override .rbc-event {
+    transition: transform 0.1s, opacity 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+.agenda-calendar-override .rbc-event:hover {
+    transform: scale(1.02);
+    opacity: 1 !important;
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.agenda-calendar-override .rbc-event-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+}
+
+/* Agenda View */
+.agenda-calendar-override .rbc-agenda-view table.rbc-agenda-table {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-agenda-view table.rbc-agenda-table tbody>tr>td {
+    border-top-color: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+    padding: 12px;
+}
+
+.agenda-calendar-override .rbc-agenda-view table.rbc-agenda-table thead>tr>th {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.2);
+    color: #94a3b8;
+    font-weight: 600;
+    text-align: left;
+}
+
+/* Time View Sidebar (hours) */
+.agenda-calendar-override .rbc-time-gutter .rbc-timeslot-group {
+    color: #64748b;
+    font-size: 0.75rem;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-time-gutter .rbc-time-slot {
+    border-top: none;
+    /* removed dashed border if it existed */
+}
+
+.agenda-calendar-override .rbc-time-slot {
+    border-top: 1px dashed rgba(255, 255, 255, 0.02);
+}
+
+/* Current time indicator */
+.agenda-calendar-override .rbc-current-time-indicator {
+    background-color: #60a5fa;
+    height: 2px;
+}
+
+.agenda-calendar-override .rbc-current-time-indicator::before {
+    background-color: #60a5fa;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: -3px;
+    margin-left: -4px;
+}
+
+/* Event labels in daily/weekly view */
+.agenda-calendar-override .rbc-event-label {
+    font-size: 0.65rem;
+    opacity: 0.8;
+}
+
+/* Clean up borders and backgrounds for better dark theme integration */
+.agenda-calendar-override .rbc-day-bg+.rbc-day-bg {
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Improve header display */
+.agenda-calendar-override .rbc-allday-cell {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.agenda-calendar-override .rbc-show-more {
+    color: #60a5fa;
+    font-weight: 600;
+    font-size: 0.75rem;
+    background: rgba(96, 165, 250, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+
+.agenda-calendar-override .rbc-show-more:hover {
+    background: rgba(96, 165, 250, 0.2);
+}
