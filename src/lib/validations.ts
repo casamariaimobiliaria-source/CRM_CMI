@@ -49,6 +49,14 @@ export const leadFormSchema = z.object({
         const parsed = Number(val);
         return isNaN(parsed) ? undefined : parsed;
     }, z.number().optional()),
+}).superRefine((data, ctx) => {
+    if (data.status === LeadStatus.AGENDOU && !data.proximo_contato) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Data do Próximo Contato é obrigatória quando o estágio é "Agendou"',
+            path: ['proximo_contato']
+        });
+    }
 });
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>;
