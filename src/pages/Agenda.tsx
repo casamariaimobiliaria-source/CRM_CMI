@@ -224,7 +224,7 @@ const Agenda: React.FC = () => {
                     </div>
                 ) : (
                     <div className="flex-1 text-white min-h-[600px] h-full h-[calc(100vh-300px)]">
-                        <DnDCalendar<CalendarEvent>
+                        <DnDCalendar
                             localizer={localizer}
                             events={events}
                             startAccessor="start"
