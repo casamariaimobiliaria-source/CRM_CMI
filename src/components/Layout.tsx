@@ -45,6 +45,7 @@ const Layout: React.FC = () => {
     const menuItems = [
         { icon: LayoutDashboard, label: 'DASHBOARD', path: '/dashboard' },
         { icon: Columns, label: 'PIPELINE', path: '/kanban' },
+        { icon: Calendar, label: 'AGENDA', path: '/agenda' },
         { icon: Archive, label: 'MEUS LEADS', path: '/' },
         { icon: Users, label: 'EQUIPE', path: '/team' },
         { icon: Database, label: 'DADOS', path: '/administration' },

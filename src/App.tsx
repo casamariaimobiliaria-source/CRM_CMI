@@ -19,6 +19,7 @@ const Settings = React.lazy(() => import('./pages/Settings'));
 const PerformanceReports = React.lazy(() => import('./pages/PerformanceReports'));
 const AdminData = React.lazy(() => import('./pages/AdminData'));
 const SuperAdmin = React.lazy(() => import('./pages/SuperAdmin'));
+const Agenda = React.lazy(() => import('./pages/Agenda'));
 import { Toaster } from 'sonner';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -196,6 +197,7 @@ const AppRoutes: React.FC = () => {
                 <Route path="team" element={<Team />} />
                 <Route path="administration" element={<AdminData />} />
                 <Route path="admin-master" element={<SuperAdmin />} />
+                <Route path="agenda" element={<Agenda />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="reports" element={<PerformanceReports />} />
             </Route>

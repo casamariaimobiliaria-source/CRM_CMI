@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import './styles/agenda-calendar.css';
+
 @layer base {
   :root {
     --background: 230 28% 15%;
