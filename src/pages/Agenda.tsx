@@ -13,7 +13,7 @@ import { useBrokers } from '../hooks/useBrokers';
 import { supabase } from '../lib/supabase';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
-import { Lead } from '../types';
+import { Lead, InteractionType } from '../types';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/Dialog';
 import { Phone, Calendar as CalendarIcon, User, Building, AlignLeft, Info, ExternalLink } from 'lucide-react';
 import { Button } from '../components/ui/Button';
@@ -136,12 +136,23 @@ const Agenda: React.FC = () => {
         if (past) {
             backgroundColor = '#3f3f46'; // Grayish
             borderColor = '#52525b';
-        } else if (today) {
-            backgroundColor = '#0ea5e9'; // Bright Blue
-            borderColor = '#0284c7';
         } else {
-            backgroundColor = '#2563eb'; // Standard Blue
-            borderColor = '#1d4ed8';
+            // Check Interaction Type for coloring
+            const interactionType = event.resource?.tipo_proximo_contato;
+
+            if (interactionType === InteractionType.VISITA) {
+                backgroundColor = '#9333ea'; // Purple
+                borderColor = '#7e22ce';
+            } else if (interactionType === InteractionType.WHATSAPP) {
+                backgroundColor = '#16a34a'; // Green
+                borderColor = '#15803d';
+            } else if (interactionType === InteractionType.REUNIAO) {
+                backgroundColor = '#ea580c'; // Orange
+                borderColor = '#c2410c';
+            } else {
+                backgroundColor = today ? '#0ea5e9' : '#2563eb'; // Default Blue
+                borderColor = today ? '#0284c7' : '#1d4ed8';
+            }
         }
 
         return {

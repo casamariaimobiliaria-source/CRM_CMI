@@ -45,6 +45,13 @@ export interface UserProfile {
   is_active?: boolean;
 }
 
+export enum InteractionType {
+  WHATSAPP = 'WhatsApp / Ligação',
+  REUNIAO = 'Reunião Online',
+  VISITA = 'Visita Presencial',
+  OUTRO = 'Outro'
+}
+
 export interface Lead {
   id: string;
   nome: string;
@@ -58,6 +65,7 @@ export interface Lead {
   status: LeadStatus;
   historico?: string;
   proximo_contato?: string;
+  tipo_proximo_contato?: InteractionType | string;
   createdAt: string;
   empreendimento_id?: string;
   origem_id?: string;

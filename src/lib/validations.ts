@@ -36,6 +36,8 @@ export const leadFormSchema = z.object({
 
     proximo_contato: z.string().optional(),
 
+    tipo_proximo_contato: z.string().optional(),
+
     valor: z.preprocess((val) => {
         if (val === '' || val === null || val === undefined) return undefined;
         if (typeof val === 'string') {

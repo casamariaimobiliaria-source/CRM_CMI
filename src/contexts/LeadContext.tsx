@@ -31,6 +31,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     createdAt: l.created_at,
     data_compra: l.data_compra,
     proximo_contato: l.proximo_contato || l.next_contact,
+    tipo_proximo_contato: l.tipo_proximo_contato,
     valor: l.valor,
     updated_at: l.updated_at,
     updated_by: l.updated_by
@@ -94,6 +95,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         status: leadData.status,
         historico: leadData.historico,
         proximo_contato: leadData.proximo_contato || null,
+        tipo_proximo_contato: leadData.tipo_proximo_contato || null,
         user_id: session?.user.id,
         organization_id: currentOrgId,
         valor: leadData.valor,
@@ -143,6 +145,7 @@ export const LeadProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         status: leadData.status,
         historico: updatedHistorico,
         proximo_contato: leadData.proximo_contato || null,
+        tipo_proximo_contato: leadData.tipo_proximo_contato || null,
         organization_id: currentOrgId,
         valor: leadData.valor,
         updated_at: new Date().toISOString(),

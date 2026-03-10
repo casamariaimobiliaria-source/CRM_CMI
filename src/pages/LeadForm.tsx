@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { supabase } from '../lib/supabase';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { supabase } from '../lib/supabase';
 import { useLead } from '../contexts/LeadContext';
 import { useUser } from '../contexts/UserContext';
-import { LeadTemperature, LeadStatus } from '../types';
+import { LeadTemperature, LeadStatus, InteractionType } from '../types';
 import { Input } from '../components/ui/Input';
 import { MaskedInput } from '../components/MaskedInput';
 import { Button } from '../components/ui/Button';
@@ -55,7 +55,8 @@ const LeadForm: React.FC = () => {
             temperatura: LeadTemperature.FRIO,
             status: LeadStatus.ATIVO,
             historico: '',
-            proximo_contato: ''
+            proximo_contato: '',
+            tipo_proximo_contato: InteractionType.WHATSAPP
         }
     });
 
@@ -163,6 +164,7 @@ const LeadForm: React.FC = () => {
                     status: existingLead.status,
                     historico: existingLead.historico || '',
                     proximo_contato: formattedProximoContato,
+                    tipo_proximo_contato: existingLead.tipo_proximo_contato || InteractionType.WHATSAPP,
                     valor: existingLead.valor
                 });
 
@@ -324,6 +326,26 @@ const LeadForm: React.FC = () => {
                                             {...register('proximo_contato')}
                                             className="[color-scheme:dark]"
                                         />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-[10px] font-bold text-muted-foreground/80 uppercase tracking-[0.2em] mb-2 block ml-1">Tipo de Interação</label>
+                                        <div className="relative">
+                                            <select
+                                                className={cn(
+                                                    "flex h-14 w-full items-center justify-between rounded-2xl border border-input bg-secondary/50 px-5 py-2 text-base ring-offset-background placeholder:text-muted-foreground/50 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50 appearance-none font-medium transition-all duration-500 text-foreground",
+                                                    errors.tipo_proximo_contato && "border-destructive focus:ring-destructive"
+                                                )}
+                                                {...register('tipo_proximo_contato')}
+                                            >
+                                                {(Object.values(InteractionType) as string[]).map((type: string) => (
+                                                    <option key={type} value={type} className="bg-card text-foreground">{type}</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground/40">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div>
